@@ -1,0 +1,18 @@
+﻿
+/* CSS Document */
+body{
+	background-color: gray;
+	}
+
+#myCanvas {
+	display:block;
+	margin: 0 auto; 
+	text-align: center;
+	background-color: white;
+	border: 5px solid #ddd;
+	}
+
+#previewButton {
+	display: block;
+	margin: auto;
+	}
