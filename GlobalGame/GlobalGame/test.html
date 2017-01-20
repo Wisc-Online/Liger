@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://code.createjs.com/createjs-2013.12.12.min.js" type="text/javascript"></script>
+    <script src="game.js" type="text/javascript"></script>
+</head>
+<body style="background-color: #808080" >
+    <div >
+        <canvas id="myCanvas" width="800" height="600" style="background-color: white;">
+            <p>Your browser does not support HTML5!</p>
+        </canvas>
+        <script type="text/javascript">
+            var canvas = (function () {
+                var scripts = document.getElementsByTagName('script');
+                var targetDiv = scripts[scripts.length - 1].previousElementSibling || scripts[scripts.length - 1].previousSibling;
+                return targetDiv;
+            })();
+
+            var gameData = {
+                Categories: {
+                },
+                Questions: [{
+                    Id: "60727559-87f0-454c-ab51-749f04095445",
+                    Text: "What is one way of getting your high school credential?",
+                    Answers: [{
+                        Id: "c02ab13e-0c4e-4e13-8615-fb9583065ac1",
+                        Text: "Pay $1400 for a course",
+                        IsCorrect: false
+                    },
+                    {
+                        Id: "4e0e379b-c074-4279-a3ea-dc0238786e4f",
+                        Text: "Take a high school course at WCTC",
+                        IsCorrect: true
+                    },
+                    {
+                        Id: "488f7c9c-6bbe-4935-b8fe-2a1a4d21f865",
+                        Text: "Print a fake GED diploma",
+                        IsCorrect: false
+                    },
+                    {
+                        Id: "b2f7c945-e3f1-408d-8d94-7be41ecbe5db",
+                        Text: "Pray",
+                        IsCorrect: false
+                    }
+                    ],
+                    CategoryId: null
+                },
+                {
+                    Id: "1e5f3b4f-5f8f-447a-b47c-aae923eeb625",
+                    Text: "How many tests do you need to pass for your GED?",
+                    Answers: [{
+                        Id: "347b516b-ca4f-44ed-943d-d3cd154b0d86",
+                        Text: "1",
+                        IsCorrect: false
+                    },
+                    {
+                        Id: "268b012f-74ce-4d4d-a1be-069acb360289",
+                        Text: "3",
+                        IsCorrect: false
+                    },
+                    {
+                        Id: "adaba0b0-1658-4bb3-88d4-902d954be338",
+                        Text: "5",
+                        IsCorrect: true
+                    },
+                    {
+                        Id: "ca679fd8-69db-4219-91c7-9d87d8e1af81",
+                        Text: "7",
+                        IsCorrect: false
+                    }
+                    ],
+                    CategoryId: null
+                }
+                ]
+            }
+            gameData.Title = "Orientation to High School Completion";
+            gameData.Description = "This will test how well you have been listening to the Orientation session..";
+            gameData.Winner = {Name:"Marina", Score:12345};
+            gameData.Instructions = "Rapid Fire is designed for learners who enjoy playing video games. Multiple answers appear as moving targets, which the learner must “shoot.” Learners can pick the speed and may email the game link to a friend to compete for the highest score. The ideal content to use in this game is information that needs to be recalled quickly.  ";
+            var game = new Game(canvas, gameData);
+        </script>
+    </div>
+</body>
+</html>
