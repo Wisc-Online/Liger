@@ -1,6 +1,4 @@
-﻿/// <reference path="http://code.createjs.com/createjs-2013.12.12.min.js" />
-/// <reference path="../../../Content/GamesDownloadTemplate/lib/ScormHelper.js" />
-var Game = Game || (function (createjs, $) {
+﻿var Game = Game || (function (createjs, $) {
 
     function Game(canvasId, gameData) {
         var helpers = {

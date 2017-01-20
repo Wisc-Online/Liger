@@ -44,7 +44,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ButtonClickDry.mp3" />
     <Content Include="createjs.min.js" />
+    <Content Include="deflate.mp3" />
     <Content Include="game.js" />
     <Content Include="index.html" />
     <Content Include="ApplicationInsights.config">
@@ -58,7 +60,36 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="instructions_background.png" />
+    <Content Include="instructions_question.png" />
+    <Content Include="musicOff.png" />
+    <Content Include="musicOn.png" />
+    <Content Include="plain_background.jpg" />
+    <Content Include="RapidFireInstructions.png" />
+    <Content Include="rf_Balloon_Pop.mp3" />
+    <Content Include="rf_blueLongBalloon.png" />
+    <Content Include="rf_blueRoundBalloon.png" />
+    <Content Include="rf_crossHairs.png" />
+    <Content Include="rf_game_cursor.png" />
+    <Content Include="rf_greenLongBalloon.png" />
+    <Content Include="rf_greenRoundBalloon.png" />
+    <Content Include="rf_plainBackground.jpg" />
+    <Content Include="rf_POP.png" />
+    <Content Include="rf_rabbit.png" />
+    <Content Include="rf_redLongBalloon.png" />
+    <Content Include="rf_redRoundBalloon.png" />
+    <Content Include="rf_skyBackground.jpg" />
+    <Content Include="rf_skyFinalBackground.png" />
+    <Content Include="rf_spaceBackground.jpg" />
+    <Content Include="rf_titleStartBtn.png" />
+    <Content Include="rf_turbitt.png" />
+    <Content Include="rf_turtle.png" />
+    <Content Include="rf_whiteCrosshair.png" />
+    <Content Include="rf_yellowLongBalloon.png" />
+    <Content Include="rf_yellowRoundBalloon.png" />
+    <Content Include="start_button.png" />
     <Content Include="test.html" />
+    <Content Include="title_background.jpg" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
