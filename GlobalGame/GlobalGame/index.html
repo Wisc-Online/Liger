@@ -8,16 +8,50 @@
         function init() {
             var stage = new createjs.Stage("myCanvas");
             var circle = new createjs.Shape();
-            circle.graphics.beginFill("red").drawCircle(0, 0, 50);
+            circle.graphics.beginFill("red").drawCircle(0, 0, 20);
             circle.x = 100;
             circle.y = 100;
             stage.addChild(circle);
+
+            //just trying to get familiar with createJs
+                createjs.Tween.get(circle, { loop: true })
+                .to({ x: 400 }, 1000, createjs.Ease.getPowInOut(4))
+                .to({ alpha: 0, y: 75 }, 500, createjs.Ease.getPowInOut(2))
+                .to({ alpha: 0, y: 125 }, 100)
+                .to({ alpha: 1, y: 100 }, 500, createjs.Ease.getPowInOut(2))
+                .to({ x: 100 }, 800, createjs.Ease.getPowInOut(2));
+                createjs.Ticker.setFPS(60);
+                createjs.Ticker.addEventListener("tick", stage);
+
+
+            var blueCircle = new createjs.Shape();
+            blueCircle.graphics.beginFill("blue").drawCircle(0, 0, 20);
+            blueCircle.x = 100;
+            blueCircle.y = 200;
+            stage.addChild(blueCircle);
+
+            var orangeCircle = new createjs.Shape();
+            orangeCircle.graphics.beginFill("orange").drawCircle(0, 0, 20);
+            orangeCircle.x = 100;
+            orangeCircle.y = 300;
+            stage.addChild(orangeCircle);
+
+
+
+           /* var rectangle = new createjs.Shape();
+            rectangle.graphics.beginFill("yellow").drawRect(25, 25, 100, 100);
+            rectangle.x =0;
+            rectangle.y = 300;
+            stage.addChild(rectangle);*/
+
+
         //update
             stage.update();
+      
         }
     </script>
 </head>
 <body onload="init();">
-    <canvas id="myCanvas" width="500" height="200"></canvas>
+    <canvas id="myCanvas" width="5000" height="2000"></canvas>
 </body>
 </html>
