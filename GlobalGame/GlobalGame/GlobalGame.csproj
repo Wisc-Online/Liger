@@ -88,7 +88,7 @@
     <Content Include="rf_yellowLongBalloon.png" />
     <Content Include="rf_yellowRoundBalloon.png" />
     <Content Include="start_button.png" />
-    <Content Include="index.html" />
+    <Content Include="index2.html" />
     <Content Include="title_background.jpg" />
     <Content Include="Web.config" />
   </ItemGroup>
