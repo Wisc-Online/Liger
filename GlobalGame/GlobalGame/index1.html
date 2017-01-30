@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello</title>
+    <script src="createjs.min.js"></script>
+
+    <script type="text/javascript">
+        function init() {
+            var stage = new createjs.Stage("myCanvas");
+            var circle = new createjs.Shape();
+            circle.graphics.beginFill("red").drawCircle(0, 0, 50);
+            circle.x = 100;
+            circle.y = 100;
+            stage.addChild(circle);
+
+            stage.update();
+        }
+    </script>
+</head>
+<body onload="init();">
+    <canvas id="myCanvas" width="500" height="200"></canvas>
+</body>
+</html>
