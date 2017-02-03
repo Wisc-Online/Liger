@@ -46,6 +46,7 @@
 
                 });
             }
+            //
             yCord = 0;
             xCord += 10;
             stage.update();
