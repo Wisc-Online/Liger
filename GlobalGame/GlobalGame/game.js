@@ -3,11 +3,6 @@
     function Game(canvasId, gameData) {
 
         //var assetsPath = gameData.assetsPath || "";
-
-        
-
-
-
         gameData = gameData || {};
         var self = this;
         var mouseBp;
@@ -18,28 +13,27 @@
         var tickCount = 0;
         var currentArea = null;
 
-        var circle = new createjs.Shape();
-        circle.graphics.beginFill("red").drawCircle(0, 0, 50);
-        circle.x = 50;
-        circle.y = 50;
-        stage.addChild(circle);
-        var circleBlue = new createjs.Shape();
-        circleBlue.graphics.beginFill("blue").drawCircle(0, 0, 50);
-        circleBlue.x = 50;
-        circleBlue.y = 150;
-        stage.addChild(circleBlue);
-        stage.update();
-        var circle = new createjs.Shape();
-        circle.graphics.beginFill("green").drawCircle(0, 0, 50);
-        circle.x = 50;
-        circle.y = 250;
-        stage.addChild(circle);
-        var circleBlue = new createjs.Shape();
-        circleBlue.graphics.beginFill("yellow").drawCircle(0, 0, 50);
-        circleBlue.x = 50;
-        circleBlue.y = 150;
-        stage.addChild(circleBlue);
-        stage.update();
+        var xCord = 0;
+        var yCord = 0;
+        var colors = ["pink", "blue", "red", "orange"];
+        
+        for (x = 0; x < 10;x++)
+        {
+            for (y = 0; y < 10; y++)
+            {
+                var randomNum = Math.floor((Math.random() * 4) + 0);
+                var circle = new createjs.Shape();
+                circle.graphics.beginFill(colors[randomNum]).drawCircle(xCord,yCord, 10);
+                circle.x =  xCord;
+                circle.y =  yCord;
+                stage.addChild(circle);
+                yCord += 10;
+            }
+            yCord = 0;
+            xCord += 10;
+            stage.update();
+        }
+      
         
     }
     return Game;
