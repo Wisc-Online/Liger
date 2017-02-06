@@ -50,7 +50,7 @@ function prepareBoard() {
 
 function drawBoard(createjs,stage,board)
 {
-    var board = drawCircle();
+   
     for (x = 0; x < 10; x++) {
         for (y = 0; y < 10; y++) {
             var circle = new createjs.Shape();
