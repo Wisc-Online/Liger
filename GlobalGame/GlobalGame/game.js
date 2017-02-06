@@ -1,5 +1,8 @@
 ﻿var Game = Game || (function (createjs, $) {
 
+
+
+
     function Game(canvasId, gameData) {
 
         //var assetsPath = gameData.assetsPath || "";
