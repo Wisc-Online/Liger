@@ -92,6 +92,7 @@
     <Content Include="rf_yellowLongBalloon.png" />
     <Content Include="rf_yellowRoundBalloon.png" />
     <Content Include="ship.png" />
+    <Content Include="sounds\jump_sound.wav" />
     <Content Include="start_button.png" />
     <Content Include="indexOld.html" />
     <Content Include="title_background.jpg" />
