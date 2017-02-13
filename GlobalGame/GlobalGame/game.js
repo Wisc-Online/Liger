@@ -27,8 +27,7 @@ var Game = Game || (function (createjs, $) {
         createjs.Ticker.on("tick", handleTick);
 
 
-
-
+     
 
         function initialize() {
 
@@ -39,18 +38,17 @@ var Game = Game || (function (createjs, $) {
             
             mainBox = createMainContainer();
             fillBoard();
+           
 
             //add terms library container
             questionContainer = createquestionContainer();
             questionContainer.x = 580;
             questionContainer.y = 40;
 
-
             //add user score container
             userScoreContainer = createUserScoreContainer();
             userScoreContainer.x = 580;
             userScoreContainer.y = 265;
-
 
             // adding elements to stage
             stage.addChild(mainBox, userScoreContainer, questionContainer, layer, rectangle);
@@ -69,9 +67,8 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
-            function createCircleDraggableContainer(xCord,yCord) {
-
-                
+            function createCircleDraggableContainer(xCord, yCord)
+            {
 
                 var maxWidth = 40;
 
@@ -85,10 +82,11 @@ var Game = Game || (function (createjs, $) {
 
                 var colors = ["pink", "blue", "red", "orange"];
                 var randomNum = Math.floor((Math.random() * 4) + 0);
+                //colors.property = randomNum;
+                
                 var circle = new createjs.Shape();
                 circle.graphics.beginFill(colors[randomNum]).drawCircle(maxWidth / 2, maxWidth / 2, maxWidth / 2);
-
-
+                container.color = colors[randomNum];//randomNum;
 
                 container.on("pressmove", handleTermDrag);
                 container.on("pressup", handleTermPressUp);
@@ -97,8 +95,6 @@ var Game = Game || (function (createjs, $) {
 
                 container.addChild(background);
                 container.addChild(circle);
-
-
 
                 var isDragging = false;
 
@@ -109,7 +105,6 @@ var Game = Game || (function (createjs, $) {
                         var deltaX = evt.stageX - mouseDragPosition.x;
                         var deltaY = evt.stageY - mouseDragPosition.y;
 
-
                         var dragThreshold = 30;
                         var iIndex = evt.currentTarget.i;
                         var jIndex = evt.currentTarget.j;
@@ -118,22 +113,15 @@ var Game = Game || (function (createjs, $) {
 
                             if (deltaX > dragThreshold && iIndex < 9) {
                                 // move right
-
-                                
-
                                 var rightCircle = gameData[iIndex + 1][jIndex];
-
                                 var xx = evt.currentTarget.x;
                                 createjs.Tween.get(evt.currentTarget).to({ x: rightCircle.x }, 200);
                                 createjs.Tween.get(rightCircle).to({ x: xx }, 200);
 
-                                
                                 evt.currentTarget.i = iIndex + 1;
                                 rightCircle.i = iIndex;
-
                                 gameData[iIndex + 1][jIndex] = evt.currentTarget;
                                 gameData[iIndex][jIndex] = rightCircle;
-
 
                                 mouseDragPosition = null;
                                 isDragging = false;
@@ -163,11 +151,8 @@ var Game = Game || (function (createjs, $) {
                                 createjs.Tween.get(evt.currentTarget).to({ y: topCircle.y }, 200);
                                 createjs.Tween.get(topCircle).to({ y: yy }, 200);
 
-
                                 evt.currentTarget.j = jIndex - 1;
                                 topCircle.j = jIndex;
-
-
                                 gameData[iIndex][jIndex - 1] = evt.currentTarget;
 
                                 gameData[iIndex][jIndex] = topCircle;
@@ -188,10 +173,6 @@ var Game = Game || (function (createjs, $) {
                                 gameData[iIndex][jIndex + 1] = evt.currentTarget;
 
                                 gameData[iIndex][jIndex] = bottomCircle;
-
-                                
-
-
                                 mouseDragPosition = null;
                                 isDragging = false;
                             }
@@ -206,20 +187,12 @@ var Game = Game || (function (createjs, $) {
                             x: evt.stageX,
                             y: evt.stageY
                         };
-
                     }
-                   
-                 
                 }
 
                 //determine if term is outside mainbox and return to terms library container
                 function handleTermPressUp(evt) {
-
-
                     mouseDragPosition = null;
-
-                  
-             
                 }
 
                 return container;
@@ -233,32 +206,69 @@ var Game = Game || (function (createjs, $) {
                     gameData[i] = [];
                     for (var j = 0; j < 10; j++) {
                         var circle = createCircleDraggableContainer();
+                        
                         circle.x = xCord;
                         circle.y = yCord;
                         circle.original_x = circle.x;
                         circle.original_y = circle.y;
                         mainBox.addChild(circle);
-
                         circle.i = i;
                         circle.j = j;
                         gameData[i][j] = circle;
                         yCord += 40;
-                    }
+                 }
                     
                     xCord += 40;
                 }
 
+            }
 
-                
+            function checkColors() {
+                 for (var x = 0; x < 10; x++) {
+                      var counter = 1;
+                      for (var y = 0; y < 9; y++) {
+                          var circle = gameData[x][y];
+                         // alert("color of " + x + " " + y + " " + circle.color + " color of " + x + " " + (y + 1) + " " + gameData[x][y + 1].color);
+                          if (circle.color == gameData[x][y + 1].color) {
+  
+                              counter++; //alert(counter);
+                          }
+                          else {
+                              if (counter >= 3) {
+                                  alert(circle.color+" Match found in column#"+x);
+                                  y++;
+                              }
+                              counter = 1;
+                          }
+                      }
+                  }
 
+                //vertical code
 
+                /*for (var x = 0; x < 10; x++) {
+                      var counter = 1;
+                      for (var y = 0; y < 9; y++) {
+                          var circle = gameData[x][y];
+                         // alert("color of " + x + " " + y + " " + circle.color + " color of " + x + " " + (y + 1) + " " + gameData[x][y + 1].color);
+                          if (circle.color == gameData[x][y + 1].color) {
+  
+                              counter++; //alert(counter);
+                          }
+                          else {
+                              if (counter >= 3) {
+                                  alert(circle.color+" Match found in column#"+x);
+                                  y++;
+                              }
+                              counter = 1;
+                          }
+                      }
+                  }*/
                 
             }
             
 
-            //////////////////////////////////////////
 
-            // terms library container
+             // terms library container
             function createquestionContainer() {
 
                 //library container
@@ -274,12 +284,15 @@ var Game = Game || (function (createjs, $) {
                 var numberOfItemsPerColumn = 5;
                 var padding = 5;
 
-              
+                container.addEventListener("click", function (evt) {
+                   // alert("Works");
+                    checkColors();
+                    
+                })
+
 
                 return container;
             }
-
-
 
             function createUserScoreContainer() {
                 //user score container
@@ -308,21 +321,16 @@ var Game = Game || (function (createjs, $) {
                 container.addChild(scoreText);
                 return container;
             }
-
-
-
-        }
+}
 
         function reset() {
 
             stage.removeAllChildren();
             initialize();
-
         }
 
         initialize();
 
-        
     }
     return Game;
 })(createjs, $);
