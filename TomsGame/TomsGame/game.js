@@ -6,6 +6,7 @@ window.onload = function () {
     // assume Game Data was created by an external builder being passed into this script
     var theCanvas = document.getElementById("myCanvas");
     var stage = new createjs.Stage(theCanvas);
+    var ball = new createjs.Shape();
 
     //set ticker 
     createjs.Ticker.setFPS(60);
@@ -17,6 +18,7 @@ window.onload = function () {
     function initialize() {
         //load sounds
         createjs.Sound.registerSound("sounds/jump_sound.wav", "jump");
+        createjs.Sound.registerSound("sounds/thud.wav", "thud");
       //  createjs.Sound.addEventListener("LoadComplete", handleComplete);
 
         // Main game box
@@ -30,7 +32,7 @@ window.onload = function () {
         
 
         // main character
-        var ball = new createjs.Shape();
+        // var ball = new createjs.Shape();
         ball.addEventListener("click", handleClick); //mouse click or screen tap
         ball.graphics.beginFill("blue").drawCircle(0, 0, 25);
         ball.x = 400;
@@ -58,8 +60,9 @@ window.onload = function () {
       .to({ alpha: 1, y: 325 }, 400, createjs.Ease.getPowInOut(2))
       .to({ x: 600 }, 800, createjs.Ease.getPowInOut(3))
       .to({ alpha: 1, y: 400 }, 350, createjs.Ease.getPowInOut(2))
-      .to({ x: 400 }, 700, createjs.Ease.getPowInOut(3))
-      .to({ alpha: 1, y: 540 }, 300, createjs.Ease.getPowInOut(2));
+      .to({ x: 200 }, 700, createjs.Ease.getPowInOut(3))
+      .to({ alpha: 1, y: 540 }, 300, createjs.Ease.getPowInOut(2))
+      .to({ x: 800 }, 2000, createjs.Ease.getPowInOut(2));
 
     }
 
@@ -74,14 +77,21 @@ window.onload = function () {
 
     function handleClick(event) {
         createjs.Sound.play("jump");
-        ball.graphics.beginFill("yellow").drawCircle(0, 0, 25);
-       
-        // jumpUp();
+       // ball.graphics.beginFill("yellow").drawCircle(0, 0, 25);
+        
+       jumpUp();
     }
      
-    function jumpUp() {
+    function jumpUp(event) {
+       
         createjs.Tween.get(ball)
-        .to({ alpha: 1, y: 25 }, 500, createjs.Ease.getPowInOut(2));
+       .to({ alpha: 1, y: ball.y - 100 }, 200, createjs.Ease.circInOut(2))
+        .to({ alpha: 1, y: ball.y }, 500, createjs.Ease.bounceOut(30))
+        .wait(150).call(function()
+        {   //jumpin landing thud
+            createjs.Sound.play("thud");
+        })
+       
     }
 
     //reset button functionality
