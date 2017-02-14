@@ -27,7 +27,7 @@ var Game = Game || (function (createjs, $) {
         createjs.Ticker.on("tick", handleTick);
 
 
-     
+
 
         function initialize() {
 
@@ -35,10 +35,10 @@ var Game = Game || (function (createjs, $) {
             var mainBox, questionContainer, userScoreContainer, layer, rectangle;
 
             // Main game box
-            
+
             mainBox = createMainContainer();
             fillBoard();
-           
+
 
             //add terms library container
             questionContainer = createquestionContainer();
@@ -67,8 +67,7 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
-            function createCircleDraggableContainer(xCord, yCord)
-            {
+            function createCircleDraggableContainer(xCord, yCord) {
 
                 var maxWidth = 40;
 
@@ -83,7 +82,7 @@ var Game = Game || (function (createjs, $) {
                 var colors = ["pink", "blue", "red", "orange"];
                 var randomNum = Math.floor((Math.random() * 4) + 0);
                 //colors.property = randomNum;
-                
+
                 var circle = new createjs.Shape();
                 circle.graphics.beginFill(colors[randomNum]).drawCircle(maxWidth / 2, maxWidth / 2, maxWidth / 2);
                 container.color = colors[randomNum];//randomNum;
@@ -109,7 +108,7 @@ var Game = Game || (function (createjs, $) {
                         var iIndex = evt.currentTarget.i;
                         var jIndex = evt.currentTarget.j;
                         if (isDragging) {
-                            
+
 
                             if (deltaX > dragThreshold && iIndex < 9) {
                                 // move right
@@ -181,8 +180,7 @@ var Game = Game || (function (createjs, $) {
                             isDragging = true;
                         }
                     }
-                    else
-                    {
+                    else {
                         mouseDragPosition = {
                             x: evt.stageX,
                             y: evt.stageY
@@ -198,15 +196,14 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
-            function fillBoard()
-            {
+            function fillBoard() {
                 var xCord = 20;
                 for (var i = 0; i < 10; i++) {
                     var yCord = 20;
                     gameData[i] = [];
                     for (var j = 0; j < 10; j++) {
                         var circle = createCircleDraggableContainer();
-                        
+
                         circle.x = xCord;
                         circle.y = yCord;
                         circle.original_x = circle.x;
@@ -216,59 +213,63 @@ var Game = Game || (function (createjs, $) {
                         circle.j = j;
                         gameData[i][j] = circle;
                         yCord += 40;
-                 }
-                    
+                    }
+
                     xCord += 40;
                 }
 
             }
 
-            function checkColors() {
-                 for (var x = 0; x < 10; x++) {
-                      var counter = 1;
-                      for (var y = 0; y < 9; y++) {
-                          var circle = gameData[x][y];
-                         // alert("color of " + x + " " + y + " " + circle.color + " color of " + x + " " + (y + 1) + " " + gameData[x][y + 1].color);
-                          if (circle.color == gameData[x][y + 1].color) {
-  
-                              counter++; //alert(counter);
-                          }
-                          else {
-                              if (counter >= 3) {
-                                  alert(circle.color+" Match found in column#"+x);
-                                  y++;
-                              }
-                              counter = 1;
-                          }
-                      }
-                  }
+            //horizontal
+            function checkHorizontalColors() {
+                for (var x = 0; x < 10; x++) {
+                    var counter = 1;
+                    var t = 0;
+                    for (var y = 0; y < 9; y++) {
+                     t++; 
+                        var circle = gameData[x][y];
+                        if (circle.color == gameData[x][t].color) {
 
-                //vertical code
-
-                /*for (var x = 0; x < 10; x++) {
-                      var counter = 1;
-                      for (var y = 0; y < 9; y++) {
-                          var circle = gameData[x][y];
-                         // alert("color of " + x + " " + y + " " + circle.color + " color of " + x + " " + (y + 1) + " " + gameData[x][y + 1].color);
-                          if (circle.color == gameData[x][y + 1].color) {
-  
-                              counter++; //alert(counter);
-                          }
-                          else {
-                              if (counter >= 3) {
-                                  alert(circle.color+" Match found in column#"+x);
-                                  y++;
-                              }
-                              counter = 1;
-                          }
-                      }
-                  }*/
-                
+                            counter++; //alert(counter);
+                        }
+                        else {
+                            if (counter >= 3) {
+                                alert(circle.color + " Match found in column#" + x);
+                                y++;
+                                 t++;
+                            }
+                            counter = 1;
+                        }
+                    }
+                }
             }
+          function checkverticalColors() {
+
+                //vertical 
+                for (var y = 0; y < 10; y++) {
+                    var counter = 1;
+                    var t = 0;
+                    for (var x = 0; x < 9; x++) {
+                        t++; 
+                        var circle = gameData[x][y];
+                        if (circle.color == gameData[t][y].color) {
+                            counter++; //alert(counter);
+                        }
+                        else {
+                            if (counter >= 3) {
+                                alert(circle.color + " Match found in row#" + y);
+                                x++;
+                                t++;
+                            }
+                            counter = 1;
+                        }
+                    }
+                }
+            }
+
             
 
-
-             // terms library container
+            // terms library container
             function createquestionContainer() {
 
                 //library container
@@ -285,9 +286,13 @@ var Game = Game || (function (createjs, $) {
                 var padding = 5;
 
                 container.addEventListener("click", function (evt) {
-                   // alert("Works");
-                    checkColors();
-                    
+                    // alert("Works");
+                    //checkColors();
+                    checkHorizontalColors();
+                    checkverticalColors();
+                  
+
+
                 })
 
 
@@ -321,7 +326,7 @@ var Game = Game || (function (createjs, $) {
                 container.addChild(scoreText);
                 return container;
             }
-}
+        }
 
         function reset() {
 
