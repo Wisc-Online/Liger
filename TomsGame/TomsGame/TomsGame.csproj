@@ -63,6 +63,8 @@
     <Content Include="game - Full Copy.js" />
     <Content Include="gameOld.js" />
     <Content Include="game.js" />
+    <Content Include="Images\bag_creature.png" />
+    <Content Include="Images\thumbsUpMan.png" />
     <Content Include="index.html" />
     <Content Include="instructions_background.png" />
     <Content Include="instructions_question.png" />
@@ -92,6 +94,7 @@
     <Content Include="rf_yellowLongBalloon.png" />
     <Content Include="rf_yellowRoundBalloon.png" />
     <Content Include="ship.png" />
+    <Content Include="sounds\game-die.mp3" />
     <Content Include="sounds\jump_sound.wav" />
     <Content Include="sounds\thud.wav" />
     <Content Include="start_button.png" />

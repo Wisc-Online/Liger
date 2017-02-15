@@ -6,19 +6,22 @@ window.onload = function () {
     // assume Game Data was created by an external builder being passed into this script
     var theCanvas = document.getElementById("myCanvas");
     var stage = new createjs.Stage(theCanvas);
-    var ball = new createjs.Shape();
+    var playerState = "normal"; // normal, turning, zombie
+    var vaccine; // does player have a vaccine on hand
+    // var zombie = new createjs.Shape();
+    var zombie = new createjs.Bitmap("Images/bag_creature.png");
 
     //set ticker 
     createjs.Ticker.setFPS(60);
-        
     createjs.Ticker.on("tick", handleTick)
 
-   
+      
     //container for stage objects
     function initialize() {
         //load sounds
         createjs.Sound.registerSound("sounds/jump_sound.wav", "jump");
         createjs.Sound.registerSound("sounds/thud.wav", "thud");
+        createjs.Sound.registerSound("sounds/game-die.mp3", "die");
       //  createjs.Sound.addEventListener("LoadComplete", handleComplete);
 
         // Main game box
@@ -32,37 +35,65 @@ window.onload = function () {
         
 
         // main character
-        // var ball = new createjs.Shape();
-        ball.addEventListener("click", handleClick); //mouse click or screen tap
-        ball.graphics.beginFill("blue").drawCircle(0, 0, 25);
-        ball.x = 400;
-        ball.y = 540;
+        // var player = new createjs.Shape();
+        var player = new createjs.Bitmap("Images/thumbsUpMan.png");
+        // player.graphics.beginFill("blue").drawCircle(0, 0, 25);
+        player.x = 375;
+        player.y = 450;
+        player.scaleX = .10;
+        player.scaleY = .10;
+        
+        player.addEventListener("click", handleClick); //mouse click or screen tap
+            
         // add character to stage
-        stage.addChild(ball);
+        stage.addChild(player);
 
        
-
         // zombie character
-        var circle = new createjs.Shape();
-        circle.graphics.beginFill("red").drawCircle(0, 0, 30);
-        circle.x = 400;
-        circle.y = 100;
-        stage.addChild(circle);
+        // var zombie = new createjs.Shape();
+       // zombie.graphics.beginFill("red").drawCircle(0, 0, 25);
+        zombie.addEventListener("click", handleZombieClick); //mouse click or screen tap
+        zombie.scaleX = .75;
+        zombie.scaleY = .75;
+        zombie.x = 400;
+        zombie.y = 20;
+        stage.addChild(zombie);
 
-        createjs.Tween.get(circle, { loop: true })
+        createjs.Tween.get(zombie, { loop: true })
       .to({ x: 600 }, 1000, createjs.Ease.getPowInOut(3))
-      .to({ alpha: 1, y: 175 }, 500, createjs.Ease.getPowInOut(2))
+      .to({ alpha: 1, y: 175 }, 525, createjs.Ease.getPowInOut(2))
       .to({ x: 400 }, 1000, createjs.Ease.getPowInOut(4))
       .to({ alpha: 1, y: 225 }, 500, createjs.Ease.getPowInOut(2))
       .to({ x: 200 }, 1000, createjs.Ease.getPowInOut(5))
-      .to({ alpha: 1, y: 275 }, 450, createjs.Ease.getPowInOut(2))
+      .to({ alpha: 1, y: 275 }, 475, createjs.Ease.getPowInOut(2))
       .to({ x: 400 }, 900, createjs.Ease.getPowInOut(2))
-      .to({ alpha: 1, y: 325 }, 400, createjs.Ease.getPowInOut(2))
+      .to({ alpha: 1, y: 325 }, 450, createjs.Ease.getPowInOut(2))
       .to({ x: 600 }, 800, createjs.Ease.getPowInOut(3))
-      .to({ alpha: 1, y: 400 }, 350, createjs.Ease.getPowInOut(2))
+      .to({ alpha: 1, y: 400 }, 425, createjs.Ease.getPowInOut(2))
       .to({ x: 200 }, 700, createjs.Ease.getPowInOut(3))
-      .to({ alpha: 1, y: 540 }, 300, createjs.Ease.getPowInOut(2))
+      .to({ alpha: 1, y: 540 }, 400, createjs.Ease.getPowInOut(2))
       .to({ x: 800 }, 2000, createjs.Ease.getPowInOut(2));
+
+        //check for collision
+        if (player.x < zombie.x + zombie.width && player.x + player.width > zombie.x &&
+          player.y < zombie.y + zombie.height && player.y + player.height > zombie.y) {
+            // The objects are touching
+            console.log("you've been bitten!");
+           
+        }
+        
+
+        var checkRectCollision = function (player, zombie) {
+            var b1, b2;
+            b1 = getBounds(player);
+            b2 = getBounds(zombie);
+            return calculateIntersection(b1, b2);
+        }
+
+        if (checkRectCollision != null) {
+            console.log("you've been bitten!");
+        };
+
 
     }
 
@@ -77,21 +108,45 @@ window.onload = function () {
 
     function handleClick(event) {
         createjs.Sound.play("jump");
-       // ball.graphics.beginFill("yellow").drawCircle(0, 0, 25);
+       // player.graphics.beginFill("yellow").drawzombie(0, 0, 25);
         
        jumpUp();
+    }
+
+    function handleZombieClick(event) {
+        createjs.Sound.play("die");
+        createjs.Tween.get(zombie).to({alpha: 0},5000);
+        stage.removeChild(zombie);
+     
+        //  stage.removeChild(zombie[i]);
+        // player.graphics.beginFill("yellow").drawzombie(0, 0, 25);
+
+       
     }
      
     function jumpUp(event) {
        
-        createjs.Tween.get(ball)
-       .to({ alpha: 1, y: ball.y - 100 }, 200, createjs.Ease.circInOut(2))
-        .to({ alpha: 1, y: ball.y }, 500, createjs.Ease.bounceOut(30))
+        createjs.Tween.get(player)
+       .to({ alpha: 1, y: player.y - 100 }, 200, createjs.Ease.circInOut(2))
+        .to({ alpha: 1, y: player.y }, 500, createjs.Ease.bounceOut(30))
         .wait(150).call(function()
         {   //jumpin landing thud
             createjs.Sound.play("thud");
         })
        
+    }
+
+    function zombieEncounter() {
+        
+        var randomNumber = Math.round(Math.random());
+        if (randomNumber === 0) {
+            alert("You have been bitten!");
+            //present question to player. if correct use a vaccine if one has been found or start timer to find a vaccine. If incorrect start "turning" green?
+        }
+        else if (randomNumber === 1) {
+            alert("You fought off the zombie!");
+            // you find a vaccine to keep or use if already "turning".
+        }
     }
 
     //reset button functionality

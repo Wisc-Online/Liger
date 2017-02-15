@@ -694,7 +694,7 @@ var Game = Game || (function (createjs, $) {
 
 
 
-
+                    // create answer areas on balloons
                     answerBox.name = "answerBox" + i;
                     answerBox.isCorrect = answer.IsCorrect;
                     if (i == 0) {
@@ -725,6 +725,7 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
+            // animate balloon movements
             function animateToRandomPoint(target) {
                 target.startingpoints = { x: target.x, y: target.y };
                 var currentPoint = { x: target.x, y: target.y };
