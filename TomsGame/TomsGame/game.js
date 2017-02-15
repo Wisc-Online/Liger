@@ -1,161 +1,69 @@
 ﻿
-/// <reference path="createjs-2015.11.26.min.js" />
-// JavaScript Document
-window.onload = function () {
+window.onload = function ()
+ {
+    function getRandomNumber(max) {
+        return Math.floor(Math.random() * max);
+    }
 
-    // assume Game Data was created by an external builder being passed into this script
-    var theCanvas = document.getElementById("myCanvas");
-    var stage = new createjs.Stage(theCanvas);
-    var playerState = "normal"; // normal, turning, zombie
-    var vaccine; // does player have a vaccine on hand
-    // var zombie = new createjs.Shape();
-    var zombie = new createjs.Bitmap("Images/bag_creature.png");
+    var colors = ["DarkRed", "Red", "Green", "LightGreen", "DarkBlue", "Blue", "yellow", "Orange", "Purple" ,"Teal", "Gray", "Black", "Silver"];
 
-    //set ticker 
-    createjs.Ticker.setFPS(60);
-    createjs.Ticker.on("tick", handleTick)
+    function createTileArea() {
+        var theCanvas = document.getElementById("myCanvas");
+        var stage = new createjs.Stage(theCanvas);
+        stage.name = "stage";
+        var size = 200;
 
-      
-    //container for stage objects
-    function initialize() {
-        //load sounds
-        createjs.Sound.registerSound("sounds/jump_sound.wav", "jump");
-        createjs.Sound.registerSound("sounds/thud.wav", "thud");
-        createjs.Sound.registerSound("sounds/game-die.mp3", "die");
-      //  createjs.Sound.addEventListener("LoadComplete", handleComplete);
+        for (row = 0; row < 10; row++) {
+            for (col = 0; col < 10; col++) {
+                var id = row + "_" + col;
+                var color = colors[getRandomNumber(13)];
 
-        // Main game box
-        var mainBox = new createjs.Shape();
-        mainBox.x = 120;
-        mainBox.y = 20;
-        mainBox.graphics.setStrokeStyle(1).beginStroke("black").beginFill("darkgrey");
-        mainBox.graphics.drawRect(25, 0, 500, 560);
-        // adding mainbox to stage
-        stage.addChild(mainBox);
-        
-
-        // main character
-        // var player = new createjs.Shape();
-        var player = new createjs.Bitmap("Images/thumbsUpMan.png");
-        // player.graphics.beginFill("blue").drawCircle(0, 0, 25);
-        player.x = 375;
-        player.y = 450;
-        player.scaleX = .10;
-        player.scaleY = .10;
-        
-        player.addEventListener("click", handleClick); //mouse click or screen tap
+                var tile = new createjs.Shape();
+                tile.graphics.beginStroke('#000');
+                tile.graphics.beginFill(color);
+                tile.graphics.drawRoundRect(0, 0, size, size, 10);
+                // tile.graphics.drawRect(0, 0, size, size);
+                tile.shadow = new createjs.Shadow("#111111", 1, 1, 10);
+                
             
-        // add character to stage
-        stage.addChild(player);
+               
+              //  var color = "white";
+              //  var alpha = 1;
+              //  var blurX = 32;
+              //  var blurY = 32;
+              //  var strength = 1;
+              //  var quality = 1;
+              //  var inner = false;
+              //  var knockout = false;
+              //  _glowFilter = new createjs.GlowFilter(color, alpha, blurX, blurY, strength, quality, inner, knockout);
+              //  tile.filters = [_glowFilter];
+                
 
-       
-        // zombie character
-        // var zombie = new createjs.Shape();
-       // zombie.graphics.beginFill("red").drawCircle(0, 0, 25);
-        zombie.addEventListener("click", handleZombieClick); //mouse click or screen tap
-        zombie.scaleX = .75;
-        zombie.scaleY = .75;
-        zombie.x = 400;
-        zombie.y = 20;
-        stage.addChild(zombie);
 
-        createjs.Tween.get(zombie, { loop: true })
-      .to({ x: 600 }, 1000, createjs.Ease.getPowInOut(3))
-      .to({ alpha: 1, y: 175 }, 525, createjs.Ease.getPowInOut(2))
-      .to({ x: 400 }, 1000, createjs.Ease.getPowInOut(4))
-      .to({ alpha: 1, y: 225 }, 500, createjs.Ease.getPowInOut(2))
-      .to({ x: 200 }, 1000, createjs.Ease.getPowInOut(5))
-      .to({ alpha: 1, y: 275 }, 475, createjs.Ease.getPowInOut(2))
-      .to({ x: 400 }, 900, createjs.Ease.getPowInOut(2))
-      .to({ alpha: 1, y: 325 }, 450, createjs.Ease.getPowInOut(2))
-      .to({ x: 600 }, 800, createjs.Ease.getPowInOut(3))
-      .to({ alpha: 1, y: 400 }, 425, createjs.Ease.getPowInOut(2))
-      .to({ x: 200 }, 700, createjs.Ease.getPowInOut(3))
-      .to({ alpha: 1, y: 540 }, 400, createjs.Ease.getPowInOut(2))
-      .to({ x: 800 }, 2000, createjs.Ease.getPowInOut(2));
+               
+                tile.graphics.endFill();
+                tile.x = col * size;
+                tile.y = row * size;               
 
-        //check for collision
-        if (player.x < zombie.x + zombie.width && player.x + player.width > zombie.x &&
-          player.y < zombie.y + zombie.height && player.y + player.height > zombie.y) {
-            // The objects are touching
-            console.log("you've been bitten!");
-           
-        }
-        
+                tile.height = size;
+                tile.width = size;
+                tile.name = id;
 
-        var checkRectCollision = function (player, zombie) {
-            var b1, b2;
-            b1 = getBounds(player);
-            b2 = getBounds(zombie);
-            return calculateIntersection(b1, b2);
+            //    var stageWidth = 640;
+            //    var stageHeight = 480;
+                tile.snapToPixel = true;
+             
+             //   tile.x = stageWidth / 2 - 200 - 0.5;
+            //    tile.y = stageHeight / 2 - 150 - 0.5;
+             //   tile.x = tile.x / 2 - 200 - 0.5;
+            //    tile.y = tile.y / 2 - 150 - 0.5;
+
+                stage.addChild(tile);
+            }
         }
 
-        if (checkRectCollision != null) {
-            console.log("you've been bitten!");
-        };
-
-
-    }
-
-    function handleComplete(event) {
-
-    }
-   
-
-    function handleTick() {
         stage.update();
     }
 
-    function handleClick(event) {
-        createjs.Sound.play("jump");
-       // player.graphics.beginFill("yellow").drawzombie(0, 0, 25);
-        
-       jumpUp();
-    }
-
-    function handleZombieClick(event) {
-        createjs.Sound.play("die");
-        createjs.Tween.get(zombie).to({alpha: 0},5000);
-        stage.removeChild(zombie);
-     
-        //  stage.removeChild(zombie[i]);
-        // player.graphics.beginFill("yellow").drawzombie(0, 0, 25);
-
-       
-    }
-     
-    function jumpUp(event) {
-       
-        createjs.Tween.get(player)
-       .to({ alpha: 1, y: player.y - 100 }, 200, createjs.Ease.circInOut(2))
-        .to({ alpha: 1, y: player.y }, 500, createjs.Ease.bounceOut(30))
-        .wait(150).call(function()
-        {   //jumpin landing thud
-            createjs.Sound.play("thud");
-        })
-       
-    }
-
-    function zombieEncounter() {
-        
-        var randomNumber = Math.round(Math.random());
-        if (randomNumber === 0) {
-            alert("You have been bitten!");
-            //present question to player. if correct use a vaccine if one has been found or start timer to find a vaccine. If incorrect start "turning" green?
-        }
-        else if (randomNumber === 1) {
-            alert("You fought off the zombie!");
-            // you find a vaccine to keep or use if already "turning".
-        }
-    }
-
-    //reset button functionality
-    function reset() {
-
-        stage.removeAllChildren();
-        initialize();
-
-    }
-
-    initialize();
-}
+    createTileArea();
+};
