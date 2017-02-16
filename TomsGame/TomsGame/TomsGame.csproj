@@ -60,11 +60,15 @@
     <Content Include="ButtonClickDry.mp3" />
     <Content Include="createjs.min.js" />
     <Content Include="deflate.mp3" />
+    <Content Include="game - Tiles.js" />
+    <Content Include="game - rapidFire.js" />
     <Content Include="game.js" />
-    <Content Include="gameOld.js" />
     <Content Include="game - zombie.js" />
     <Content Include="Images\bag_creature.png" />
+    <Content Include="Images\bg1.jpg" />
+    <Content Include="Images\bg2.jpg" />
     <Content Include="Images\HighDefForgroundDesert.png" />
+    <Content Include="Images\planet-1138237.png" />
     <Content Include="Images\thumbsUpMan.png" />
     <Content Include="index.html" />
     <Content Include="instructions_background.png" />

@@ -1,69 +1,105 @@
-﻿
-window.onload = function ()
- {
-    function getRandomNumber(max) {
-        return Math.floor(Math.random() * max);
-    }
+﻿/// <reference path="createjs-2015.11.26.min.js" />
+// JavaScript Document
+// window.onload = function() {
 
-    var colors = ["DarkRed", "Red", "Green", "LightGreen", "DarkBlue", "Blue", "yellow", "Orange", "Purple" ,"Teal", "Gray", "Black", "Silver"];
+    // assume Game Data was created by an external builder being passed into this script
+    
 
-    function createTileArea() {
-        var theCanvas = document.getElementById("myCanvas");
-        var stage = new createjs.Stage(theCanvas);
-        stage.name = "stage";
-        var size = 200;
+        /* Background */
+    var bgImg = new Image();
+    var bg1;
+    var bg2Img = new Image();
+    var bg2;
 
-        for (row = 0; row < 10; row++) {
-            for (col = 0; col < 10; col++) {
-                var id = row + "_" + col;
-                var color = colors[getRandomNumber(13)];
+        /* Jetpack */ 
+        var sImg = new Image();
+        var ship;
+   
 
-                var tile = new createjs.Shape();
-                tile.graphics.beginStroke('#000');
-                tile.graphics.beginFill(color);
-                tile.graphics.drawRoundRect(0, 0, size, size, 10);
-                // tile.graphics.drawRect(0, 0, size, size);
-                tile.shadow = new createjs.Shadow("#111111", 1, 1, 10);
-                
-            
+        /* Enemy */
+    var eImg = new Image() ;
+
+        /* planet(s) */
+    var bImg = new Image() ;
+    var boss;
+
+        /* Fuel Crystals | Lives */
+    var lImg = new Image(); // was lives lImg
+
+        // variables
+  //  var lives = new Container(); //stores the lives gfx 
+  //  var bullets = new Container(); //stores the bullets gfx 
+ //   var enemies = new Container(); //stores the enemies gfx 
+    var bossHealth = 20;
+    var score;
+    var gfxLoaded = 0; //used as a preloader, counts the already loaded items 
+    var centerX = 160;
+    var centerY = 240;
+    var tkr = new Object(); //used as a Ticker listener 
+    var timerSource; //references a setInterval method
+
+           
+
+            //set ticker 
+    // createjs.Ticker.setFPS(60);
+   // createjs.Ticker.on("tick", handleTick)
+
+    function Main()
+{
+        //code... 
+    var canvas = document.getElementById("myCanvas");
+    var stage = new createjs.Stage(canvas);
+        stage.mouseEventsEnabled = true;
+
+        /* Sounds */
+  
+  //  SoundJS.addBatch([ 
+   //     {name:'boss', src:'sounds/game-die.mp3', instances:1}, 
+    //    {name:'explo', src:'deflate.mp3', instances:10}, 
+    //    {name:'shot', src:'rf_Balloon_Pop.mp3', instances:10}]);
+
+        /* Load GFX */  
+        bgImg.src = 'Images/bg1.png'; 
+        bgImg.name = 'bg'; 
+        bgImg.onload = loadGfx; 
+      
+        bg2Img.src = 'Images/bg2.png'; 
+        bg2Img.name = 'bg2'; 
+        bg2Img.onload = loadGfx; 
+      
+        sImg.src = 'Images/thumbsUpMan.png'; // ship or main character
+        sImg.name = 'ship'; 
+        sImg.onload = loadGfx; 
+  
+        eImg.src = 'Images/bag_creature.png';  // alien or zombie enemy
+        eImg.name = 'enemy'; 
+        eImg.onload = loadGfx; 
+  
+        bImg.src = 'Images/planet-1138237.png';  // boss or planet *different planet sprites are in the repository
+        bImg.name = 'boss'; 
+        bImg.onload = loadGfx; 
+
+        /* Ticker */  
+     //   Ticker.setFPS(30); 
+    //    Ticker.addListener(stage);
+
+     /* Ticker */
+    //   createjs.Ticker.setFPS(30);
+    //    createjs.Ticker.addListener(stage);
                
-              //  var color = "white";
-              //  var alpha = 1;
-              //  var blurX = 32;
-              //  var blurY = 32;
-              //  var strength = 1;
-              //  var quality = 1;
-              //  var inner = false;
-              //  var knockout = false;
-              //  _glowFilter = new createjs.GlowFilter(color, alpha, blurX, blurY, strength, quality, inner, knockout);
-              //  tile.filters = [_glowFilter];
-                
 
+}
 
-               
-                tile.graphics.endFill();
-                tile.x = col * size;
-                tile.y = row * size;               
-
-                tile.height = size;
-                tile.width = size;
-                tile.name = id;
-
-            //    var stageWidth = 640;
-            //    var stageHeight = 480;
-                tile.snapToPixel = true;
-             
-             //   tile.x = stageWidth / 2 - 200 - 0.5;
-            //    tile.y = stageHeight / 2 - 150 - 0.5;
-             //   tile.x = tile.x / 2 - 200 - 0.5;
-            //    tile.y = tile.y / 2 - 150 - 0.5;
-
-                stage.addChild(tile);
-            }
-        }
-
-        stage.update();
-    }
-
-    createTileArea();
-};
+function loadGfx(e) 
+{ 
+    if(e.target.name = 'bg'){bg = new Bitmap(bgImg);} 
+    if(e.target.name = 'bg2'){bg2 = new Bitmap(bg2Img);} 
+    if(e.target.name = 'ship'){ship = new Bitmap(sImg);} 
+      
+    gfxLoaded++; 
+      
+    if(gfxLoaded == 9) 
+    { 
+        addGameView(); 
+    } 
+}
