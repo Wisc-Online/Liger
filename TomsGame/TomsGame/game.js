@@ -8,7 +8,6 @@ window.onload = function () {
     var stage = new createjs.Stage(theCanvas);
     var playerState = "normal"; // normal, turning, zombie
     var vaccine; // does player have a vaccine on hand
-    // var zombie = new createjs.Shape();
     var zombie = new createjs.Bitmap("Images/bag_creature.png");
 
 
@@ -20,7 +19,7 @@ window.onload = function () {
     var queue = new createjs.LoadQueue(false);
     queue.installPlugin(createjs.Sound);
     queue.addEventListener("complete", function (event) {
-        initializeGame();
+        initialize();
     });
     queue.loadManifest(assets);
 
@@ -28,9 +27,16 @@ window.onload = function () {
     createjs.Ticker.setFPS(60);
     createjs.Ticker.on("tick", handleTick)
 
+
+
       
     //container for stage objects
     function initialize() {
+         
+       
+
+
+
         //load sounds
         createjs.Sound.registerSound("sounds/jump_sound.wav", "jump");
         createjs.Sound.registerSound("sounds/thud.wav", "thud");
@@ -44,67 +50,105 @@ window.onload = function () {
         mainBox.graphics.setStrokeStyle(1).beginStroke("black").beginFill("darkgrey");
         mainBox.graphics.drawRect(25, 0, 500, 560);
         // adding mainbox to stage
-        stage.addChild(mainBox);
+
+        // Create the intro text
+        titleText = new createjs.Text("Jet Pack!", "80px Arial", "#ffffff");
+        titleText.x = -1000;
+        titleText.y = 150;
+        titleText.alpha = 0;
+        titleText.textAlign = "center";
+        titleText.shadow = new createjs.Shadow("#000000", 2, 2, 15);
+        stage.addChild(titleText);
+
         
 
-        // main character
-        // var player = new createjs.Shape();
-        var player = new createjs.Bitmap("Images/thumbsUpMan.png");
-        // player.graphics.beginFill("blue").drawCircle(0, 0, 25);
-        player.x = 375;
-        player.y = 450;
-        player.scaleX = .10;
-        player.scaleY = .10;
-        
-        player.addEventListener("click", handleClick); //mouse click or screen tap
-            
-        // add character to stage
-        stage.addChild(player);
+        // Tween in the intro text, then tween out.
+        createjs.Tween.get(titleText)
+                .wait(500)
+                .to({ x: 400, alpha: 1 }, 500, createjs.Ease.backOut)
+                .wait(1500)
+                .to({ x: 1000, alpha: 0 }, 1000, createjs.Ease.backIn);
+              //  .wait(5000).call(startLevel);
 
-       
-        // zombie character
-        zombie.addEventListener("click", handleZombieClick); //mouse click or screen tap
-        zombie.scaleX = .75;
-        zombie.scaleY = .75;
-        zombie.x = 400;
-        zombie.y = 20;
-        stage.addChild(zombie);
+        //add start button
+        var button = new createjs.Container();
+        button.addEventListener("click", startLevel); //mouse click or screen tap
+        button.x = 350;
+        button.y = 300;
+        button.alpha = 0;
+        button.shadow = new createjs.Shadow("#111111", 2, 2, 10);
+        var background = new createjs.Shape();
+        background.graphics.setStrokeStyle(1).beginStroke("dark gray").beginFill("#7CC447").drawRoundRect(0, 0, 100, 25, 5).endStroke().endFill();
+        var text = new createjs.Text("START", "12pt Arial Black", "White");
+        text.x = 50;
+        text.y = 12.5;
+        text.textAlign = "center";
+        text.textBaseline = "middle";
 
-        createjs.Tween.get(zombie, { loop: true })
-      .to({ x: 600 }, 1000, createjs.Ease.getPowInOut(3))
-      .to({ alpha: 1, y: 175 }, 525, createjs.Ease.getPowInOut(2))
-      .to({ x: 400 }, 1000, createjs.Ease.getPowInOut(4))
-      .to({ alpha: 1, y: 225 }, 500, createjs.Ease.getPowInOut(2))
-      .to({ x: 200 }, 1000, createjs.Ease.getPowInOut(5))
-      .to({ alpha: 1, y: 275 }, 475, createjs.Ease.getPowInOut(2))
-      .to({ x: 400 }, 900, createjs.Ease.getPowInOut(2))
-      .to({ alpha: 1, y: 325 }, 450, createjs.Ease.getPowInOut(2))
-      .to({ x: 600 }, 800, createjs.Ease.getPowInOut(3))
-      .to({ alpha: 1, y: 400 }, 425, createjs.Ease.getPowInOut(2))
-      .to({ x: 200 }, 700, createjs.Ease.getPowInOut(3))
-      .to({ alpha: 1, y: 540 }, 400, createjs.Ease.getPowInOut(2))
-      .to({ x: 800 }, 2000, createjs.Ease.getPowInOut(2));
+        button.addChild(background, text);
+        stage.addChild(button);
+        // fade in button
+        createjs.Tween.get(button)
+                .wait(500)
+                .to({ alpha: 1 },1000);
 
-        //check for collision
-        if (player.x < zombie.x + zombie.width && player.x + player.width > zombie.x &&
-          player.y < zombie.y + zombie.height && player.y + player.height > zombie.y) {
-            // The objects are touching
-            console.log("you've been bitten!");
-           
-        }
-        
+              
+                      
 
-        var checkRectCollision = function (player, zombie) {
-            var b1, b2;
-            b1 = getBounds(player);
-            b2 = getBounds(zombie);
-            return calculateIntersection(b1, b2);
-        }
+        function startLevel() {
+            stage.addChild(mainBox);
 
-        if (checkRectCollision != null) {
-            console.log("you've been bitten!");
-        };
-        
+            // main character       
+            var player = new createjs.Bitmap("Images/thumbsUpMan.png");
+            player.addEventListener("click", handleClick); //mouse click or screen tap
+            player.x = 375;
+            player.y = 450;
+            player.scaleX = .10;
+            player.scaleY = .10;
+            player.alive = true;
+            player.die = function () {
+                player.alive = false;
+                player.image = new createjs.Bitmap("Images/greenBrainMonster.png");
+            }
+
+
+            // add character to stage
+            stage.addChild(player);
+
+
+            // zombie character
+            zombie.addEventListener("click", handleZombieClick); //mouse click or screen tap
+            zombie.scaleX = .75;
+            zombie.scaleY = .75;
+            zombie.x = 400;
+            zombie.y = 20;
+            stage.addChild(zombie);
+
+            createjs.Tween.get(zombie, { loop: true })
+          .to({ x: 600 }, 1000, createjs.Ease.getPowInOut(3))
+          .to({ alpha: 1, y: 175 }, 525, createjs.Ease.getPowInOut(2))
+          .to({ x: 400 }, 1000, createjs.Ease.getPowInOut(4))
+          .to({ alpha: 1, y: 225 }, 500, createjs.Ease.getPowInOut(2))
+          .to({ x: 200 }, 1000, createjs.Ease.getPowInOut(5))
+          .to({ alpha: 1, y: 275 }, 475, createjs.Ease.getPowInOut(2))
+          .to({ x: 400 }, 900, createjs.Ease.getPowInOut(2))
+          .to({ alpha: 1, y: 325 }, 450, createjs.Ease.getPowInOut(2))
+          .to({ x: 600 }, 800, createjs.Ease.getPowInOut(3))
+          .to({ alpha: 1, y: 400 }, 425, createjs.Ease.getPowInOut(2))
+          .to({ x: 200 }, 700, createjs.Ease.getPowInOut(3))
+          .to({ alpha: 1, y: 540 }, 400, createjs.Ease.getPowInOut(2))
+          .to({ x: 800 }, 2000, createjs.Ease.getPowInOut(2));
+
+            //check for collision
+            if (player.x < zombie.x + zombie.width && player.x + player.width > zombie.x &&
+              player.y < zombie.y + zombie.height && player.y + player.height > zombie.y) {
+                // The objects are touching
+                console.log("you have been bitten!");
+
+            }
+
+        } // startlevel
+      
     }
 
     //main game view
@@ -170,10 +214,7 @@ window.onload = function () {
         createjs.Sound.play("die");
         createjs.Tween.get(zombie).to({alpha: 0},5000);
         stage.removeChild(zombie);
-        
-        //  stage.removeChild(zombie[i]);
-        // player.graphics.beginFill("yellow").drawzombie(0, 0, 25);
-
+       
        
     }
      
@@ -202,6 +243,11 @@ window.onload = function () {
         }
     }
 
+    // onGameOver: The player has lost.
+
+    // onGameComplete: The player has won. 
+
+
     //reset button functionality
     function reset() {
 
@@ -210,5 +256,6 @@ window.onload = function () {
 
     }
 
-    initialize();
+     initialize();
+    
 }

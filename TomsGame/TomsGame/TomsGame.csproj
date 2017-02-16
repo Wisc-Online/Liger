@@ -67,6 +67,7 @@
     <Content Include="Images\bag_creature.png" />
     <Content Include="Images\bg1.jpg" />
     <Content Include="Images\bg2.jpg" />
+    <Content Include="Images\greenBrainMonster.png" />
     <Content Include="Images\HighDefForgroundDesert.png" />
     <Content Include="Images\planet-1138237.png" />
     <Content Include="Images\thumbsUpMan.png" />
