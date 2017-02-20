@@ -80,9 +80,19 @@
             var correctlySortedSubset = [];
             var randomTermsForUserSorting = [];
 
+            //for (var d = 0; d < self.gameData.Terms.length; d++) {
+            //    self.gameData.Terms[d].OrderId = d;
+               
+            //}
+
+            //NEW Loop to include definitions
             for (var d = 0; d < self.gameData.Terms.length; d++) {
                 self.gameData.Terms[d].OrderId = d;
+                
+
             }
+
+
             trim(self.gameData.Terms)
             function trim(array) {
                 var arrayLength = array.length;
@@ -129,19 +139,6 @@
             function introductionScreen() {
 
                 var instructionScreen = new createjs.Container();
-
-                //titleText = new createjs.Text(self.gameData.Title, "28px Arial", "#ffffff");
-                //titleText.x = 10;
-                //titleText.y = 5;
-                //titleText.lineWidth = 600;
-                //instructionScreen.addChild(titleText);
-
-                //var titlelabel = new createjs.Text(self.gameData.Description, "28px Arial", "#ffffff");
-                //titlelabel.textAlign = "center";
-                //titlelabel.lineWidth = 700;
-                //titlelabel.y = 100;
-                //titlelabel.x = 400;
-                //instructionScreen.addChild(titlelabel);
 
                 var dirlabel = new createjs.Text("Directions  \n \n You have 30 seconds to match the terms to their definitions. Good luck!", "bold 20px Arial", "#000000");
                 dirlabel.textAlign = "center";
@@ -215,6 +212,7 @@
             var gamescreenContainer = new createjs.Container();
             var gamescreen;
             var cardContainer;
+            
             var frontImage;
             var backImage;
             function StartInteraction() {
@@ -295,40 +293,61 @@
                 for (var t = 0; t < 12; t++) {
                     cardContainer = new createjs.Container();
                     cardContainer.ID = self.gameData.Terms[t].Id;
-                    cardContainer.Image = self.gameData.Terms[t].Item;
+                    //  cardContainer.Image = self.gameData.Terms[t].Item;
+         //           cardContainer.Definition = self.gameData.Terms[t].Definition;  // getting definition
                     cardContainer.ImageIdentifier = self.gameData.Terms[t].Name; // gets name of item from data
 
-
+                    // create definitions 
+                    defContainer = new createjs.Container();
+                    defContainer.ID = self.gameData.Terms[t].Id;
+                    //  cardContainer.Image = self.gameData.Terms[t].Item;
+                    defContainer.Definition = self.gameData.Terms[t].Definition;  // getting definition
+                  
                     ////////////////////////////
-                    // separate card container for flipped card term view NOT IN USE
-                    flipContainer = new createjs.Container();
+                    
                     
                     // add text over cardFace image
                     var term = new createjs.Text(self.gameData.Terms[t].Name, "24pt arial bold", "black");
                     term.textAlign = "center";
                     term.lineWidth = 300;
-                    term.y = 60;
-                    term.x = 85;
-                 //   var dirBackgroundImage = new createjs.Bitmap(queue.getResult("panel"));  IF have to add cardface as background
-                 //   dirBackgroundImage.x = 50;
-                 //    dirBackgroundImage.y = 250;
+                    term.y = 50;
+                    term.x = 108;
 
-                 //   flipContainer.addChild(backImage,term); 
+                    //   var dirBackgroundImage = new createjs.Bitmap(queue.getResult("panel"));  IF have to add cardface as background
+                    //   dirBackgroundImage.x = 50;
+                    //   dirBackgroundImage.y = 250;     
+
+                    var definition = new createjs.Text(self.gameData.Terms[t].Definition, "24pt arial bold", "black");
+                    term.textAlign = "center";
+                    term.lineWidth = 300;
+                    term.y = 50;
+                    term.x = 108;
                     ///////////////////////////
 
 
 
                     frontImage = new createjs.Bitmap(queue.getResult("card"));
                     backImage = new createjs.Bitmap(queue.getResult("cardFace"));
-                 
+
+                    frontImage.scaleX = 1.25;
+                    frontImage.scaleY = 1.25;
+                    backImage.scaleX = 1.25;
+                    backImage.scaleY = 1.25;
+
                     backImage.alpha = 0;
                     
 
-                    cardContainer.addChild(backImage, term, frontImage); // add term between bottom / backImage and frontImage
-                    
+                    cardContainer.addChild(backImage, term, frontImage); // add term between bottom / backImage and frontImage                    
                     cardContainer.FrontImage = frontImage;
                     cardContainer.BackImage = backImage; //reveals term
                     //BackImage.addChild(term);
+
+
+                    //defContainer.addChild(backImage, definition, frontImage); // add term between bottom / backImage and frontImage                    
+                    //defContainer.FrontImage = frontImage;
+                    //defContainer.BackImage = backImage;
+
+
 
                     if (t < 6) {
                         cardContainer.x = 50 + xoffset;
@@ -407,10 +426,10 @@
                 closePanel.x = 200;
                 closePanel.y = 450;
                 if (isCompleted == true) {
-                    var endingText = new createjs.Text("Congratulations! You’re a matching whiz. Please, take all of these seeds with you. I’m sure the next planet needs them. ", "bold 16px Arial", "#FFF");
+                    var endingText = new createjs.Text("Congratulations! You’re a matching whiz! ", "bold 16px Arial", "#FFF");
 
                 } else {
-                    var endingText = new createjs.Text("Sorry, you didn’t complete all of the matches. We’ll send you on your way with a few seeds.", "bold 16px Arial", "#FFF");
+                    var endingText = new createjs.Text("Sorry, you didn’t complete all of the matches. Click \"Replay\" to try again.", "bold 16px Arial", "#FFF");
                 }
                 endingText.textAlign = "center";
                 endingText.lineWidth = 300;
