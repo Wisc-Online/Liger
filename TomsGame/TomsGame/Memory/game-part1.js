@@ -295,7 +295,7 @@
 
                     // create definitions 
                     cardContainer = new createjs.Container();
-                    // cardContainer.ID = self.gameData.Terms[t].Id;
+                    cardContainer.ID = self.gameData.Terms[t].Id;
                     //  cardContainer.Image = self.gameData.Terms[t].Item;
                     //  cardContainer.Definition = self.gameData.Terms[t].Definition;  // getting definition
                     cardContainer.ImageIdentifier = self.gameData.Terms[t].Definition;
@@ -304,18 +304,16 @@
                     
                     //// add text over cardFace image
                     var term = new createjs.Text(self.gameData.Terms[t].Name, "24pt arial bold", "black");
-                    term.ID = self.gameData.Terms[t].Id;
                     term.textAlign = "center";
-                    term.lineWidth = 200;
-                    term.y = 45;
-                    term.x = 112;
+                    term.lineWidth = 300;
+                    term.y = 50;
+                    term.x = 108;
                                        
                     var definition = new createjs.Text(self.gameData.Terms[t].Definition, "24pt arial bold", "black");
-                    definition.ID = self.gameData.Terms[t].Definition;
-                    definition.textAlign = "center";
-                    definition.lineWidth = 200;
-                    definition.y = 45;
-                    definition.x = 112;
+                    term.textAlign = "center";
+                    term.lineWidth = 300;
+                    term.y = 50;
+                    term.x = 108;
                     
                     /////////////////////////NEW/////////////
                     //cardContainer = new createjs.Container(); // make card container
@@ -353,7 +351,7 @@
                     backImage.alpha = 0;
                     
 
-                    cardContainer.addChild(backImage, definition, frontImage); // add term / word between bottom / backImage and frontImage                    
+                    cardContainer.addChild(backImage, term, frontImage); // add term / word between bottom / backImage and frontImage                    
                     cardContainer.FrontImage = frontImage;
                     cardContainer.BackImage = backImage; //reveals term
                    

@@ -108,6 +108,7 @@
     <Content Include="Memory\Assets\_cardBack.png" />
     <Content Include="Memory\Assets\_cardFace.png" />
     <Content Include="Memory\game.js" />
+    <Content Include="Memory\game-part1.js" />
     <Content Include="game. - JetPackJack.js" />
     <Content Include="Images\bag_creature.png" />
     <Content Include="Images\bg1.jpg" />
