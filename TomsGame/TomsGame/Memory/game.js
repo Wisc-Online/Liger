@@ -80,11 +80,7 @@
             var correctlySortedSubset = [];
             var randomTermsForUserSorting = [];
 
-            //for (var d = 0; d < self.gameData.Terms.length; d++) {
-            //    self.gameData.Terms[d].OrderId = d;
-               
-            //}
-
+            
             //NEW Loop to include definitions
             for (var d = 0; d < self.gameData.Terms.length; d++) {
                 self.gameData.Terms[d].OrderId = d;
@@ -97,7 +93,7 @@
             function trim(array) {
                 var arrayLength = array.length;
                 var tempArray = array;
-                while (arrayLength > 12) {
+                while (arrayLength > 6) {   // was 12. had 12 terms changed to 6 terms each including a word and a definition ********
                     var randomNumber = Math.floor((Math.random() * 26) + 1);
 
                     if (randomNumber % 2 == 0) {//generated number is even
@@ -290,20 +286,20 @@
                     }
                 }
 
-                for (var t = 0; t < 12; t++) {
+                for (var t = 0; t < 6; t++) {  //changed t < 12 to t < 6 
+
+                    /////////////////////////////
                     cardContainer = new createjs.Container();
                     cardContainer.ID = self.gameData.Terms[t].Id;
-                    //  cardContainer.Image = self.gameData.Terms[t].Item;
-         //           cardContainer.Definition = self.gameData.Terms[t].Definition;  // getting definition
                     cardContainer.ImageIdentifier = self.gameData.Terms[t].Name; // gets name of item from data
 
                     // create definitions 
-                    defContainer = new createjs.Container();
-                    defContainer.ID = self.gameData.Terms[t].Id;
+                    cardContainer = new createjs.Container();
+                    cardContainer.ID = self.gameData.Terms[t].Id;
                     //  cardContainer.Image = self.gameData.Terms[t].Item;
-                    defContainer.Definition = self.gameData.Terms[t].Definition;  // getting definition
-                  
-                    ////////////////////////////
+                    //  cardContainer.Definition = self.gameData.Terms[t].Definition;  // getting definition
+                    cardContainer.ImageIdentifier = self.gameData.Terms[t].Definition;
+                    //////////////////////////
                     
                     
                     // add text over cardFace image
@@ -312,19 +308,34 @@
                     term.lineWidth = 300;
                     term.y = 50;
                     term.x = 108;
-
-                    //   var dirBackgroundImage = new createjs.Bitmap(queue.getResult("panel"));  IF have to add cardface as background
-                    //   dirBackgroundImage.x = 50;
-                    //   dirBackgroundImage.y = 250;     
-
+                                       
                     var definition = new createjs.Text(self.gameData.Terms[t].Definition, "24pt arial bold", "black");
                     term.textAlign = "center";
                     term.lineWidth = 300;
                     term.y = 50;
                     term.x = 108;
-                    ///////////////////////////
+                    
+                    ///////////////////////NEW/////////////
+                    //cardContainer = new createjs.Container();
+                    ////// create words
+                    //var word = new createjs.Text(self.gameData.Terms[t].Name, "24pt arial bold", "black");
+                    //word.textAlign = "center";
+                    //word.lineWidth = 300;
+                    //word.y = 50;
+                    //word.x = 108;
+                    //word.ID = self.gameData.Terms[t].Id;
+                    //word.ImageIdentifier = self.gameData.Terms[t].Name; // gets name of item from data
 
-
+                    ////// create definitions 
+                    //defContainer = new createjs.Container();
+                    //var def = new createjs.Text(self.gameData.Terms[t].Definition, "24pt arial bold", "black");
+                    //def.textAlign = "center";
+                    //def.lineWidth = 300;
+                    //def.y = 50;
+                    //def.x = 108;
+                    //def.ID = self.gameData.Terms[t].Id;
+                    //def.Definition = self.gameData.Terms[t].Definition;
+                    ////////////////////////////////////////
 
                     frontImage = new createjs.Bitmap(queue.getResult("card"));
                     backImage = new createjs.Bitmap(queue.getResult("cardFace"));
@@ -337,16 +348,14 @@
                     backImage.alpha = 0;
                     
 
-                    cardContainer.addChild(backImage, term, frontImage); // add term between bottom / backImage and frontImage                    
+                    cardContainer.addChild(backImage, term, frontImage); // add term / word between bottom / backImage and frontImage                    
                     cardContainer.FrontImage = frontImage;
                     cardContainer.BackImage = backImage; //reveals term
-                    //BackImage.addChild(term);
+                   
 
-
-                    //defContainer.addChild(backImage, definition, frontImage); // add term between bottom / backImage and frontImage                    
+                    //defContainer.addChild(backImage, def, frontImage); // add term / word between bottom / backImage and frontImage                    
                     //defContainer.FrontImage = frontImage;
                     //defContainer.BackImage = backImage;
-
 
 
                     if (t < 6) {
@@ -369,16 +378,7 @@
 
                     self.addChild(cardContainer);
                     var clickedTimes = 0
-
-
-                    //cardContainer.addEventListener("mouseover", function (evt) {
-                    //    createjs.Tween.get(evt.currentTarget).to({ scaleX: 0.6, scaleY: 0.6 }, 125);
-                    //});
-
-                    //cardContainer.addEventListener("mouseout", function (evt) {
-                    //    createjs.Tween.get(evt.currentTarget).to({ scaleX: 0.5, scaleY: 0.5 }, 125);
-                    //});
-
+                    
                     cardContainer.addEventListener("click", handleCardContainerClick);
 
                 }
