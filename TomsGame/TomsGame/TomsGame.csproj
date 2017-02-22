@@ -74,13 +74,16 @@
     <Content Include="Memory\Assets\corn.png" />
     <Content Include="Memory\Assets\cornSeed.png" />
     <Content Include="Memory\Assets\GameOver.mp3" />
+    <Content Include="Memory\Assets\goodTone.mp3" />
     <Content Include="Memory\Assets\greenButtonOutline.png" />
     <Content Include="Memory\Assets\let.png" />
     <Content Include="Memory\Assets\letSeed.png" />
     <Content Include="Memory\Assets\level-up.mp3" />
+    <Content Include="Memory\Assets\markerPlacement.mp3" />
     <Content Include="Memory\Assets\matchgameBackground.png" />
     <Content Include="Memory\Assets\matchgameBackground8x6.png" />
     <Content Include="Memory\Assets\matchingGameFeedbackBox.png" />
+    <Content Include="Memory\Assets\mechanical-2_01.mp3" />
     <Content Include="Memory\Assets\memoryCONSOLE.png" />
     <Content Include="Memory\Assets\onion.png" />
     <Content Include="Memory\Assets\onionSeed.png" />
