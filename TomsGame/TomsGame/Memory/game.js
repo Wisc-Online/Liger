@@ -25,39 +25,13 @@
 
             assetsPath += "Assets/"
 
-            var assets = [
-                { id: "BackGround", src: assetsPath + "starrySkyBackground.png" },
+            var assets = [               
                 { id: "gamescreen", src: assetsPath + "matchgameBackground8x6.png" },
                 { id: "start_button", src: assetsPath + "SequencePlayButton.png" },
                 { id: "restart_button", src: assetsPath + "greenButtonOutline.png" },
+                { id: "question", src: assetsPath + "question.png" },
                 { id: "card", src: assetsPath + "_cardBack.png" },
-                { id: "cardFace", src: assetsPath + "_cardFace.png" },
-                { id: "broc", src: assetsPath + "broc.png" },
-                { id: "brocSeed", src: assetsPath + "brocSeed.png" },
-                { id: "carrot", src: assetsPath + "carrot.png" },
-                { id: "carrotSeed", src: assetsPath + "carrotSeed.png" },
-                { id: "corn", src: assetsPath + "corn.png" },
-                { id: "cornSeed", src: assetsPath + "cornSeed.png" },
-                { id: "let", src: assetsPath + "let.png" },
-                { id: "letSeed", src: assetsPath + "letSeed.png" },
-                { id: "onion", src: assetsPath + "onion.png" },
-                { id: "onionSeed", src: assetsPath + "onionSeed.png" },
-                { id: "pota", src: assetsPath + "pota.png" },
-                { id: "potaSeed", src: assetsPath + "potaSeed.png" },
-                { id: "pump", src: assetsPath + "pump.png" },
-                { id: "pumpSeed", src: assetsPath + "pumpSeed.png" },
-                { id: "rad", src: assetsPath + "rad.png" },
-                { id: "radSeed", src: assetsPath + "radSeed.png" },
-                { id: "rice", src: assetsPath + "rice.png" },
-                { id: "riceSeed", src: assetsPath + "riceSeed.png" },
-                { id: "stra", src: assetsPath + "stra.png" },
-                { id: "straSeed", src: assetsPath + "straSeed.png" },
-                { id: "tom", src: assetsPath + "tom.png" },
-                { id: "tomSeed", src: assetsPath + "tomSeed.png" },
-                { id: "turn", src: assetsPath + "turn.png" },
-                { id: "turnSeed", src: assetsPath + "turnSeed.png" },
-                { id: "Zucc", src: assetsPath + "Zucc.png" },
-                { id: "ZuccSeed", src: assetsPath + "ZuccSeed.png" },
+                { id: "cardFace", src: assetsPath + "_cardFace.png" },                             
                 { id: "clockBack", src: assetsPath + "clockBack.png" },
                 { id: "clockHand", src: assetsPath + "clockHand.png" },
                 { id: "intro", src: assetsPath + "mechanical-2_01.mp3" },
@@ -134,18 +108,19 @@
                 var dirlabel = new createjs.Text("Directions  \n \n You have 30 seconds to match the terms to their definitions. Good luck!", "bold 20px Arial", "#000000");
                 dirlabel.textAlign = "center";
                 dirlabel.lineWidth = 300;
-                dirlabel.y = 270;
                 dirlabel.x = 275;
+                dirlabel.y = 245;
+                
                 var dirBackgroundImage = new createjs.Bitmap(queue.getResult("panel"));
                 dirBackgroundImage.x = 50;
-                dirBackgroundImage.y = 250;
+                dirBackgroundImage.y = 225;
 
                 var startButton = new createjs.Bitmap(queue.getResult("startbutton"));
                 // wait(2000).createjs.Sound.play("intro"); //squeeky metalic intro
                 startButton.regX = 93;
                 startButton.regY = 95;
                 startButton.x = 600;
-                startButton.y = 320;
+                startButton.y = 295;
                 startButton.scaleX = startButton.scaleY = 0.0;
                 instructionScreen.addChild(dirBackgroundImage, startButton, dirlabel, instructionScreen);
                 createjs.Tween.get(startButton, { loop: false }).to({ rotation: 360, scaleX: 1.0, scaleY: 1.0 }, 2000);
@@ -172,7 +147,7 @@
                 displaybox.graphics.beginFill("#ffba3e").drawRoundRect(0, 0, 380, 200, 8);
                 displaybox.name = "DirectionsBox";
                 displaybox.x = 225;
-                displaybox.y = 380;
+                displaybox.y = 300;
 
                 var label = new createjs.Text("Directions  \n \n You have 20 seconds to match the seeds to their vegetables. Good luck!", "bold 20px Arial", "#000000");
                 label.textAlign = "center";
@@ -206,6 +181,8 @@
             var frontImage;
             var backImage;
 
+            var numberOfmatches;
+
             function StartInteraction() {
                 gamescreen = new createjs.Bitmap(queue.getResult("gamescreen"));
                 gamescreenContainer.addChild(gamescreen);
@@ -236,19 +213,16 @@
                     if (card1.ID == card2.ID) {
                         createjs.Sound.play("matchFound");
                         // MATCH text
-                        var itsaMatch = new createjs.Text("MATCH!", "48px Arial Black", "lime");
-                        itsaMatch.shadow = new createjs.Shadow("white", 1, 2, 3);
+                        var itsaMatch = new createjs.Text("MATCH", "40px Arial Black", "lime");
+                        itsaMatch.shadow = new createjs.Shadow("white", 2, 2, 3);
                         itsaMatch.lineWidth = 780;
                         itsaMatch.x = 300;
-                        itsaMatch.y = 190;
+                        itsaMatch.y = 200;
                         
                         //animate MATCH text
                         createjs.Tween.get(itsaMatch)
-                        .to({ scaleX: 1.00, scaleY: 1.10, alpha: 0 }, 1000)
+                        .to({ scaleX: 1.00, scaleY: 1.00, alpha: 0 }, 750)
                         self.addChild(itsaMatch);
-
-                        
-
 
 
                         numberOfmatches++
@@ -285,10 +259,10 @@
                                 previousCardClicked = clickedCardContainer;
                             }
                             createjs.Sound.play("buttonClick");
-                            createjs.Tween.get(clickedCardContainer.FrontImage).to({ alpha: 0 }, 200);
+                            createjs.Tween.get(clickedCardContainer.FrontImage).to({ alpha: 0 }, 175);
                             createjs.Tween.get(clickedCardContainer.BackImage)
                                           .wait(250)
-                                          .to({ alpha: 1 }, 200)
+                                          .to({ alpha: 1 }, 150)
                                           .call(function () {
                                               if (previousCardClicked != null && previousCardClicked != clickedCardContainer) {
                                                   checkIfCardsMatch(previousCardClicked, clickedCardContainer)
@@ -425,6 +399,77 @@
                 DisplayEndingNotes(false);
             }
 
+
+
+
+
+
+            ////// Instruction button //////
+            //function getUserControls() {
+
+            //    var instructionsContainer = new createjs.Container();
+            //    instructionsContainer.x = 0;
+            //    instructionsContainer.y = 280;
+            //    instructionsContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 50, 50));
+            //    instructionsContainer.cursor = 'pointer';
+
+
+
+            //    var questionMark = new createjs.Bitmap(preloader.getResult("info"));
+            //    //questionMark.regX = 25;
+            //    //questionMark.regY = 25;
+
+            //    instructionsContainer.addChild(questionMark);
+
+            //    instructionsContainer.addEventListener("click", function () {
+            //        var view = createInstructionsView();
+            //        stage.addChild(view);
+            //    });
+
+            //    stage.addChild(instructionsContainer, soundContainer);
+            //}
+
+            //    ////// end of instruction button ////////////////
+
+
+            /////// INSTRUCTIONS ????????????
+            //function createInstructionsView() {
+            //    var view = new createjs.Container();
+            //    view.name = "instructionsContainer";
+            //    var image = new createjs.Bitmap(preloader.getResult("gameScreen"));
+
+            //    var hit = new createjs.Shape();
+            //    var exitContainer = new createjs.Container();
+            //    var exitBox = new createjs.Shape();
+
+            //    exitContainer.x = 720;
+            //    exitContainer.y = 570;
+            //    var exitText = new createjs.Text("BACK", 'bold 18px Arial', "#fff");
+            //    exitText.x = 8;
+            //    exitText.y = 8;
+            //    exitContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#7449AE").beginStroke("#000").setStrokeStyle(1).drawRoundRect(0, 0, 70, 37, 5).endFill().endStroke());
+            //    hit.graphics.beginFill("#000").drawRect(0, 0, exitText.getMeasuredWidth(), exitText.getMeasuredHeight());
+            //    exitBox.graphics.beginFill("#7449AE").beginStroke("#000").setStrokeStyle(1).drawRoundRect(0, 0, 70, 37, 5).endFill().endStroke();
+            //    exitText.hitArea = hit;
+            //    exitContainer.addChild(exitBox, exitText);
+
+            //    view.addChild(image, exitContainer);//, 
+
+            //    exitContainer.addEventListener("click", function (event) {
+            //        stage.removeChild(event.target.parent);
+            //    });
+
+            //    return view;
+            //}
+            ////// End of Instruction screen /////////////
+
+
+
+
+
+
+
+
             function DisplayEndingNotes(isCompleted) {
                 var EndScreen = new createjs.Container();
 
@@ -435,14 +480,14 @@
                 var exploreMore = new createjs.Bitmap(queue.getResult("restart_button"));
 
                 replayButton.x = 600;
-                replayButton.y = 470; // was 500
+                replayButton.y = 445; // was 500
                 exploreMore.x = 600;
-                exploreMore.y = 540;
+                exploreMore.y = 505;
 
-                var exploreText = new createjs.Text("Change Spped?", "bold 16px Arial", "#fff");
+                var exploreText = new createjs.Text("60 Second Practice Round", "bold 16px Arial", "#fff");
                 exploreText.textAlign = "center";
                 exploreText.lineWidth = 140;
-                exploreText.y = exploreMore.y + 15;
+                exploreText.y = exploreMore.y + 5;
                 exploreText.x = exploreMore.x + 85
 
                 var replayText = new createjs.Text("Replay", "bold 16px Arial", "#fff");
@@ -464,14 +509,21 @@
                     var endingText = new createjs.Text("Congratulations! You’re a matching whiz! ", "bold 16px Arial", "#FFF");
 
                 } else {
-                    var endingText = new createjs.Text("Sorry, you didn’t complete all of the matches. Click \"Replay\" to try again.", "bold 16px Arial", "#FFF");
+
+                    // display number of matches in ending text
+                    var endingText = new createjs.Text("Sorry, you got " + numberOfmatches.toString() + " of the possible matches in 30 seconds.", "bold 16px Arial", "#FFF");
+                    
+
+
+                    
+                  //  var endingText = new createjs.Text("Sorry, you didn’t complete all of the matches in 30 seconds. Click \"Replay\" to try again.", "bold 16px Arial", "#FFF");
                 }
                 endingText.textAlign = "center";
                 endingText.lineWidth = 300;
-                endingText.y = closePanel.y + 25;
+                endingText.y = closePanel.y + 20;
                 endingText.x = closePanel.x + 180
 
-                directionsbox.addChild(closePanel, endingText, replayContainer);
+                directionsbox.addChild(closePanel, endingText, replayContainer, exploreContainer); // replay button and more time option
                 EndScreen.addChild(directionsbox);
 
                 replayContainer.addEventListener("click", handleClick);
@@ -488,18 +540,26 @@
                     self.start();
 
                 }
-                // explore more  / change speed button
+                // explore more  / change speed button 1 minute
                 exploreContainer.addEventListener("click", handleClickexploreContainer);
                 function handleClickexploreContainer(event) {
                     createjs.Sound.play("buttonClick");
-                    if (self.onGameComplete != null) {
-                        self.onGameComplete();
+                    
+                    allCardContainers.splice(0, allCardContainers.length)
+                    self.removeChild(clockContainer);
+                    self.removeChild(EndScreen);
+                    gamescreenContainer.removeChild(gamescreen);
+                    self.removeChild(gamescreenContainer)
+                    self.removeChild(cardContainer);
+                    // StartInteraction();
+                    self.removeAllChildren();
+                    // self.start();
                     TimerLength = 60000;
-                    }
 
-                    //self.removeChild(displaybox);
-                    self.removeChild(endingText);
+                    StartInteraction();
+                    
                 }
+
                 self.addChild(EndScreen);
 
             }
