@@ -2,8 +2,6 @@
 var Game = Game || (function (createjs, $) {
     function Game(canvasId, gameData) {
 
-
-
         //var assetsPath = gameData.assetsPath || "";
         var gameData = gameData || {};
         var self = this;
@@ -29,9 +27,6 @@ var Game = Game || (function (createjs, $) {
 
         createjs.Ticker.on("tick", handleTick);
 
-
-
-
         function initialize() {
 
             //create game objects
@@ -41,10 +36,6 @@ var Game = Game || (function (createjs, $) {
 
             mainBox = createMainContainer();
             fillBoard();
-
-             
-
-           // compactTable();
 
             //add terms library container
             questionContainer = createquestionContainer();
@@ -56,7 +47,6 @@ var Game = Game || (function (createjs, $) {
             userScoreContainer.x = 580;
             userScoreContainer.y = 265;
 
-
             //add user score container
             button1 = createFindMatchButton();
             button1.x = 580;
@@ -65,9 +55,12 @@ var Game = Game || (function (createjs, $) {
             button2 = createCompactTableButton();
             button2.x = 580;
             button2.y = 420;
+
             // adding elements to stage
             stage.addChild(mainBox, userScoreContainer, questionContainer, layer, rectangle, button1, button2);
-            //scanTableForMatches();
+
+            //checks for matches and eliminates all matches when the game loads
+            scanTableForMatches();
 
             function createMainContainer() {
 
@@ -77,11 +70,9 @@ var Game = Game || (function (createjs, $) {
                 background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("aqua");
                 background.graphics.drawRect(20, 20, 400, 400);
 
-
                 container.addChild(background);
                 return container;
             }
-
 
             function createCircle(color)
             {
@@ -108,7 +99,6 @@ var Game = Game || (function (createjs, $) {
                 }
 
             }
-
             function createCircleDraggableContainer() {
 
                 //library of terms
@@ -119,7 +109,6 @@ var Game = Game || (function (createjs, $) {
                 background.graphics.drawRect(0, 0, maxWidth, 40);
                 container.setBounds(0, 0, maxWidth, 40);
 
-
                 container.on("pressmove", handleTermDrag);
                 container.on("pressup", handleTermPressUp);
 
@@ -128,7 +117,6 @@ var Game = Game || (function (createjs, $) {
                 container.addChild(background);
                 container.addChild(createCircle());
 
-                
                 var label = new createjs.Text("", "10px Verdana", "");
                 label.color = "white";
                 label.text = "";
@@ -138,14 +126,12 @@ var Game = Game || (function (createjs, $) {
 
                 container.addChild(label);
 
-
                 container.isEmpty = false;
 
                 var isDragging = false;
 
                 //drag functionality
-                var xx;
-                var xx1;
+                
                function handleTermDrag(evt) {
 
                     if (mouseDragPosition != null) {
@@ -158,47 +144,30 @@ var Game = Game || (function (createjs, $) {
                         var jIndex = evt.currentTarget.j;
                         if (isDragging) {
 
-
                             if (deltaX > dragThreshold && iIndex < 9) {
                                 // move right
                                 mouseDragPosition = null;
                                 isDragging = false;
                                 var rightCircle = gameData[iIndex + 1][jIndex];
 
-
-
-                                xx = evt.currentTarget.x;
-                                xx1 = rightCircle.x;
+                                var xx = evt.currentTarget.x;
+                                var xx1 = rightCircle.x;
                             
                                 createjs.Tween.get(evt.currentTarget).to({ x: xx1 }, 200);
                                 createjs.Tween.get(rightCircle).to({ x: xx }, 200);
 
-
                                 evt.currentTarget.i = iIndex + 1;
                                 
-
                                 rightCircle.i = iIndex;
                                
-
                                 gameData[iIndex + 1][jIndex] = evt.currentTarget;
                                 gameData[iIndex][jIndex] = rightCircle;
                                 
-
                                 var m1 = findElementMatches(gameData[iIndex + 1][jIndex]);
-
                                 var m2 = findElementMatches(gameData[iIndex][jIndex]);
 
-                                
-                                
-                               //Changes
-
-                                                       
-                              
-
-
-                                
-
-                                
+                               //match when dragged to the right
+                                tableCompactTimeout = setTimeout(scanTableForMatches, 200);
                             }
                             else if (deltaX < -dragThreshold && iIndex > 0) {
                                 // move left
@@ -210,16 +179,14 @@ var Game = Game || (function (createjs, $) {
                                 evt.currentTarget.i = iIndex - 1;
                                 leftCircle.i = iIndex;
 
-
-
                                 gameData[iIndex - 1][jIndex] = evt.currentTarget;
 
                                 gameData[iIndex][jIndex] = leftCircle;
 
                                 mouseDragPosition = null;
                                 isDragging = false;
-                                
-                             //   tableCompactTimeout = setTimeout(scanTableForMatches, 200);
+                                //match when dragged to the left
+                                tableCompactTimeout = setTimeout(scanTableForMatches, 200);
                             }
                             else if (deltaY < -dragThreshold && jIndex > 0) {
                                 // move up
@@ -237,7 +204,8 @@ var Game = Game || (function (createjs, $) {
                                 mouseDragPosition = null;
                                 isDragging = false;
                                 
-                               // tableCompactTimeout = setTimeout(scanTableForMatches, 200);
+                                //match when dragged up
+                                tableCompactTimeout = setTimeout(scanTableForMatches, 200);
                             }
                             else if (deltaY > dragThreshold && jIndex < 9) {
                                 // move down
@@ -255,7 +223,8 @@ var Game = Game || (function (createjs, $) {
                                 mouseDragPosition = null;
                                 isDragging = false;
                                 
-                               // tableCompactTimeout = setTimeout(scanTableForMatches, 200);
+                                //match when dragged down
+                                tableCompactTimeout = setTimeout(scanTableForMatches, 200);
                             }
                         }
                         else {
@@ -268,18 +237,10 @@ var Game = Game || (function (createjs, $) {
                             y: evt.stageY
                         };
                     }
-                   // scanTableForMatches();
-                    
-                    
-
                 }
 
                 //determine if term is outside mainbox and return to terms library container
                function handleTermPressUp(evt) {
-
-
-                   
-
 
                     mouseDragPosition = null;
                     isDragging = false;
@@ -289,12 +250,9 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
-           
-
             function createElement(i, j, xCord, yCord)
             {
                 var element = createCircleDraggableContainer();
-
 
                   element.x = xCord;
                   element.y = yCord;
@@ -305,26 +263,22 @@ var Game = Game || (function (createjs, $) {
                   return element;
             }
 
-
             function fillBoard() {
                 var xCord = 20;
                 for (var i = 0; i < 10; i++) {
                     var yCord = 20;
                     gameData[i] = [];
                     for (var j = 0; j < 10; j++) {
-                        
-                        
                         gameData[i][j] = createElement(i, j, xCord, yCord);
                         
                         yCord += 40;
                     }
-
                     xCord += 40;
                 }
 
             }
 
-            //horizontal
+         /*   //horizontal
           function checkHorizontalColors() {
                 for (var x = 0; x < 10; x++) {
                     var counter = 1;
@@ -371,7 +325,7 @@ var Game = Game || (function (createjs, $) {
                       }
                   }
               }
-            }
+            }*/
 
           function findElementMatches(element, color) {
               //horizontal 
@@ -395,7 +349,6 @@ var Game = Game || (function (createjs, $) {
                   {
                       //insert match into array
                       horMatchArr.splice(0, 0, leftElement);
-
                   }
                   else
                   {
@@ -444,11 +397,8 @@ var Game = Game || (function (createjs, $) {
                   newJ++;
               }
               
-             
-
              return { horMatchArr: horMatchArr, verMatchArr: verMatchArr };
           
-
           }
           //this function searches for matches
           function scanTableForMatches() {
@@ -475,9 +425,6 @@ var Game = Game || (function (createjs, $) {
               }
               compactTable();
           }
-
-
-
 
          //this function removes matches and generates new circles
           function compactTable() {
@@ -512,15 +459,13 @@ var Game = Game || (function (createjs, $) {
                               gameData[i][k].getChildByName('label').text = 'F';
                               gameData[i][k].isEmpty = true;
                               mainBox.addChild(gameData[i][k]);
-
+                              
                               var containerToRemove = gameData[i][j];
 
                               createjs.Tween.get(containerToRemove).to({ alpha: 0 }, 200).call(function () {
                                   mainBox.removeChild(containerToRemove);
 
                               })
-
-
                              // mainBox.removeChild(gameData[i][j]);
                               gameData[i][j] = topCircle;
 
@@ -528,10 +473,7 @@ var Game = Game || (function (createjs, $) {
 
                               gameCounter++;
                               userScoreContainer.getChildByName('score').text = gameCounter;
-
-
-
-
+                            
 
                               /*      for (var i = 0; i < 10; i++) {
                                         for (var j = 9; j >= 0; j--) {
@@ -561,13 +503,10 @@ var Game = Game || (function (createjs, $) {
                                                     gameData[i][k].getChildByName('label').text = 'F';
                                                     gameData[i][k].isEmpty = true;
                                                     mainBox.addChild(gameData[i][k]);
-                  
-                  
                                                     mainBox.removeChild(gameData[i][j]);
                                                     gameData[i][j] = topCircle;
                   
                                                     mainBox.addChild(gameData[i][j]);
-                  
                   
                                                 }
                   
@@ -577,16 +516,16 @@ var Game = Game || (function (createjs, $) {
                   */
                           }
 
+
                       }
 
                   }
-
-
+                 
               }
               if (changed)
                   tableCompactTimeout = setTimeout(scanTableForMatches, 1000);
           }
-            
+         
 
             function createquestionContainer() {
 
@@ -615,7 +554,7 @@ var Game = Game || (function (createjs, $) {
                 //library background
                 var background = new createjs.Shape();
                 background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("grey");
-                background.graphics.drawRect(0, 0, 80, 80);
+                background.graphics.drawRect(0, 0, 100, 80);
                 container.addChild(background);
 
                 var buttonText = new createjs.Text("", "20px Verdana", "");
@@ -631,12 +570,8 @@ var Game = Game || (function (createjs, $) {
     
                 })
 
-
                 return container;
             }
-
-
-      
 
             function createCompactTableButton() {
 
@@ -646,7 +581,7 @@ var Game = Game || (function (createjs, $) {
                 //library background
                 var background = new createjs.Shape();
                 background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("grey");
-                background.graphics.drawRect(0, 0, 80, 80);
+                background.graphics.drawRect(0, 0, 100, 80);
                 container.addChild(background);
 
                 var buttonText = new createjs.Text("", "20px Verdana", "");
@@ -659,13 +594,10 @@ var Game = Game || (function (createjs, $) {
                  
                      compactTable();
                     
-  
                 })
-
 
                 return container;
             }
-
 
             function createUserScoreContainer() {
                 //user score container
