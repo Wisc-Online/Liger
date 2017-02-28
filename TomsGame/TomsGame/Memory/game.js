@@ -332,15 +332,41 @@
                 }
          
 
+
+                 // randomize second row       
+                function shuffle(array) {
+                    var currentIndex = array.length, temporaryValue, randomIndex;
+
+                    // While there remain elements to shuffle...
+                    while (0 !== currentIndex) {
+
+                        // Pick a remaining element...
+                        randomIndex = Math.floor(Math.random() * currentIndex);
+                        currentIndex -= 1;
+
+                        // And swap it with the current element.
+                        temporaryValue = array[currentIndex];
+                        array[currentIndex] = array[randomIndex];
+                        array[randomIndex] = temporaryValue;
+                    }
+
+                    return array;
+                }
+
+                
+                self.gameData.Terms = shuffle(self.gameData.Terms);
+
+
                 // Display Term and definition cards pt 2
                 for (var t = 0; t < 6; t++) {  // loops through the six terms each including a name (term) and definition 
 
-                //// create definition container ////////////
+                //// create definition container //////////// need to randomize these!
                 cardContainer = new createjs.Container();
                 cardContainer.ID = self.gameData.Terms[t].Id;
                  
                 // add definition                                  
                 var definition = new createjs.Text(self.gameData.Terms[t].Definition, "24pt arial bold", "black");
+            
                 definition.ID = self.gameData.Terms[t].Definition;
                 definition.textAlign = "center";
                 definition.lineWidth = 200;
@@ -511,10 +537,8 @@
                 } else {
 
                     // display number of matches in ending text
-                    var endingText = new createjs.Text("Sorry, you got " + numberOfmatches.toString() + " of the possible matches in 30 seconds.", "bold 16px Arial", "#FFF");
+                    var endingText = new createjs.Text("You got " + numberOfmatches.toString() + " of the possible matches. Try a 60 second practice round or click \"Replay\" to try again. ", "bold 16px Arial", "#FFF");
                     
-
-
                     
                   //  var endingText = new createjs.Text("Sorry, you didn’t complete all of the matches in 30 seconds. Click \"Replay\" to try again.", "bold 16px Arial", "#FFF");
                 }
