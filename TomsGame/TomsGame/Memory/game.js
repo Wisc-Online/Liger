@@ -149,7 +149,7 @@
                 displaybox.x = 225;
                 displaybox.y = 300;
 
-                var label = new createjs.Text("Directions  \n \n You have 20 seconds to match the seeds to their vegetables. Good luck!", "bold 20px Arial", "#000000");
+                var label = new createjs.Text("Directions  \n \n You will have 20 seconds to match the seeds to their vegetables. Good luck!", "bold 20px Arial", "#000000");
                 label.textAlign = "center";
                 label.lineWidth = 370;
                 label.y = displaybox.y + 5;
@@ -194,52 +194,65 @@
                 numberOfmatches = 0; //start with no matches
 
                 function showFrontImageOfCard(cardContainer, callback) {
-                    createjs.Tween.get(cardContainer.BackImage).wait(1000).to({ alpha: 0 }, 125).call(function () {
-                        cardContainer.IsTurnedOver = false
-                    });
+                    if (gameIsRunning == true) {
+                        createjs.Tween.get(cardContainer.BackImage).wait(1000).to({ alpha: 0 }, 125).call(function () {
+                            cardContainer.IsTurnedOver = false
+                        });
 
-                    createjs.Tween.get(cardContainer.FrontImage).wait(1200).to({ alpha: 1 }, 125).call(function () {
-                        if (callback != null) {
-                            callback();
-                        }
-                    });
-                }
+                        createjs.Tween.get(cardContainer.FrontImage).wait(1200).to({ alpha: 1 }, 125).call(function () {
+                            if (callback != null) {
+                                callback();
+                            }
+                        });
+                    } }
 
                 //CHECK for MATCH
-                function checkIfCardsMatch(card1, card2) {
-                    if (card1 == null || card2 == null) {
-                        return;
-                    }
-                    if (card1.ID == card2.ID) {
-                        createjs.Sound.play("matchFound");
-                        // MATCH text
-                        var itsaMatch = new createjs.Text("MATCH", "40px Arial Black", "lime");
-                        itsaMatch.shadow = new createjs.Shadow("white", 2, 2, 3);
-                        itsaMatch.lineWidth = 780;
-                        itsaMatch.x = 300;
-                        itsaMatch.y = 200;
+                if (gameIsRunning == true) {
+                function checkIfCardsMatch(card1, card2)
+                  
+                        {
+                            if (card1 == null || card2 == null) {
+                                return;
+                            }
+                            if (card1.ID == card2.ID) {
+                                createjs.Sound.play("matchFound");
+                                // MATCH text
+                                var itsaMatch = new createjs.Text("MATCH", "40px Arial Black", "lime");
+                                itsaMatch.shadow = new createjs.Shadow("white", 2, 2, 3);
+                                itsaMatch.lineWidth = 780;
+                                itsaMatch.x = 300;
+                                itsaMatch.y = 200;
                         
-                        //animate MATCH text
-                        createjs.Tween.get(itsaMatch)
-                        .to({ scaleX: 1.00, scaleY: 1.00, alpha: 0 }, 750)
-                        self.addChild(itsaMatch);
+                                //animate MATCH text
+                                createjs.Tween.get(itsaMatch)
+                                .to({ scaleX: 1.00, scaleY: 1.00, alpha: 0 }, 750)
+                                self.addChild(itsaMatch);
 
 
-                        numberOfmatches++
-                        // console.log("match");
-                        if (numberOfmatches == 6) {
-                            allMatchsAreMade();
-                            DisplayEndingNotes(true)
+                                numberOfmatches++
+                                // console.log("match");
+                                if (numberOfmatches == 6) {
+                                    allMatchsAreMade();
+                                    DisplayEndingNotes(true)
+                                }
+                                clickedTimes = 0;
+                            }
+                            else { 
+                     
+                                showFrontImageOfCard(card1);
+                                showFrontImageOfCard(card2, function () {
+                                    clickedTimes = 0;
+                                });
+                            } 
                         }
-                        clickedTimes = 0;
                     }
-                    else {
-                        showFrontImageOfCard(card1);
-                        showFrontImageOfCard(card2, function () {
-                            clickedTimes = 0;
-                        });
-                    }
-                }
+
+
+
+
+
+
+
                 function allMatchsAreMade() {
                     gameIsRunning = false;
                     // console.log("all Matches are made");
@@ -259,10 +272,10 @@
                                 previousCardClicked = clickedCardContainer;
                             }
                             createjs.Sound.play("buttonClick");
-                            createjs.Tween.get(clickedCardContainer.FrontImage).to({ alpha: 0 }, 175);
+                            createjs.Tween.get(clickedCardContainer.FrontImage).to({ alpha: 0 }, 50);
                             createjs.Tween.get(clickedCardContainer.BackImage)
                                           .wait(250)
-                                          .to({ alpha: 1 }, 150)
+                                          .to({ alpha: 1 }, 10)
                                           .call(function () {
                                               if (previousCardClicked != null && previousCardClicked != clickedCardContainer) {
                                                   checkIfCardsMatch(previousCardClicked, clickedCardContainer)
@@ -276,7 +289,7 @@
 
 
                 // Display Term and definition cards pt 1
-                for (var t = 0; t < 6; t++) {  // loop through 6 TERMS each including a word and definition 
+                for (var t = 0; t < self.gameData.Terms.length ; t++) {  // loop through 6 TERMS each including a word and definition 
 
                     //// create term container ////////////
                     cardContainer = new createjs.Container();
@@ -306,7 +319,7 @@
                     cardContainer.BackImage = backImage; //hides / reveals the term
                    
                     // start second row of cards after looping through 3 terms each including a word and definition
-                    if (t < 3) {
+                    if (t < self.gameData.Terms.length / 2) {
                         cardContainer.x = 50 + xoffset;
                         cardContainer.y = 55;
                         xoffset = xoffset + 120
@@ -358,7 +371,7 @@
 
 
                 // Display Term and definition cards pt 2
-                for (var t = 0; t < 6; t++) {  // loops through the six terms each including a name (term) and definition 
+                for (var t = 0; t < self.gameData.Terms.length; t++) {  // loops through the six terms each including a name (term) and definition 
 
                 //// create definition container //////////// need to randomize these!
                 cardContainer = new createjs.Container();
@@ -618,6 +631,7 @@
                     //this will trigger the timer is up
                     if (gameIsRunning == true) {
                         createjs.Sound.stop();
+                       
                         gameIsRunning = false;
                         createjs.Sound.play("gameOver");
                         turnOverAllCards();
