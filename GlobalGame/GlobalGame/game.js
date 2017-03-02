@@ -60,7 +60,7 @@ var Game = Game || (function (createjs, $) {
             stage.addChild(mainBox, userScoreContainer, questionContainer, layer, rectangle, button1, button2);
 
             //checks for matches and eliminates all matches when the game loads
-            scanTableForMatches();
+            scanAndCompactTable();
 
             function createMainContainer() {
 
@@ -138,93 +138,107 @@ var Game = Game || (function (createjs, $) {
                         var deltaX = evt.stageX - mouseDragPosition.x;
                         var deltaY = evt.stageY - mouseDragPosition.y;
 
-                        var dragThreshold = 30;
-                        var upperThreshold = 100;
-                        var iIndex = evt.currentTarget.i;
-                        var jIndex = evt.currentTarget.j;
-                        if (isDragging) {
+                        var targetNeighbour=null;
 
+                        var dragThreshold = 30;
+      
+                        //we don't want a circle to move diagonally, so we are eliminating one of the axis 
+                        
+
+                        if (isDragging) {
+                            var iIndex = evt.currentTarget.i;
+                            var jIndex = evt.currentTarget.j;
+                            if (Math.abs(deltaX) > Math.abs(deltaY))
+                                deltaY = 0;
+                            else
+                                deltaX = 0;
+                            
                             if (deltaX > dragThreshold && iIndex < 9) {
                                 // move right
+
+
+                                var xx = evt.currentTarget.x + deltaX;
+                                var targetNeighbour = gameData[iIndex + 1][jIndex];
+
+                               // if (xx > targetNeighbour.x + dragThreshold)
+                                    xx = targetNeighbour.original_x;
+
+                                mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
+                                createjs.Tween.get(evt.currentTarget).to({ x: xx }, 100);
+
+                                //identify right neigbor and save it in the element property
+                                evt.currentTarget.targetNeighbour = targetNeighbour;
+
+
+
+
+
+
                                 mouseDragPosition = null;
                                 isDragging = false;
-                                var rightCircle = gameData[iIndex + 1][jIndex];
 
-                                var xx = evt.currentTarget.x;
-                                var xx1 = rightCircle.x;
-                            
-                                createjs.Tween.get(evt.currentTarget).to({ x: xx1 }, 200);
-                                createjs.Tween.get(rightCircle).to({ x: xx }, 200);
-
-                                evt.currentTarget.i = iIndex + 1;
-                                
-                                rightCircle.i = iIndex;
-                               
-                                gameData[iIndex + 1][jIndex] = evt.currentTarget;
-                                gameData[iIndex][jIndex] = rightCircle;
-                                
-                                var m1 = findElementMatches(gameData[iIndex + 1][jIndex]);
-                                var m2 = findElementMatches(gameData[iIndex][jIndex]);
-
-                               //match when dragged to the right
-                                tableCompactTimeout = setTimeout(scanTableForMatches, 200);
                             }
                             else if (deltaX < -dragThreshold && iIndex > 0) {
                                 // move left
-                                var leftCircle = gameData[iIndex - 1][jIndex];
-                                var xx = evt.currentTarget.x;
-                                createjs.Tween.get(evt.currentTarget).to({ x: leftCircle.x }, 200);
-                                createjs.Tween.get(leftCircle).to({ x: xx }, 200);
 
-                                evt.currentTarget.i = iIndex - 1;
-                                leftCircle.i = iIndex;
+                                var xx = evt.currentTarget.x + deltaX;
+                                var targetNeighbour = gameData[iIndex - 1][jIndex];
+                                
+                               // if (xx < targetNeighbour.x - dragThreshold)
+                                xx = targetNeighbour.original_x;
+                                mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
+                                createjs.Tween.get(evt.currentTarget).to({ x: xx }, 100);
 
-                                gameData[iIndex - 1][jIndex] = evt.currentTarget;
-
-                                gameData[iIndex][jIndex] = leftCircle;
+                                //identify left neigbor and save it in the element property
+                                evt.currentTarget.targetNeighbour = targetNeighbour;
 
                                 mouseDragPosition = null;
                                 isDragging = false;
-                                //match when dragged to the left
-                                tableCompactTimeout = setTimeout(scanTableForMatches, 200);
+
                             }
                             else if (deltaY < -dragThreshold && jIndex > 0) {
                                 // move up
-                                var topCircle = gameData[iIndex][jIndex - 1];
-                                var yy = evt.currentTarget.y;
-                                createjs.Tween.get(evt.currentTarget).to({ y: topCircle.y }, 200);
-                                createjs.Tween.get(topCircle).to({ y: yy }, 200);
+     
+                                var yy = evt.currentTarget.y +deltaY;
 
-                                evt.currentTarget.j = jIndex - 1;
-                                topCircle.j = jIndex;
-                                gameData[iIndex][jIndex - 1] = evt.currentTarget;
+                                var targetNeighbour = gameData[iIndex][jIndex-1];
+                                
+                              //  if (yy < targetNeighbour.y - dragThreshold)
+                                    yy = targetNeighbour.original_y;
+                                mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
+                                createjs.Tween.get(evt.currentTarget).to({ y: yy }, 100);
 
-                                gameData[iIndex][jIndex] = topCircle;
+                                //identify left neigbor and save it in the element property
+                                evt.currentTarget.targetNeighbour = targetNeighbour;
+
+
 
                                 mouseDragPosition = null;
                                 isDragging = false;
                                 
-                                //match when dragged up
-                                tableCompactTimeout = setTimeout(scanTableForMatches, 200);
+
                             }
                             else if (deltaY > dragThreshold && jIndex < 9) {
                                 // move down
-                                var bottomCircle = gameData[iIndex][jIndex + 1];
-                                var yy = evt.currentTarget.y;
-                                createjs.Tween.get(evt.currentTarget).to({ y: bottomCircle.y }, 200);
-                                createjs.Tween.get(bottomCircle).to({ y: yy }, 200);
 
-                                evt.currentTarget.j = jIndex + 1;
-                                bottomCircle.j = jIndex;
+                                var yy = evt.currentTarget.y + deltaY;
 
-                                gameData[iIndex][jIndex + 1] = evt.currentTarget;
+                                var targetNeighbour = gameData[iIndex][jIndex + 1];
 
-                                gameData[iIndex][jIndex] = bottomCircle;
+                            //    if (yy > targetNeighbour.y + dragThreshold)
+                                    yy = targetNeighbour.original_y;
+                                mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
+                                createjs.Tween.get(evt.currentTarget).to({ y: yy  }, 100);
+
+                                //identify left neigbor and save it in the element property
+                                evt.currentTarget.targetNeighbour = targetNeighbour;
+
+
+                              
                                 mouseDragPosition = null;
                                 isDragging = false;
                                 
-                                //match when dragged down
-                                tableCompactTimeout = setTimeout(scanTableForMatches, 200);
+
                             }
                         }
                         else {
@@ -241,7 +255,46 @@ var Game = Game || (function (createjs, $) {
 
                 //determine if term is outside mainbox and return to terms library container
                function handleTermPressUp(evt) {
+                   var targetCircle = evt.currentTarget.targetNeighbour;
+                    
+                  
 
+                       createjs.Tween.get(evt.currentTarget).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 200);
+
+
+
+                       var curi = evt.currentTarget.i; var curj = evt.currentTarget.j;
+
+                       evt.currentTarget.i = targetCircle.i; evt.currentTarget.j = targetCircle.j;
+                       targetCircle.i = curi; targetCircle.j = curj;
+
+                       gameData[evt.currentTarget.i][evt.currentTarget.i] = evt.currentTarget;
+                       gameData[targetCircle.i][targetCircle.j] = targetCircle;
+
+
+                       var curx = evt.currentTarget.original_x; var cury = evt.currentTarget.original_y;
+
+                       evt.currentTarget.original_x = evt.currentTarget.original_x;
+                       evt.currentTarget.original_y = evt.currentTarget.original_y;
+
+
+                   
+
+
+
+                   if (scanTableForMatches()) {
+                       mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
+                       createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 200);
+                       targetCircle.original_x = curx;
+                       targetCircle.original_y = cury;
+                       tableCompactTimeout = setTimeout(compactTable, 2000);
+                   }
+                   else
+                   {
+                       createjs.Tween.get(evt.currentTarget).to({ x: curx, y: cury }, 600);
+                       createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 600);
+
+                   }
                     mouseDragPosition = null;
                     isDragging = false;
                     
@@ -256,6 +309,8 @@ var Game = Game || (function (createjs, $) {
 
                   element.x = xCord;
                   element.y = yCord;
+                  element.original_x = xCord;
+                  element.original_y = yCord;
                   element.i = i;
                   element.j = j;
                   element.getChildByName('label').text = element.i + ",\n" + element.j;
@@ -327,7 +382,7 @@ var Game = Game || (function (createjs, $) {
               }
             }*/
 
-          function findElementMatches(element, color) {
+          function findElementMatches(element) {
               //horizontal 
               var horMatchArr = [element];
               var verMatchArr = [element];
@@ -339,8 +394,8 @@ var Game = Game || (function (createjs, $) {
               var topBoundary=element.j-2;
               var bottomBoundary = element.j + 2;
 
-              if (color == null)
-                  color = element.getChildByName("circle").color;
+              var color = element.getChildByName("circle").color;
+
 
               while ((newI > -1) && (newI >= leftBoundary))
               {
@@ -402,30 +457,39 @@ var Game = Game || (function (createjs, $) {
           }
           //this function searches for matches
           function scanTableForMatches() {
-
+              var matchesfound = false;
               //vertical 
               for (var i = 0; i < 10; i++) {
                   for (var j = 0; j < 10; j++) {
                       var matches = findElementMatches(gameData[i][j]);
                       
-                      if (matches.horMatchArr.length > 2)
+                      if (matches.horMatchArr.length > 2) {
                           for (var x = 0; x < matches.horMatchArr.length; x++) {
                               matches.horMatchArr[x].getChildByName("label").text = 'X';
                               matches.horMatchArr[x].isEmpty = true;
 
                           }
-                      if (matches.verMatchArr.length > 2)
+                          matchesfound = true;
+                      }
+                      if (matches.verMatchArr.length > 2) {
                           for (var x = 0; x < matches.verMatchArr.length; x++) {
                               matches.verMatchArr[x].getChildByName("label").text = 'X';
                               matches.verMatchArr[x].isEmpty = true;
 
                           }
+                          matchesfound = true;
+                      }
 
                  }
               }
-              compactTable();
+              return matchesfound;
           }
+          
+          function scanAndCompactTable() {
 
+              if (scanTableForMatches())
+                    compactTable();
+          }
          //this function removes matches and generates new circles
           function compactTable() {
               var changed = false;
@@ -470,6 +534,12 @@ var Game = Game || (function (createjs, $) {
                               gameData[i][j] = topCircle;
 
                               mainBox.addChild(gameData[i][j]);
+
+                              gameData[i][k].original_x = gameData[i][k].x;
+                              gameData[i][k].original_y = gameData[i][k].y;
+                              gameData[i][j].original_x = topCircle.x;
+                              gameData[i][j].original_y = topCircle.y;
+
 
                               gameCounter++;
                               userScoreContainer.getChildByName('score').text = gameCounter;
@@ -523,7 +593,7 @@ var Game = Game || (function (createjs, $) {
                  
               }
               if (changed)
-                  tableCompactTimeout = setTimeout(scanTableForMatches, 1000);
+                  tableCompactTimeout = setTimeout(scanAndCompactTable, 1000);
           }
          
 
