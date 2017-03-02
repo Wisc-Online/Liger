@@ -80,14 +80,13 @@ var Game = Game || (function (createjs) {
                 gameBackground.addChild(bgimage)
 
                 self.stage.addChild(gameBackground);
-
                 introductionScreen();
 
             }
             //load introduction screen /play button
             function introductionScreen() {
                 
-                var instructionsScreen = new create.js.Container();
+                var instructionsScreen = new createjs.Container();
                
                 titleText = new createjs.Text(gameData.Title, "24px Alegreya", "#FFFFFF");
                 titleText.X = 100;
@@ -105,8 +104,6 @@ var Game = Game || (function (createjs) {
                 playButton.x = 650;
                 playButton.y = 350;
                 playButton.scaleX = playButton.scaleY = 0.20;
-
-
 
                // var directionsScreen = new createjs.Container();
 
