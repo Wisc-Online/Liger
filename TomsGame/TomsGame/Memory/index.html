@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//code.createjs.com/createjs-2015.05.21.min.js" type="text/javascript"></script>
+    <script src="Game.js" type="text/javascript"></script>
+
+</head>
+<body style="background-color: #ffffff">
+    <div>
+        <canvas id="myCanvas" width="800" height="600" style="background-color: lightgray;">
+            <p>Your browser does not support HTML5!</p>
+        </canvas>
+        <script type="text/javascript">
+            (function () {
+                var canvas = (function () {
+                    var scripts = document.getElementsByTagName('script');
+                    var targetDiv = scripts[scripts.length - 1].previousElementSibling || scripts[scripts.length - 1].previousSibling;
+                    return targetDiv;
+                })();
+
+                //var gameData = {
+                //   "Terms": [
+                //       { "Item": "brocSeed.png", "Name": "brocSeed", "Id": "1" },
+                //       { "Item": "broc.png", "Name": "broc", "Id": "1" },
+
+                //       { "Item": "carrotSeed.png", "Name": "carrotSeed", "Id": "2" },
+                //       { "Item": "carrot.png", "Name": "carrot", "Id": "2" },
+
+                //       { "Item": "cornSeed.png", "Name": "cornSeed", "Id": "3" },
+                //       { "Item": "corn.png", "Name": "corn", "Id": "3" },
+
+                //       { "Item": "letSeed.png", "Name": "letSeed", "Id": "4" },
+                //       { "Item": "let.png", "Name": "let", "Id": "4" },
+
+                //       { "Item": "onionSeed.png", "Name": "onionSeed", "Id": "5" },
+                //       { "Item": "onion.png", "Name": "onion", "Id": "5" },
+
+                //       { "Item": "potaSeed.png", "Name": "potaSeed", "Id": "6" },
+                //       { "Item": "pota.png", "Name": "pota", "Id": "6" },
+
+                //       { "Item": "pumpSeed.png", "Name": "pumpSeed", "Id": "7" },
+                //       { "Item": "pump.png", "Name": "pump", "Id": "7" },
+
+                //       { "Item": "radSeed.png", "Name": "radSeed", "Id": "8" },
+                //       { "Item": "rad.png", "Name": "rad", "Id": "8" },
+
+                //       { "Item": "riceSeed.png", "Name": "riceSeed", "Id": "9" },
+                //       { "Item": "rice.png", "Name": "rice", "Id": "9" },
+
+                //       { "Item": "straSeed.png", "Name": "straSeed", "Id": "10" },
+                //       { "Item": "stra.png", "Name": "stra", "Id": "10" },
+
+                //       { "Item": "tomSeed.png", "Name": "tomSeed", "Id": "11" },
+                //       { "Item": "tom.png", "Name": "tom", "Id": "11" },
+
+                //       { "Item": "turnSeed.png", "Name": "turnSeed", "Id": "12" },
+                //       { "Item": "turn.png", "Name": "turn", "Id": "12" },
+
+                //       { "Item": "ZuccSeed.png", "Name": "ZuccSeed", "Id": "13" },
+                //       { "Item": "Zucc.png", "Name": "Zucc", "Id": "13" }
+                //   ]
+                //  };
+
+
+               //wisc-online //compatable TERMS instead of ITEMS 6 terms and 6 definitions
+          //     var gameData = { "Terms": [{ "Name": "Brain", "Definition": "90% water", "Id": "9e263302-02e1-4ba0-b64b-cd0728063180" }, { "Name": "Intracellular", "Definition": "65% of body water", "Id": "c1615021-654c-4ea5-be06-cd8841be8cb6" }, { "Name": "Extracellular", "Definition": "35% of body water", "Id": "44afc439-793f-4087-b2c6-0ebd6cb37ea3" }, { "Name": "Water intoxication", "Definition": "Opposite of dehydration", "Id": "be2dc1be-5640-4786-b14e-0e700403f021" }, { "Name": "Antidiuretic hormone", "Definition": "Secreted from the pituitary gland", "Id": "208dc465-a7ad-453d-93e3-c564b140d269" }, { "Name": "Soft water", "Definition": "Has low mineral count", "Id": "bb2cf4d0-cd07-4323-b807-b69db0f03d10" }, { "Name": "Hard water", "Definition": "High in calcium and magnesium", "Id": "fcf0f83a-ee45-45cc-9a27-e5c41f1189d9" }, { "Name": "Distilled", "Definition": "Has all minerals and impurities removed", "Id": "7150c735-fcd5-49cb-82a7-8e5b8562b869" }, { "Name": "Optimial range", "Definition": "8-10 glasses per day", "Id": "13f36569-9328-4908-90e0-46a5793625e0" }, { "Name": "Edema", "Definition": "Water from blood plasma flows outside cell", "Id": "e6b699a2-0886-4c25-b3eb-b5a08e16cf99" }] };
+
+                // 5 terms and 5 definitions
+             //   var gameData = { "Terms": [{ "Name": "Soft water", "Definition": "Has low mineral count", "Id": "bb2cf4d0-cd07-4323-b807-b69db0f03d10" }, { "Name": "Hard water", "Definition": "High in calcium and magnesium", "Id": "fcf0f83a-ee45-45cc-9a27-e5c41f1189d9" }, { "Name": "Distilled", "Definition": "Has all minerals and impurities removed", "Id": "7150c735-fcd5-49cb-82a7-8e5b8562b869" }, { "Name": "Optimial range", "Definition": "8-10 glasses per day", "Id": "13f36569-9328-4908-90e0-46a5793625e0" }, { "Name": "Edema", "Definition": "Water from blood plasma flows outside cell", "Id": "e6b699a2-0886-4c25-b3eb-b5a08e16cf99" }] };
+
+                var gameData = { "Terms": [{ "Name": "one", "Definition": "uno", "Id": "bb2cf4d0-cd07-4323-b807-b69db0f03d10" }, { "Name": "Two", "Definition": "2", "Id": "fcf0f83a-ee45-45cc-9a27-e5c41f1189d9" }, { "Name": "Three", "Definition": "3", "Id": "7150c735-fcd5-49cb-82a7-8e5b8562b869" }, { "Name": "Four", "Definition": "4", "Id": "13f36569-9328-4908-90e0-46a5793625e0" }, { "Name": "Five", "Definition": "5", "Id": "e6b699a2-0886-4c25-b3eb-b5a08e16cf99" }, { "Name": "six", "Definition": "6", "Id": "bb2cf4d0-cd07-4323-b807-b69db0f03d14" }, { "Name": "seven", "Definition": "7", "Id": "bb2cf4d0-cd07-4323-b807-b69db0f03d17" }, { "Name": "eight", "Definition": "8", "Id": "bb2cf4d0-cd07-4323-b807-b69db0f03d19" }] };
+
+
+
+
+                gameData.Title = "Memory";
+                gameData.Description = "MINIGAME - MEMORY";
+                gameData.Directions = "DIRECTIONS FOR MEMORY";
+
+                var stage = new createjs.Stage(canvas);
+                var game = new MemoryGame(gameData);
+
+                stage.addChild(game);
+                game.start();
+
+                createjs.Ticker.addEventListener("tick", handleTick);
+                function handleTick(event) {
+                    stage.update();
+                }
+
+            })();
+        </script>
+    </div>
+</body>
+</html>
