@@ -75,6 +75,33 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\BrownPill.png" />
+    <Content Include="Assets\button.png" />
+    <Content Include="Assets\Capture.PNG" />
+    <Content Include="Assets\Capture1.PNG" />
+    <Content Include="Assets\click.mp3" />
+    <Content Include="Assets\clockBack.png" />
+    <Content Include="Assets\clockHand.png" />
+    <Content Include="Assets\donut.png" />
+    <Content Include="Assets\GameOver.mp3" />
+    <Content Include="Assets\Ghost.png" />
+    <Content Include="Assets\greenback.png" />
+    <Content Include="Assets\greenButtonOutline.png" />
+    <Content Include="Assets\HalfEatenIceCreamBar.png" />
+    <Content Include="Assets\IceCreamBar.png" />
+    <Content Include="Assets\level-up.mp3" />
+    <Content Include="Assets\lollipop.png" />
+    <Content Include="Assets\Panel.png" />
+    <Content Include="Assets\radialSmokeEffect.mp4" />
+    <Content Include="Assets\SequencePlayButton.png" />
+    <Content Include="Assets\SmallPanel.png" />
+    <Content Include="Assets\smoke.png" />
+    <Content Include="Assets\snakeBody.png" />
+    <Content Include="Assets\snakeCandy.png" />
+    <Content Include="Assets\SnakeHead.png" />
+    <Content Include="Assets\snakeTail.png" />
+    <Content Include="Assets\star.png" />
+    <Content Include="Assets\triangle border.png" />
     <Content Include="game.js" />
     <Content Include="index.html" />
     <Content Include="Web.config" />
@@ -82,9 +109,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
