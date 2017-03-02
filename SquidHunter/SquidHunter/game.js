@@ -19,7 +19,7 @@ var Game = Game || (function (createjs) {
 
 
 
-            // ***********     Declare all assests and preload them. ************************
+            // ***********     Declare all assests and preload them. (declare the path) ************************
             var assetsPath = gameData.assetsPath || "";
 
             assetsPath += "Assets/"
@@ -54,11 +54,13 @@ var Game = Game || (function (createjs) {
                 return array;
             }
 
-
+            //declare each individual asset
             var assets = [
 
-                { id: "start_button", src: assetsPath + "SequencePlayButton.png" }
-
+                { id: "start_button", src: assetsPath + "SequencePlayButton.png" },
+                 { id: "background", src: assetsPath + "background.jpg" },
+                   { id: "panel", src: assetsPath + "Panel.png" },
+                   { id: "playbutton", src: assetsPath + "SequencePlayButton.png" }
             ];
 
             var queue = new createjs.LoadQueue(false);
@@ -69,18 +71,64 @@ var Game = Game || (function (createjs) {
             });
             queue.loadManifest(assets);
 
+            //loads background image
             function addBackground() {
+                var gameBackground = new createjs.Container();
+                gameBackground.x = 0;
+                gameBackground.y = 0;
+                var bgimage = new createjs.Bitmap(queue.getResult("background"))
+                gameBackground.addChild(bgimage)
+
+                self.stage.addChild(gameBackground);
+
+                introductionScreen();
 
             }
-
+            //load introduction screen /play button
             function introductionScreen() {
+                
+                var instructionsScreen = new create.js.Container();
+               
+                titleText = new createjs.Text(gameData.Title, "24px Alegreya", "#FFFFFF");
+                titleText.X = 100;
+                titleText.y = 75;
+                titleText.lineWidth = 600;
+                   
+                var panelBG = new createjs.Bitmap(queue.getResult("panel"));
+                panelBG.x = 50;
+                panelBG.y = 60;
+
+                var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
+                
+                playButton.regX = 97;
+                playButton.regY = 100;
+                playButton.x = 650;
+                playButton.y = 350;
+                playButton.scaleX = playButton.scaleY = 0.20;
 
 
-                instructionScreen.addEventListener("click", handleClick);
-                function handleClick(event) {
 
-                    StartInteraction();
-                };
+               // var directionsScreen = new createjs.Container();
+
+                instructionsScreen.addChild(panelBG, playButton, titleText);
+                createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000)
+
+             
+
+                self.stage.addChild(instructionsScreen)
+
+
+
+              
+
+                //instructionScreen.addEventListener("click", handleClick);
+                //function handleClick(event) {
+                //    //console.log("clicked it);
+                //    self.stage.addChild(indtroductionScreen, instructionsScreen, titleText, panelBG, playButton)
+
+
+                //    StartInteraction();
+                //};
 
             }
 
@@ -88,6 +136,8 @@ var Game = Game || (function (createjs) {
 
 
             function StartInteraction() {
+                // load enemies load players load 
+
 
                 function deliverQuestions() {
 
