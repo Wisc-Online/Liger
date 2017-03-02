@@ -217,16 +217,18 @@
                             if (card1.ID == card2.ID) {
                                 createjs.Sound.play("matchFound");
                                 // MATCH text
-                                var itsaMatch = new createjs.Text("MATCH", "40px Arial Black", "lime");
-                                itsaMatch.shadow = new createjs.Shadow("white", 2, 2, 3);
-                                itsaMatch.lineWidth = 780;
-                                itsaMatch.x = 300;
-                                itsaMatch.y = 200;
-                        
-                                //animate MATCH text
-                                createjs.Tween.get(itsaMatch)
-                                .to({ scaleX: 1.00, scaleY: 1.00, alpha: 0 }, 750)
-                                self.addChild(itsaMatch);
+                                if (numberOfmatches != 6) {
+                                    var itsaMatch = new createjs.Text("MATCH", "40px Arial Black", "lime");
+                                    itsaMatch.shadow = new createjs.Shadow("white", 2, 2, 3);
+                                    itsaMatch.lineWidth = 780;
+                                    itsaMatch.x = 300;
+                                    itsaMatch.y = 200;
+
+                                    //animate MATCH text
+                                    createjs.Tween.get(itsaMatch)
+                                    .to({ scaleX: 1.00, scaleY: 1.00, alpha: 0 }, 750)
+                                    self.addChild(itsaMatch);
+                                }
 
 
                                 numberOfmatches++
@@ -255,6 +257,17 @@
 
                 function allMatchsAreMade() {
                     gameIsRunning = false;
+
+                    var allMatches = new createjs.Text("ALL MATCHES MADE!", "40px Arial Black", "lime");
+                    allMatches.shadow = new createjs.Shadow("white", 2, 2, 3);
+                    allMatches.lineWidth = 780;
+                    allMatches.x = 300;
+                    allMatches.y = 200;
+
+                    //animate MATCH text
+                    createjs.Tween.get(allMatches)
+                    .to({ scaleX: .75, scaleY: .75, alpha: 0 }, 1500)
+                    self.addChild(allMatches);
                     // console.log("all Matches are made");
 
                 }
