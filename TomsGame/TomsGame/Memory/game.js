@@ -49,15 +49,14 @@
             var originalOrdedList = [];
             var correctlySortedSubset = [];
             var randomTermsForUserSorting = [];
-
+           
             
             //NEW Loop to include definitions
             for (var d = 0; d < self.gameData.Terms.length; d++) {
                 self.gameData.Terms[d].OrderId = d;                
 
             }
-
-
+            
             trim(self.gameData.Terms)
             function trim(array) {
                 var arrayLength = array.length;
@@ -180,7 +179,8 @@
             var cardContainer;            
             var frontImage;
             var backImage;
-
+            var timeRemaining;
+            var score;
             var numberOfmatches;
 
             function StartInteraction() {
@@ -219,7 +219,7 @@
                                 // MATCH text
                                 if (numberOfmatches != 6) {
                                     var itsaMatch = new createjs.Text("MATCH", "40px Arial Black", "lime");
-                                    itsaMatch.shadow = new createjs.Shadow("white", 2, 2, 3);
+                                    itsaMatch.shadow = new createjs.Shadow("gray", 1, 1, 3);
                                     itsaMatch.lineWidth = 780;
                                     itsaMatch.x = 300;
                                     itsaMatch.y = 200;
@@ -250,7 +250,15 @@
                     }
 
 
-
+                function toggleTween(tween) {
+                    if (tween.paused) {
+                        tween.paused = false;
+                        tween.setPaused(false);
+                    } else {
+                        tween.paused = true;
+                        tween.setPaused(true);
+                    }
+                }
 
 
 
@@ -258,18 +266,30 @@
                 function allMatchsAreMade() {
                     gameIsRunning = false;
 
-                    var allMatches = new createjs.Text("ALL MATCHES MADE!", "40px Arial Black", "lime");
-                    allMatches.shadow = new createjs.Shadow("white", 2, 2, 3);
-                    allMatches.lineWidth = 780;
-                    allMatches.x = 300;
-                    allMatches.y = 200;
 
-                    //animate MATCH text
-                    createjs.Tween.get(allMatches)
-                    .to({ scaleX: .75, scaleY: .75, alpha: 0 }, 1500)
-                    self.addChild(allMatches);
-                    // console.log("all Matches are made");
+                    // stop timer!   
+                    toggleTween(mytweentodisable);
+                    
+                    // find time remaining in seconds
+                    clockStopTime = (new Date()).getTime();
+                    timeRemaining = ((clockStopTime - startTime) / 1000).toFixed(2); 
+                  
+                                       
+                        var allMatches = new createjs.Text("ALL MATCHES MADE!", "40px Arial Black", "lime");
+                        allMatches.shadow = new createjs.Shadow("gray", 1, 1, 3);
+                        allMatches.lineWidth = 780;
+                        allMatches.x = 175;
+                        allMatches.y = 200;
+                        allMatches.alpha = 0;
 
+                        //animate MATCH text
+                         createjs.Tween.get(allMatches)
+                        .wait(1000)
+                        .to({ scaleX: 1.00, scaleY: 1.00, alpha: 1 }, 1000)
+                        .to({ scaleX: 1.00, scaleY: 1.00, alpha: 0 }, 1000)
+                        self.addChild(allMatches);
+                        // console.log("all Matches are made");
+                   // }) // added this to test
                 }
 
                 function handleCardContainerClick(evt) {
@@ -456,70 +476,6 @@
 
 
 
-            ////// Instruction button //////
-            //function getUserControls() {
-
-            //    var instructionsContainer = new createjs.Container();
-            //    instructionsContainer.x = 0;
-            //    instructionsContainer.y = 280;
-            //    instructionsContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 50, 50));
-            //    instructionsContainer.cursor = 'pointer';
-
-
-
-            //    var questionMark = new createjs.Bitmap(preloader.getResult("info"));
-            //    //questionMark.regX = 25;
-            //    //questionMark.regY = 25;
-
-            //    instructionsContainer.addChild(questionMark);
-
-            //    instructionsContainer.addEventListener("click", function () {
-            //        var view = createInstructionsView();
-            //        stage.addChild(view);
-            //    });
-
-            //    stage.addChild(instructionsContainer, soundContainer);
-            //}
-
-            //    ////// end of instruction button ////////////////
-
-
-            /////// INSTRUCTIONS ????????????
-            //function createInstructionsView() {
-            //    var view = new createjs.Container();
-            //    view.name = "instructionsContainer";
-            //    var image = new createjs.Bitmap(preloader.getResult("gameScreen"));
-
-            //    var hit = new createjs.Shape();
-            //    var exitContainer = new createjs.Container();
-            //    var exitBox = new createjs.Shape();
-
-            //    exitContainer.x = 720;
-            //    exitContainer.y = 570;
-            //    var exitText = new createjs.Text("BACK", 'bold 18px Arial', "#fff");
-            //    exitText.x = 8;
-            //    exitText.y = 8;
-            //    exitContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#7449AE").beginStroke("#000").setStrokeStyle(1).drawRoundRect(0, 0, 70, 37, 5).endFill().endStroke());
-            //    hit.graphics.beginFill("#000").drawRect(0, 0, exitText.getMeasuredWidth(), exitText.getMeasuredHeight());
-            //    exitBox.graphics.beginFill("#7449AE").beginStroke("#000").setStrokeStyle(1).drawRoundRect(0, 0, 70, 37, 5).endFill().endStroke();
-            //    exitText.hitArea = hit;
-            //    exitContainer.addChild(exitBox, exitText);
-
-            //    view.addChild(image, exitContainer);//, 
-
-            //    exitContainer.addEventListener("click", function (event) {
-            //        stage.removeChild(event.target.parent);
-            //    });
-
-            //    return view;
-            //}
-            ////// End of Instruction screen /////////////
-
-
-
-
-
-
 
 
             function DisplayEndingNotes(isCompleted) {
@@ -553,20 +509,20 @@
 
                 var directionsbox = new createjs.Container();
                 var closePanel = new createjs.Bitmap(queue.getResult("closePanel"));
-
+                score = parseInt(numberOfmatches + timeRemaining); //total matches plus timeRemaining ********* is concantonating :(
 
                 closePanel.x = 200;
                 closePanel.y = 450;
                 if (isCompleted == true) {
-                    var endingText = new createjs.Text("Congratulations! You’re a matching whiz! ", "bold 16px Arial", "#FFF");
+                    var endingText = new createjs.Text("Congratulations! You’re a matching whiz! All matches made with " + timeRemaining.toString() + " Seconds remaining! SCORE: " + score.toString(), "bold 16px Arial", "#FFF");
 
                 } else {
 
                     // display number of matches in ending text
-                    var endingText = new createjs.Text("You got " + numberOfmatches.toString() + " of the possible matches. Try a 60 second practice round or click \"Replay\" to try again. ", "bold 16px Arial", "#FFF");
+                    var endingText = new createjs.Text("You got " + numberOfmatches.toString() + " of the possible matches. Try a 60 second practice round or click \"Replay\" to try again. SCORE: " + score.toString(), "bold 16px Arial", "#FFF");
                     
                     
-                  //  var endingText = new createjs.Text("Sorry, you didn’t complete all of the matches in 30 seconds. Click \"Replay\" to try again.", "bold 16px Arial", "#FFF");
+                  
                 }
                 endingText.textAlign = "center";
                 endingText.lineWidth = 300;
@@ -639,15 +595,17 @@
 
                 //Start Timer so we can base score off time.
                 startTime = (new Date()).getTime();
-                //TimerLength
+
+                //TimerLength is a 360 rotation
                 mytweentodisable = createjs.Tween.get(clockHand, { loop: false }).to({ rotation: 360 }, TimerLength).call(function () {
                     //this will trigger the timer is up
                     if (gameIsRunning == true) {
-                        createjs.Sound.stop();
-                       
                         gameIsRunning = false;
-                        createjs.Sound.play("gameOver");
                         turnOverAllCards();
+                        createjs.Sound.stop();
+                                               
+                        createjs.Sound.play("gameOver");
+                        
                     }
                 });
             }//clock end
