@@ -48,13 +48,13 @@ var Game = Game || (function (createjs, $) {
             userScoreContainer.y = 265;
 
             //add user score container
-            button1 = createFindMatchButton();
+            /*button1 = createFindMatchButton();
             button1.x = 580;
             button1.y = 320;
 
             button2 = createCompactTableButton();
             button2.x = 580;
-            button2.y = 420;
+            button2.y = 420;*/
 
             // adding elements to stage
             stage.addChild(mainBox, userScoreContainer, questionContainer, layer, rectangle, button1, button2);
@@ -164,14 +164,10 @@ var Game = Game || (function (createjs, $) {
                                     xx = targetNeighbour.original_x;
 
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget).to({ x: xx }, 100);
+                                createjs.Tween.get(evt.currentTarget).to({ x: xx }, 50);
 
                                 //identify right neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
-
-
-
-
 
 
                                 mouseDragPosition = null;
@@ -206,7 +202,7 @@ var Game = Game || (function (createjs, $) {
                                 if (yy < targetNeighbour.original_y - dragThreshold)
                                     yy = targetNeighbour.original_y;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget).to({ y: yy }, 100);
+                                createjs.Tween.get(evt.currentTarget).to({ y: yy }, 50);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
@@ -228,7 +224,7 @@ var Game = Game || (function (createjs, $) {
                                 if (yy > targetNeighbour.original_y + dragThreshold)
                                     yy = targetNeighbour.original_y;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget).to({ y: yy  }, 100);
+                                createjs.Tween.get(evt.currentTarget).to({ y: yy  }, 50);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
@@ -257,12 +253,7 @@ var Game = Game || (function (createjs, $) {
                function handleTermPressUp(evt) {
                    var targetCircle = evt.currentTarget.targetNeighbour;
                     
-                  
-
-                       createjs.Tween.get(evt.currentTarget).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 200);
-
-
-
+                       createjs.Tween.get(evt.currentTarget).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 50);
                        var curi = evt.currentTarget.i;
                        var curj = evt.currentTarget.j;
 
@@ -276,15 +267,10 @@ var Game = Game || (function (createjs, $) {
 
                        gameData[targetCircle.i][targetCircle.j] = targetCircle;
 
-
-               
-
-
-
                        if (scanTableForMatches()) {
 
                        mainBox.setChildIndex(targetCircle, mainBox.getNumChildren() - 1);
-                       createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 200);
+                       createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 50);
 
                        var curx = evt.currentTarget.original_x; var cury = evt.currentTarget.original_y;
                        evt.currentTarget.original_x = targetCircle.original_x;
@@ -293,12 +279,11 @@ var Game = Game || (function (createjs, $) {
                        targetCircle.original_x = curx;
                        targetCircle.original_y = cury;
 
-                       
-                       tableCompactTimeout = setTimeout(compactTable, 2000);
+                       tableCompactTimeout = setTimeout(compactTable, 100);
                    }
                    else {
                            mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                           createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 200);
+                           createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 50);
 
 
 
@@ -433,7 +418,7 @@ var Game = Game || (function (createjs, $) {
               for (var i = 0; i < 10; i++) {
                   for (var j = 0; j < 10; j++) {
                       var matches = findElementMatches(gameData[i][j]);
-                      
+
                       if (matches.horMatchArr.length > 2) {
                           for (var x = 0; x < matches.horMatchArr.length; x++) {
                               matches.horMatchArr[x].getChildByName("label").text = 'X';
@@ -451,7 +436,25 @@ var Game = Game || (function (createjs, $) {
                           matchesfound = true;
                       }
 
-                 }
+
+                     /* if (matches.verMatchArr.length > 3) {
+                          for (var x = 0; x < matches.verMatchArr.length ; x++) {
+                              alert("50 Extra ponits to you ");
+                              gameCounter = gameCounter +  10;
+
+                          }
+                      } else {
+
+                          if (matches.horMatchArr.length > 3) {
+                              for (var x = 0; x < matches.horMatchArr.length; x++) {
+                                  alert("50 Extra ponits to you ");
+                                  gameCounter = gameCounter + 10;
+                              }
+                          }
+                      }*/
+
+                   
+                  }
               }
               return matchesfound;
           }
@@ -485,13 +488,13 @@ var Game = Game || (function (createjs, $) {
 
                               mainBox.addChild(gameData[i][j]);
                               var el = gameData[i][j];
-                              createjs.Tween.get(el, { override: true }).to({ y: yy }, 200);
+                              createjs.Tween.get(el, { override: true }).to({ y: yy }, 50);//, createjs.Ease.bounceOut).call);
                           }
                           else {
                               var topCircle = gameData[i][k];
                               var yy1 = topCircle.y;
 
-                              createjs.Tween.get(topCircle, { override: true }).to({ y: yy }, 200);
+                              createjs.Tween.get(topCircle, { override: true }).to({ y: yy }, 50);
 
                               topCircle.j = j;
  
@@ -502,41 +505,27 @@ var Game = Game || (function (createjs, $) {
                               gameData[i][k].getChildByName('label').text = 'F';
                               gameData[i][k].isEmpty = true;
 
-
-
                               mainBox.addChild(gameData[i][k]);
                               
-
                               mainBox.removeChild(gameData[i][j]);
                               gameData[i][j] = topCircle;
 
                               mainBox.addChild(gameData[i][j]);
 
-                              
-
-
                               gameCounter++;
                               userScoreContainer.getChildByName('score').text = gameCounter;
                               
-
-                             
                           }
 
-                          
-                          
-
-                          
                       }
-                      
-
+                     
                   }
                  
               }
               if (changed)
-                  tableCompactTimeout = setTimeout(scanAndCompactTable, 1000);
+                  tableCompactTimeout = setTimeout(scanAndCompactTable, 100);
           }
          
-
             function createquestionContainer() {
 
                 //library container
@@ -556,7 +545,7 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
-            function createFindMatchButton() {
+           /* function createFindMatchButton() {
 
                 //library container
                 var container = new createjs.Container();
@@ -608,7 +597,7 @@ var Game = Game || (function (createjs, $) {
 
                 return container;
             }
-
+            */
             function createUserScoreContainer() {
                 //user score container
                 var container = new createjs.Container();
