@@ -19,8 +19,8 @@
             self.addChild(stageBG);
             createjs.Touch.enable(self, false, true);
             //self.enableMouseOver(25);
-            self.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
-            // ***********     Declair all assests and preload them. ************************
+            self.mouseMoveOutside = true; // keep tracking the mouse even outside the canvas
+            // ***********     Declare all assests and preload them. *************
             var assetsPath = self.gameData.assetsPath || "";
 
             assetsPath += "Assets/"
@@ -37,6 +37,7 @@
                 { id: "intro", src: assetsPath + "mechanical-2_01.mp3" },
                 { id: "buttonClick", src: assetsPath + "click.mp3" },
                 { id: "gameOver", src: assetsPath + "GameOver.mp3" },
+                { id: "success", src: assetsPath + "complete_success.wav" },
                 { id: "matchFound", src: assetsPath + "goodTone.mp3" },
                 { id: "panel", src: assetsPath + "openingInstructionsPanel.png" },
                 { id: "closePanel", src: assetsPath + "matchingGameFeedbackBox.png" },
@@ -195,16 +196,18 @@
 
                 function showFrontImageOfCard(cardContainer, callback) {
                     if (gameIsRunning == true) {
-                        createjs.Tween.get(cardContainer.BackImage).wait(1000).to({ alpha: 0 }, 125).call(function () {
+                        createjs.Tween.get(cardContainer.BackImage).wait(1000).to({ alpha: 0 }, 100).call(function () {
                             cardContainer.IsTurnedOver = false
                         });
 
-                        createjs.Tween.get(cardContainer.FrontImage).wait(1200).to({ alpha: 1 }, 125).call(function () {
-                            if (callback != null) {
-                                callback();
-                            }
-                        });
-                    } }
+                        if (gameIsRunning == true) {
+                            createjs.Tween.get(cardContainer.FrontImage).wait(1000).to({ alpha: 1 }, 75).call(function () {
+                                if (callback != null) {
+                                    callback();
+                                }
+                            });
+                        }
+                    }}
 
                 //CHECK for MATCH
                 if (gameIsRunning == true) {
@@ -215,7 +218,7 @@
                                 return;
                             }
                             if (card1.ID == card2.ID) {
-                                createjs.Sound.play("matchFound");
+                               
                                 // MATCH text
                                 if (numberOfmatches != 6) {
                                     var itsaMatch = new createjs.Text("MATCH", "40px Arial Black", "lime");
@@ -223,6 +226,8 @@
                                     itsaMatch.lineWidth = 780;
                                     itsaMatch.x = 300;
                                     itsaMatch.y = 200;
+
+                                   
 
                                     //animate MATCH text
                                     createjs.Tween.get(itsaMatch)
@@ -232,6 +237,11 @@
 
 
                                 numberOfmatches++
+
+                                if (numberOfmatches != 6) {
+                                    createjs.Sound.play("matchFound");
+                                }
+
                                 // console.log("match");
                                 if (numberOfmatches == 6) {
                                     allMatchsAreMade();
@@ -239,13 +249,14 @@
                                 }
                                 clickedTimes = 0;
                             }
-                            else { 
-                     
-                                showFrontImageOfCard(card1);
-                                showFrontImageOfCard(card2, function () {
-                                    clickedTimes = 0;
-                                });
-                            } 
+                            else {
+                                if (gameIsRunning == true) {
+                                    showFrontImageOfCard(card1);
+                                    showFrontImageOfCard(card2, function () {
+                                        clickedTimes = 0;
+                                    });
+                                }
+                            }
                         }
                     }
 
@@ -266,15 +277,16 @@
                 function allMatchsAreMade() {
                     gameIsRunning = false;
 
-
+                    console.log('timeRemaining.toString()');
                     // stop timer!   
                     toggleTween(mytweentodisable);
                     
-                    // find time remaining in seconds
+                    // find time when clock is stopped
                     clockStopTime = (new Date()).getTime();
-                    timeRemaining = ((clockStopTime - startTime) / 1000).toFixed(2); 
-                  
-                                       
+
+                    // timeRemaining = total timer - elapsed
+                    timeRemaining = ((TimerLength - (clockStopTime - startTime)) / 1000).toFixed(2);
+  
                         var allMatches = new createjs.Text("ALL MATCHES MADE!", "40px Arial Black", "lime");
                         allMatches.shadow = new createjs.Shadow("gray", 1, 1, 3);
                         allMatches.lineWidth = 780;
@@ -287,10 +299,11 @@
                         .wait(1000)
                         .to({ scaleX: 1.00, scaleY: 1.00, alpha: 1 }, 1000)
                         .to({ scaleX: 1.00, scaleY: 1.00, alpha: 0 }, 1000)
-                        self.addChild(allMatches);
-                        // console.log("all Matches are made");
-                   // }) // added this to test
-                }
+                         self.addChild(allMatches);
+
+                         createjs.Sound.play("success");
+                        
+                  }
 
                 function handleCardContainerClick(evt) {
                     if (gameIsRunning == true) {
@@ -306,8 +319,10 @@
                             }
                             createjs.Sound.play("buttonClick");
                             createjs.Tween.get(clickedCardContainer.FrontImage).to({ alpha: 0 }, 50);
+
+
                             createjs.Tween.get(clickedCardContainer.BackImage)
-                                          .wait(250)
+                                          .wait(225)
                                           .to({ alpha: 1 }, 10)
                                           .call(function () {
                                               if (previousCardClicked != null && previousCardClicked != clickedCardContainer) {
@@ -351,7 +366,7 @@
                     cardContainer.FrontImage = frontImage;
                     cardContainer.BackImage = backImage; //hides / reveals the term
                    
-                    // start second row of cards after looping through 3 terms each including a word and definition
+                    // start second row of cards after looping through first 3 term / definition pairs
                     if (t < self.gameData.Terms.length / 2) {
                         cardContainer.x = 50 + xoffset;
                         cardContainer.y = 55;
@@ -399,10 +414,8 @@
                     return array;
                 }
 
-                
                 self.gameData.Terms = shuffle(self.gameData.Terms);
-
-
+                
                 // Display Term and definition cards pt 2
                 for (var t = 0; t < self.gameData.Terms.length; t++) {  // loops through the six terms each including a name (term) and definition 
 
@@ -428,8 +441,8 @@
                 backImage.scaleY = 1.25;
                 backImage.alpha = 0;
                     
-
-                cardContainer.addChild(backImage, definition, frontImage); // add definition between bottom backImage and frontImage                    
+                // add definition between bottom backImage and frontImage  
+                cardContainer.addChild(backImage, definition, frontImage);                   
                 cardContainer.FrontImage = frontImage;
                 cardContainer.BackImage = backImage; //reveals term
                    
@@ -461,7 +474,7 @@
         }
 
 
-            //// see all cards at the end of the round
+            //// see all cards at the end of the round ///////////////////////////////
             function turnOverAllCards() {
               //  alert("test");
                 for (var j = 0; j < allCardContainers.length; j++) {
@@ -470,11 +483,6 @@
                 }
                 DisplayEndingNotes(false);
             }
-
-
-
-
-
 
 
 
@@ -487,9 +495,9 @@
                 var replayButton = new createjs.Bitmap(queue.getResult("restart_button"));
                 var exploreMore = new createjs.Bitmap(queue.getResult("restart_button"));
 
-                replayButton.x = 600;
+                replayButton.x = 590;
                 replayButton.y = 445; // was 500
-                exploreMore.x = 600;
+                exploreMore.x = 590;
                 exploreMore.y = 505;
 
                 var exploreText = new createjs.Text("60 Second Practice Round", "bold 16px Arial", "#fff");
@@ -509,30 +517,35 @@
 
                 var directionsbox = new createjs.Container();
                 var closePanel = new createjs.Bitmap(queue.getResult("closePanel"));
-                score = parseInt(numberOfmatches + timeRemaining); //total matches plus timeRemaining ********* is concantonating :(
 
-                closePanel.x = 200;
+                // total matches plus timeRemaining                
+                if (timeRemaining != 0) {
+                    score = parseInt((numberOfmatches * 100) + (Math.round(timeRemaining)));
+                } else {
+                    score = parseInt(numberOfmatches * 100);
+                }
+
+                closePanel.x = 190;
                 closePanel.y = 450;
                 if (isCompleted == true) {
-                    var endingText = new createjs.Text("Congratulations! You’re a matching whiz! All matches made with " + timeRemaining.toString() + " Seconds remaining! SCORE: " + score.toString(), "bold 16px Arial", "#FFF");
+                    var endingText = new createjs.Text("Congratulations! All matches made with " + timeRemaining.toString() + " Seconds remaining! SCORE: " + score.toString(), "bold 16px Arial", "#FFF");
 
                 } else {
-
+                   
                     // display number of matches in ending text
                     var endingText = new createjs.Text("You got " + numberOfmatches.toString() + " of the possible matches. Try a 60 second practice round or click \"Replay\" to try again. SCORE: " + score.toString(), "bold 16px Arial", "#FFF");
-                    
-                    
-                  
+                 
                 }
+
                 endingText.textAlign = "center";
                 endingText.lineWidth = 300;
                 endingText.y = closePanel.y + 20;
-                endingText.x = closePanel.x + 180
-
+                endingText.x = closePanel.x + 180;
                 directionsbox.addChild(closePanel, endingText, replayContainer, exploreContainer); // replay button and more time option
                 EndScreen.addChild(directionsbox);
 
                 replayContainer.addEventListener("click", handleClick);
+
                 function handleClick(event) {
                     createjs.Sound.play("buttonClick");
                     allCardContainers.splice(0, allCardContainers.length)
@@ -541,25 +554,22 @@
                     gamescreenContainer.removeChild(gamescreen);
                     self.removeChild(gamescreenContainer)
                     self.removeChild(cardContainer);
-                    // StartInteraction();
                     self.removeAllChildren();
                     self.start();
-
                 }
-                // explore more  / change speed button 1 minute
+
+                // explore more  / change speed button to 1 minute
                 exploreContainer.addEventListener("click", handleClickexploreContainer);
                 function handleClickexploreContainer(event) {
-                    createjs.Sound.play("buttonClick");
-                    
+                    createjs.Sound.play("buttonClick");                    
                     allCardContainers.splice(0, allCardContainers.length)
                     self.removeChild(clockContainer);
                     self.removeChild(EndScreen);
                     gamescreenContainer.removeChild(gamescreen);
                     self.removeChild(gamescreenContainer)
                     self.removeChild(cardContainer);
-                    // StartInteraction();
                     self.removeAllChildren();
-                    // self.start();
+                    // 60 second practice round
                     TimerLength = 60000;
 
                     StartInteraction();
@@ -600,11 +610,15 @@
                 mytweentodisable = createjs.Tween.get(clockHand, { loop: false }).to({ rotation: 360 }, TimerLength).call(function () {
                     //this will trigger the timer is up
                     if (gameIsRunning == true) {
+                       
+                        // time is out
+                        timeRemaining = 0;
                         gameIsRunning = false;
-                        turnOverAllCards();
-                        createjs.Sound.stop();
-                                               
+                        setTimeout(turnOverAllCards,1000); // wait for any flips to finish 
+                        createjs.Sound.stop();                                                                    
                         createjs.Sound.play("gameOver");
+                     
+                      
                         
                     }
                 });

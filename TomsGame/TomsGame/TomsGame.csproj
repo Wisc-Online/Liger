@@ -67,6 +67,7 @@
     <Content Include="Memory\Assets\click.wav" />
     <Content Include="Memory\Assets\clockBack.png" />
     <Content Include="Memory\Assets\clockHand.png" />
+    <Content Include="Memory\Assets\complete_success.wav" />
     <Content Include="Memory\Assets\GameOver.mp3" />
     <Content Include="Memory\Assets\goodTone.mp3" />
     <Content Include="Memory\Assets\greenButtonOutline.png" />
