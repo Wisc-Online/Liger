@@ -48,13 +48,13 @@ var Game = Game || (function (createjs, $) {
             userScoreContainer.y = 265;
 
             //add user score container
-            button1 = createFindMatchButton();
+            /*button1 = createFindMatchButton();
             button1.x = 580;
             button1.y = 320;
 
             button2 = createCompactTableButton();
             button2.x = 580;
-            button2.y = 420;
+            button2.y = 420;*/
 
             // adding elements to stage
             stage.addChild(mainBox, userScoreContainer, questionContainer, layer, rectangle, button1, button2);
@@ -145,7 +145,7 @@ var Game = Game || (function (createjs, $) {
                         //we don't want a circle to move diagonally, so we are eliminating one of the axis 
                         
 
-                        if (isDragging) {
+                        if (isDragging && evt.currentTarget.targetNeighbour==null) {
                             var iIndex = evt.currentTarget.i;
                             var jIndex = evt.currentTarget.j;
                             if (Math.abs(deltaX) > Math.abs(deltaY))
@@ -157,21 +157,17 @@ var Game = Game || (function (createjs, $) {
                                 // move right
 
 
-                                var xx = evt.currentTarget.x + deltaX;
-                                var targetNeighbour = gameData[iIndex + 1][jIndex];
+                                var xx = evt.currentTarget.original_x + deltaX;
+                                targetNeighbour = gameData[iIndex + 1][jIndex];
 
-                               // if (xx > targetNeighbour.x + dragThreshold)
+                                if (xx > targetNeighbour.original_x + dragThreshold)
                                     xx = targetNeighbour.original_x;
 
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget).to({ x: xx }, 100);
+                                createjs.Tween.get(evt.currentTarget).to({ x: xx }, 50);
 
                                 //identify right neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
-
-
-
-
 
 
                                 mouseDragPosition = null;
@@ -181,10 +177,10 @@ var Game = Game || (function (createjs, $) {
                             else if (deltaX < -dragThreshold && iIndex > 0) {
                                 // move left
 
-                                var xx = evt.currentTarget.x + deltaX;
-                                var targetNeighbour = gameData[iIndex - 1][jIndex];
+                                var xx = evt.currentTarget.original_x + deltaX;
+                                targetNeighbour = gameData[iIndex - 1][jIndex];
                                 
-                               // if (xx < targetNeighbour.x - dragThreshold)
+                                if (xx < targetNeighbour.original_x - dragThreshold)
                                 xx = targetNeighbour.original_x;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
                                 createjs.Tween.get(evt.currentTarget).to({ x: xx }, 100);
@@ -199,14 +195,14 @@ var Game = Game || (function (createjs, $) {
                             else if (deltaY < -dragThreshold && jIndex > 0) {
                                 // move up
      
-                                var yy = evt.currentTarget.y +deltaY;
+                                var yy = evt.currentTarget.original_y + deltaY;
 
-                                var targetNeighbour = gameData[iIndex][jIndex-1];
+                                targetNeighbour = gameData[iIndex][jIndex-1];
                                 
-                              //  if (yy < targetNeighbour.y - dragThreshold)
+                                if (yy < targetNeighbour.original_y - dragThreshold)
                                     yy = targetNeighbour.original_y;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget).to({ y: yy }, 100);
+                                createjs.Tween.get(evt.currentTarget).to({ y: yy }, 50);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
@@ -221,14 +217,14 @@ var Game = Game || (function (createjs, $) {
                             else if (deltaY > dragThreshold && jIndex < 9) {
                                 // move down
 
-                                var yy = evt.currentTarget.y + deltaY;
+                                var yy = evt.currentTarget.original_y + deltaY;
 
-                                var targetNeighbour = gameData[iIndex][jIndex + 1];
+                                targetNeighbour = gameData[iIndex][jIndex + 1];
 
-                            //    if (yy > targetNeighbour.y + dragThreshold)
+                                if (yy > targetNeighbour.original_y + dragThreshold)
                                     yy = targetNeighbour.original_y;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget).to({ y: yy  }, 100);
+                                createjs.Tween.get(evt.currentTarget).to({ y: yy  }, 50);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
@@ -257,46 +253,54 @@ var Game = Game || (function (createjs, $) {
                function handleTermPressUp(evt) {
                    var targetCircle = evt.currentTarget.targetNeighbour;
                     
-                  
+                       createjs.Tween.get(evt.currentTarget).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 50);
+                       var curi = evt.currentTarget.i;
+                       var curj = evt.currentTarget.j;
 
-                       createjs.Tween.get(evt.currentTarget).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 200);
+                       evt.currentTarget.i = targetCircle.i;
+                       evt.currentTarget.j = targetCircle.j;
 
+                       targetCircle.i = curi;
+                       targetCircle.j = curj;
 
+                       gameData[evt.currentTarget.i][evt.currentTarget.j] = evt.currentTarget;
 
-                       var curi = evt.currentTarget.i; var curj = evt.currentTarget.j;
-
-                       evt.currentTarget.i = targetCircle.i; evt.currentTarget.j = targetCircle.j;
-                       targetCircle.i = curi; targetCircle.j = curj;
-
-                       gameData[evt.currentTarget.i][evt.currentTarget.i] = evt.currentTarget;
                        gameData[targetCircle.i][targetCircle.j] = targetCircle;
 
+                       if (scanTableForMatches()) {
+
+                       mainBox.setChildIndex(targetCircle, mainBox.getNumChildren() - 1);
+                       createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 50);
 
                        var curx = evt.currentTarget.original_x; var cury = evt.currentTarget.original_y;
+                       evt.currentTarget.original_x = targetCircle.original_x;
+                       evt.currentTarget.original_y = targetCircle.original_y;
 
-                       evt.currentTarget.original_x = evt.currentTarget.original_x;
-                       evt.currentTarget.original_y = evt.currentTarget.original_y;
-
-
-                   
-
-
-
-                   if (scanTableForMatches()) {
-                       mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                       createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 200);
                        targetCircle.original_x = curx;
                        targetCircle.original_y = cury;
-                       tableCompactTimeout = setTimeout(compactTable, 2000);
+
+                       tableCompactTimeout = setTimeout(compactTable, 100);
                    }
-                   else
-                   {
-                       createjs.Tween.get(evt.currentTarget).to({ x: curx, y: cury }, 600);
-                       createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 600);
+                   else {
+                           mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
+                           createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 50);
+
+
+
+                           curi = evt.currentTarget.i; var curj = evt.currentTarget.j;
+
+                           evt.currentTarget.i = targetCircle.i; evt.currentTarget.j = targetCircle.j;
+                           targetCircle.i = curi; targetCircle.j = curj;
+
+                           gameData[evt.currentTarget.i][evt.currentTarget.j] = evt.currentTarget;
+
+                           gameData[targetCircle.i][targetCircle.j] = targetCircle;
 
                    }
                     mouseDragPosition = null;
                     isDragging = false;
+                    evt.currentTarget.targetNeighbour = null;
+                    targetCircle.targetNeighbour = null;
                     
                 }
 
@@ -307,15 +311,14 @@ var Game = Game || (function (createjs, $) {
             {
                 var element = createCircleDraggableContainer();
 
-                  element.x = xCord;
-                  element.y = yCord;
-                  element.original_x = xCord;
-                  element.original_y = yCord;
-                  element.i = i;
-                  element.j = j;
-                  element.getChildByName('label').text = element.i + ",\n" + element.j;
-                  mainBox.addChild(element);
-                  return element;
+                element.original_x = element.x = xCord;
+                element.original_y = element.y = yCord;
+
+                element.i = i;
+                element.j = j;
+                element.getChildByName('label').text = element.x + ",\n" + element.y;
+                mainBox.addChild(element);
+                return element;
             }
 
             function fillBoard() {
@@ -333,54 +336,7 @@ var Game = Game || (function (createjs, $) {
 
             }
 
-         /*   //horizontal
-          function checkHorizontalColors() {
-                for (var x = 0; x < 10; x++) {
-                    var counter = 1;
-                    var t = 0;
-                    for (var y = 0; y < 9; y++) {
-                     t++; 
-                        var circle = gameData[x][y];
-                        if (circle.color == gameData[x][t].color) {
 
-                            counter++; //alert(counter);
-                        }
-                        else {
-                            if (counter >= 3) {
-                                alert(circle.color + " Match found in column#" + x);
-                                y++;
-                                 t++;
-                            }
-                            counter = 1;
-                        }
-                    }
-                }
-            }
-          function checkVerticalColors() {
-
-              for (var x = 0; x < 10; x++) {
-                  //vertical 
-                  for (var y = 0; y < 10; y++) {
-                      var counter = 1;
-                      var t = 0;
-                      for (var x = 0; x < 9; x++) {
-                          t++;
-                          var circle = gameData[x][y];
-                          if (circle.color == gameData[t][y].color) {
-                              counter++; //alert(counter);
-                          }
-                          else {
-                              if (counter >= 3) {
-                                  alert(circle.color + " Match found in row#" + y);
-                                  x++;
-                                  t++;
-                              }
-                              counter = 1;
-                          }
-                      }
-                  }
-              }
-            }*/
 
           function findElementMatches(element) {
               //horizontal 
@@ -462,7 +418,7 @@ var Game = Game || (function (createjs, $) {
               for (var i = 0; i < 10; i++) {
                   for (var j = 0; j < 10; j++) {
                       var matches = findElementMatches(gameData[i][j]);
-                      
+
                       if (matches.horMatchArr.length > 2) {
                           for (var x = 0; x < matches.horMatchArr.length; x++) {
                               matches.horMatchArr[x].getChildByName("label").text = 'X';
@@ -480,7 +436,25 @@ var Game = Game || (function (createjs, $) {
                           matchesfound = true;
                       }
 
-                 }
+
+                     /* if (matches.verMatchArr.length > 3) {
+                          for (var x = 0; x < matches.verMatchArr.length ; x++) {
+                              alert("50 Extra ponits to you ");
+                              gameCounter = gameCounter +  10;
+
+                          }
+                      } else {
+
+                          if (matches.horMatchArr.length > 3) {
+                              for (var x = 0; x < matches.horMatchArr.length; x++) {
+                                  alert("50 Extra ponits to you ");
+                                  gameCounter = gameCounter + 10;
+                              }
+                          }
+                      }*/
+
+                   
+                  }
               }
               return matchesfound;
           }
@@ -499,8 +473,10 @@ var Game = Game || (function (createjs, $) {
 
                       if (gameData[i][j].isEmpty) {
                           changed = true;
-                          var yy = gameData[i][j].y;
-                          var xx = gameData[i][j].x;
+                          var xx = gameData[i][j].original_x;
+                          var yy = gameData[i][j].original_y;
+                          
+
                           var k = j - 1;
                           while (k > -1 && gameData[i][k].isEmpty) {
                               k--;
@@ -508,95 +484,48 @@ var Game = Game || (function (createjs, $) {
                           if (k < 0) {
                               mainBox.removeChild(gameData[i][j]);
                               gameData[i][j] = createElement(i, j, xx, 0);
+                              gameData[i][j].original_y = yy;
 
                               mainBox.addChild(gameData[i][j]);
-                              createjs.Tween.get(gameData[i][j]).to({ y: yy }, 200);
+                              var el = gameData[i][j];
+                              createjs.Tween.get(el, { override: true }).to({ y: yy }, 50);//, createjs.Ease.bounceOut).call);
                           }
                           else {
                               var topCircle = gameData[i][k];
                               var yy1 = topCircle.y;
-                              createjs.Tween.get(topCircle).to({ y: yy }, 200);
+
+                              createjs.Tween.get(topCircle, { override: true }).to({ y: yy }, 50);
 
                               topCircle.j = j;
+ 
+                              topCircle.original_y = yy;
 
-                              gameData[i][k] = createElement(i, k, gameData[i][j].x, yy1);
+
+                              gameData[i][k] = createElement(i, k, xx, yy1);
                               gameData[i][k].getChildByName('label').text = 'F';
                               gameData[i][k].isEmpty = true;
+
                               mainBox.addChild(gameData[i][k]);
                               
-                              var containerToRemove = gameData[i][j];
-
-                              createjs.Tween.get(containerToRemove).to({ alpha: 0 }, 200).call(function () {
-                                  mainBox.removeChild(containerToRemove);
-
-                              })
-                             // mainBox.removeChild(gameData[i][j]);
+                              mainBox.removeChild(gameData[i][j]);
                               gameData[i][j] = topCircle;
 
                               mainBox.addChild(gameData[i][j]);
 
-                              gameData[i][k].original_x = gameData[i][k].x;
-                              gameData[i][k].original_y = gameData[i][k].y;
-                              gameData[i][j].original_x = topCircle.x;
-                              gameData[i][j].original_y = topCircle.y;
-
-
                               gameCounter++;
                               userScoreContainer.getChildByName('score').text = gameCounter;
-                            
-
-                              /*      for (var i = 0; i < 10; i++) {
-                                        for (var j = 9; j >= 0; j--) {
-                  
-                                            if (gameData[i][j].isEmpty) {
-                                                var yy = gameData[i][j].y;
-                                                var xx = gameData[i][j].x;
-                                                var k = j - 1;
-                                                while (k > -1 && gameData[i][k].isEmpty) {
-                                                    k--;
-                                                }
-                                                if (k < 0) {
-                                                    mainBox.removeChild(gameData[i][j]);
-                                                    gameData[i][j] = createElement(i, j, xx, 0);
-                  
-                                                    mainBox.addChild(gameData[i][j]);
-                                                    createjs.Tween.get(gameData[i][j]).to({ y: yy }, 200);
-                                                }
-                                                else {
-                                                    var topCircle = gameData[i][k];
-                                                    var yy1 = topCircle.y;
-                                                    createjs.Tween.get(topCircle).to({ y: yy }, 200);
-                  
-                                                    topCircle.j = j;
-                  
-                                                    gameData[i][k] = createElement(i, k, gameData[i][j].x, yy1);
-                                                    gameData[i][k].getChildByName('label').text = 'F';
-                                                    gameData[i][k].isEmpty = true;
-                                                    mainBox.addChild(gameData[i][k]);
-                                                    mainBox.removeChild(gameData[i][j]);
-                                                    gameData[i][j] = topCircle;
-                  
-                                                    mainBox.addChild(gameData[i][j]);
-                  
-                                                }
-                  
-                                                gameCounter++;
-                                                userScoreContainer.getChildByName('score').text = gameCounter;
-                  
-                  */
+                              
                           }
 
-
                       }
-
+                     
                   }
                  
               }
               if (changed)
-                  tableCompactTimeout = setTimeout(scanAndCompactTable, 1000);
+                  tableCompactTimeout = setTimeout(scanAndCompactTable, 100);
           }
          
-
             function createquestionContainer() {
 
                 //library container
@@ -616,7 +545,7 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
-            function createFindMatchButton() {
+           /* function createFindMatchButton() {
 
                 //library container
                 var container = new createjs.Container();
@@ -668,7 +597,7 @@ var Game = Game || (function (createjs, $) {
 
                 return container;
             }
-
+            */
             function createUserScoreContainer() {
                 //user score container
                 var container = new createjs.Container();
