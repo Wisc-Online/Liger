@@ -20,6 +20,33 @@
             createjs.Touch.enable(self, false, true);
             //self.enableMouseOver(25);
             self.mouseMoveOutside = true; // keep tracking the mouse even outside the canvas
+            
+
+            // SCORM LMS ******************
+            var isLmsConnected = false;
+            var currentLmsInteraction = null;
+
+            if (typeof ScormHelper !== 'undefined') {
+                isLmsConnected = ScormHelper.initialize();
+            }
+
+            var quit;
+
+            if (isLmsConnected) {
+                quit = function () {
+                    ScormHelper.cmi.exit("");
+                    ScormHelper.adl.nav.request("exitAll");
+                    ScormHelper.terminate();
+                }
+            }
+            else {
+                quit = function () {
+                    window.location = "http://www.wisc-online.com";
+                }
+            }
+            //**************************** end SCORM LMS
+
+
             // ***********     Declare all assests and preload them. *************
             var assetsPath = self.gameData.assetsPath || "";
 
@@ -39,6 +66,7 @@
                 { id: "gameOver", src: assetsPath + "GameOver.mp3" },
                 { id: "success", src: assetsPath + "complete_success.wav" },
                 { id: "matchFound", src: assetsPath + "goodTone.mp3" },
+                { id: "memoryMatchLarge", src: assetsPath + "MemoryMatchText.png" },
                 { id: "panel", src: assetsPath + "openingInstructionsPanel.png" },
                 { id: "closePanel", src: assetsPath + "matchingGameFeedbackBox.png" },
                 { id: "startbutton", src: assetsPath + "roundStartButton.png" },
@@ -115,6 +143,13 @@
                 dirBackgroundImage.x = 50;
                 dirBackgroundImage.y = 225;
 
+
+                var memoryMatch = new createjs.Bitmap(queue.getResult("memoryMatchLarge"));
+                memoryMatch.x = 32;
+                memoryMatch.y = 80;
+                memoryMatch.scaleX = memoryMatch.scaleY = 0.94;
+
+
                 var startButton = new createjs.Bitmap(queue.getResult("startbutton"));
                 // wait(2000).createjs.Sound.play("intro"); //squeeky metalic intro
                 startButton.regX = 93;
@@ -122,7 +157,7 @@
                 startButton.x = 600;
                 startButton.y = 295;
                 startButton.scaleX = startButton.scaleY = 0.0;
-                instructionScreen.addChild(dirBackgroundImage, startButton, dirlabel, instructionScreen);
+                instructionScreen.addChild(dirBackgroundImage, startButton, dirlabel, instructionScreen, memoryMatch);
                 createjs.Tween.get(startButton, { loop: false }).to({ rotation: 360, scaleX: 1.0, scaleY: 1.0 }, 2000);
 
                 startButton.addEventListener("click", function () {
@@ -181,7 +216,7 @@
             var frontImage;
             var backImage;
             var timeRemaining;
-            var score;
+            var points;
             var numberOfmatches;
 
             function StartInteraction() {
@@ -276,6 +311,12 @@
 
                 function allMatchsAreMade() {
                     gameIsRunning = false;
+
+                    // SCORM LMS
+                    if (isLmsConnected) {
+                        ScormHelper.cmi.successStatus(ScormHelper.successStatus.passed);
+                        ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.completed);
+                    }
 
                     console.log('timeRemaining.toString()');
                     // stop timer!   
@@ -520,20 +561,20 @@
 
                 // total matches plus timeRemaining                
                 if (timeRemaining != 0) {
-                    score = parseInt((numberOfmatches * 100) + (Math.round(timeRemaining)));
+                    points = parseInt((numberOfmatches * 100) + (Math.round(timeRemaining)));
                 } else {
-                    score = parseInt(numberOfmatches * 100);
+                    points = parseInt(numberOfmatches * 100);
                 }
 
                 closePanel.x = 190;
                 closePanel.y = 450;
                 if (isCompleted == true) {
-                    var endingText = new createjs.Text("Congratulations! All matches made with " + timeRemaining.toString() + " Seconds remaining! SCORE: " + score.toString(), "bold 16px Arial", "#FFF");
+                    var endingText = new createjs.Text("Congratulations! All matches made with " + timeRemaining.toString() + " Seconds remaining! SCORE: " + points.toString(), "bold 16px Arial", "#FFF");
 
                 } else {
                    
                     // display number of matches in ending text
-                    var endingText = new createjs.Text("You got " + numberOfmatches.toString() + " of the possible matches. Try a 60 second practice round or click \"Replay\" to try again. SCORE: " + score.toString(), "bold 16px Arial", "#FFF");
+                    var endingText = new createjs.Text("You got " + numberOfmatches.toString() + " of the possible matches. Try a 60 second practice round or click \"Replay\" to try again. SCORE: " + points.toString(), "bold 16px Arial", "#FFF");
                  
                 }
 
@@ -603,7 +644,7 @@
 
                 self.addChild(clockContainer)
 
-                //Start Timer so we can base score off time.
+                //Start Timer to count down and get additional points off time remaining.
                 startTime = (new Date()).getTime();
 
                 //TimerLength is a 360 rotation
@@ -614,7 +655,7 @@
                         // time is out
                         timeRemaining = 0;
                         gameIsRunning = false;
-                        setTimeout(turnOverAllCards,1000); // wait for any flips to finish 
+                        setTimeout(turnOverAllCards,1100); // wait for any flips to finish 
                         createjs.Sound.stop();                                                                    
                         createjs.Sound.play("gameOver");
                      
@@ -626,8 +667,47 @@
 
 
             $(window).bind('beforeunload', function () {
-                //for wisc to report scores
+                //for wisc to report score
+                submitScore(points)
             })
+
+            var submittedScoreAlready = false;
+
+            function submitScore(score) {
+                // alert("test");
+                if (submittedScoreAlready == true)
+                    return false;
+
+                if (points == 0)
+                   
+                    return false;
+
+                var url = gameData.leaderboardUrl;
+
+                if (url) {
+
+                    var data = {
+                        gameId: gameData.id,
+                        score: score
+                    };
+
+                    $.ajax(url, {
+                        type: "POST",
+                        data: data,
+                        success: function (x) {
+
+                        },
+                        error: function (x, y, z) {
+
+
+                        }
+                    });
+
+                }
+                submittedScoreAlready = true;
+            }
+
+
         }
     }
 
