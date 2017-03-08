@@ -10,7 +10,9 @@ var Game = Game || (function (createjs, $) {
         var gameCounter = 0;
         var maxWidth = 40;
         var tableCompactTimeout = null;
-
+        var maxMoveNbr = 5;
+        var movesLeft = 0;
+        var currentQuestion = 0;
         stage.enableMouseOver(10);
         // stage.mouseMoveOutside = true;
 
@@ -30,7 +32,7 @@ var Game = Game || (function (createjs, $) {
         function initialize() {
 
             //create game objects
-            var mainBox, questionContainer, userScoreContainer, layer, rectangle;
+            var mainBox, questionContainer, userScoreContainer, layer, rectangle, movesLeftContainer;
             var button1, button2;
             // Main game box
 
@@ -38,26 +40,27 @@ var Game = Game || (function (createjs, $) {
             fillBoard();
 
             //add terms library container
-            questionContainer = createquestionContainer();
-            questionContainer.x = 580;
-            questionContainer.y = 40;
+            questionContainer = createQuestionContainer();
+            questionContainer.x = 20;
+            questionContainer.y = 20;
+
+            
 
             //add user score container
             userScoreContainer = createUserScoreContainer();
             userScoreContainer.x = 580;
             userScoreContainer.y = 265;
 
-            //add user score container
-            /*button1 = createFindMatchButton();
-            button1.x = 580;
-            button1.y = 320;
 
-            button2 = createCompactTableButton();
-            button2.x = 580;
-            button2.y = 420;*/
+            //
+            movesLeftContainer = createMovesLeftContainer();
+            movesLeftContainer.x = 580;
+            movesLeftContainer.y = 50;
 
             // adding elements to stage
-            stage.addChild(mainBox, userScoreContainer, questionContainer, layer, rectangle, button1, button2);
+            stage.addChild(mainBox, userScoreContainer, questionContainer, movesLeftContainer);
+
+            showQuestionContainer(gameData.Questions[0]);
 
             //checks for matches and eliminates all matches when the game loads
             scanAndCompactTable();
@@ -251,8 +254,9 @@ var Game = Game || (function (createjs, $) {
 
                 //determine if term is outside mainbox and return to terms library container
                function handleTermPressUp(evt) {
-                   var targetCircle = evt.currentTarget.targetNeighbour;
-                    
+                   if (evt.currentTarget.targetNeighbour != null) {
+                       var targetCircle = evt.currentTarget.targetNeighbour;
+
                        createjs.Tween.get(evt.currentTarget).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 50);
                        var curi = evt.currentTarget.i;
                        var curj = evt.currentTarget.j;
@@ -269,19 +273,36 @@ var Game = Game || (function (createjs, $) {
 
                        if (scanTableForMatches()) {
 
-                       mainBox.setChildIndex(targetCircle, mainBox.getNumChildren() - 1);
-                       createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 50);
+                           mainBox.setChildIndex(targetCircle, mainBox.getNumChildren() - 1);
+                           createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 50);
 
-                       var curx = evt.currentTarget.original_x; var cury = evt.currentTarget.original_y;
-                       evt.currentTarget.original_x = targetCircle.original_x;
-                       evt.currentTarget.original_y = targetCircle.original_y;
+                           var curx = evt.currentTarget.original_x; var cury = evt.currentTarget.original_y;
+                           evt.currentTarget.original_x = targetCircle.original_x;
+                           evt.currentTarget.original_y = targetCircle.original_y;
 
-                       targetCircle.original_x = curx;
-                       targetCircle.original_y = cury;
+                           targetCircle.original_x = curx;
+                           targetCircle.original_y = cury;
 
-                       tableCompactTimeout = setTimeout(compactTable, 100);
-                   }
-                   else {
+
+                           
+
+
+                           ///////////////////////////
+
+
+                           tableCompactTimeout = setTimeout(compactTable, 100);
+
+                           ///////////////////////////
+                           movesLeft--;
+                           if(movesLeft<=0)
+                           {
+                               currentQuestion++;
+                               showQuestionContainer(gameData.Questions[currentQuestion]);
+                           }
+
+                           movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
+                       }
+                       else {
                            mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
                            createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 50);
 
@@ -296,11 +317,13 @@ var Game = Game || (function (createjs, $) {
 
                            gameData[targetCircle.i][targetCircle.j] = targetCircle;
 
+                       }
+                       targetCircle.targetNeighbour = null;
                    }
                     mouseDragPosition = null;
                     isDragging = false;
                     evt.currentTarget.targetNeighbour = null;
-                    targetCircle.targetNeighbour = null;
+                    
                     
                 }
 
@@ -526,78 +549,93 @@ var Game = Game || (function (createjs, $) {
                   tableCompactTimeout = setTimeout(scanAndCompactTable, 100);
           }
          
-            function createquestionContainer() {
+
+
+          function showQuestionContainer(question) {
+
+              mainBox.mouseEnabled = false;
+              
+              var container = questionContainer;
+              container.visible = true;
+              container.getChildByName('question').text = question.Text;
+              
+              var answer=container.getChildByName('answer');
+              while (answer)
+              {
+                  answer.removeAllEventListeners();
+                  container.removeChild(answer);
+                  answer=container.getChildByName('answer');
+              }
+              for (var i = 0; i < question.Answers.length; i++)
+              {
+                  var ac = new createjs.Container();
+
+                  var answerText = new createjs.Text("", "20px Verdana", "");
+                  answerText.color = "black";
+                  answerText.text = question.Answers[i].Text;
+                  answerText.x = 10;
+                  answerText.y = 10;
+                  answerText.lineWidth = 380;
+                  answerText.name = "answer";
+
+                  var answer = new createjs.Shape();
+                  answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("grey");
+                  answer.graphics.drawRect(0, 0, 370, 60);
+
+
+                  ac.x = 10;
+                  ac.y = 100 + i * 70;
+
+                  ac.addChild(answer);
+                  ac.addChild(answerText);
+
+                  ac.on("pressup", handleAnswerPressUp);
+
+                  ac.IsCorrect = question.Answers[i].IsCorrect;
+
+
+                  container.addChild(ac);
+              }
+              stage.setChildIndex(container, mainBox.getNumChildren() - 1);
+          }
+
+          function handleAnswerPressUp(evt)
+          {
+              if (evt.currentTarget.IsCorrect) {
+                  alert('You answer is correct');
+                  mainBox.mouseEnabled = true;
+                  questionContainer.visible = false;
+                  movesLeft += maxMoveNbr;
+                  movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
+              }
+          }
+
+          function createQuestionContainer() {
 
                 //library container
                 var container = new createjs.Container();
 
                 //library background
                 var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("yellow");
-                background.graphics.drawRect(0, 0, 100, 210);
+                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
+                background.graphics.drawRect(0, 0, 400, 400);
+                background.alpha = 0.95;
                 container.addChild(background);
 
-                var offset_x, offset_y;
-                var numberOfItemsPerColumn = 5;
-                var padding = 5;
-
-               ///
-                return container;
-            }
-
-           /* function createFindMatchButton() {
-
-                //library container
-                var container = new createjs.Container();
-
-                //library background
-                var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("grey");
-                background.graphics.drawRect(0, 0, 100, 80);
-                container.addChild(background);
-
-                var buttonText = new createjs.Text("", "20px Verdana", "");
-                buttonText.color = "orange";
-                buttonText.text = "Matches";
-                buttonText.x = 0;
-                buttonText.y = 0;
-                container.addChild(buttonText);
-
-                container.addEventListener("click", function (evt) {
-                    
-                    scanTableForMatches();
-    
-                })
+                var questionText = new createjs.Text("", "20px Verdana", "");
+                questionText.color = "black";
+                questionText.text = "";
+                questionText.x = 10;
+                questionText.y = 20;
+                questionText.lineWidth = 380;
+                questionText.name = "question";
+                container.addChild(questionText);
+                
 
                 return container;
             }
 
-            function createCompactTableButton() {
 
-                //library container
-                var container = new createjs.Container();
-
-                //library background
-                var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("grey");
-                background.graphics.drawRect(0, 0, 100, 80);
-                container.addChild(background);
-
-                var buttonText = new createjs.Text("", "20px Verdana", "");
-                buttonText.color = "orange";
-                buttonText.text = "Compact";
-                buttonText.x = 0;
-                buttonText.y = 0;
-                container.addChild(buttonText);
-                container.addEventListener("click", function (evt) {
-                 
-                     compactTable();
-                    
-                })
-
-                return container;
-            }
-            */
             function createUserScoreContainer() {
                 //user score container
                 var container = new createjs.Container();
@@ -626,6 +664,36 @@ var Game = Game || (function (createjs, $) {
                 container.addChild(scoreText);
                 return container;
             }
+
+            function createMovesLeftContainer() {
+                //user score container
+                var container = new createjs.Container();
+
+                //user score background
+                var background = new createjs.Shape();
+                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("pink");
+                background.graphics.drawRect(0, 0, 100, 50);
+                container.addChild(background);
+
+                //user score title
+                var movesLeftLabel = new createjs.Text("", "15px Verdana", "");
+                movesLeftLabel.color = "black";
+                movesLeftLabel.text = "Moves Left:";
+                movesLeftLabel.x = 5;
+                movesLeftLabel.y = 2;
+                container.addChild(movesLeftLabel);
+
+                //user score score
+                var movesLeftText = new createjs.Text("", "20px Verdana", "");
+                movesLeftText.color = "black";
+                movesLeftText.text = movesLeft; //this will need to change later to be a var to hold user score. 
+                movesLeftText.x = 30;
+                movesLeftText.y = 20;
+                movesLeftText.name = "movesLeft";
+                container.addChild(movesLeftText);
+                return container;
+            }
+
         }
 
         function reset() {
