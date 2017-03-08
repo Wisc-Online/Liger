@@ -92,10 +92,11 @@ var Game = Game || (function (createjs) {
                 titleText.X = 100;
                 titleText.y = 75;
                 titleText.lineWidth = 600;
-                   
+
+
                 var panelBG = new createjs.Bitmap(queue.getResult("panel"));
                 panelBG.x = 50;
-                panelBG.y = 60;
+                panelBG.y = 100;
 
                 var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
                 
@@ -105,22 +106,30 @@ var Game = Game || (function (createjs) {
                 playButton.y = 350;
                 playButton.scaleX = playButton.scaleY = 0.20;
 
-               // var directionsScreen = new createjs.Container();
+                var directionsScreen = new createjs.Container();
 
-                instructionsScreen.addChild(panelBG, playButton, titleText);
-                createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000)
+                displaybox = new createjs.Shape();
+                displaybox.graphics.beginFill("#ffba3e").drawRoundRect(0, 0, 380, 200, 8);
+                displaybox.name = "DirectionsBox";
+                displaybox.x = 225;
+                displaybox.y = 200;
 
-             
+                var label = new createjs.Text("Directions \n \n Catch the Squid", "bold 24px Alegreya", "#000000");
+                label.textAlign = "center";
+                label.lineWidth = 370;
+                label.y = displaybox.y + 5;
+                label.x = displaybox.y + 190;
 
+
+                instructionsScreen.addChild(titleText, panelBG, playButton, displaybox, label);
+                createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000);
                 self.stage.addChild(instructionsScreen)
 
 
+               // instructionScreen.addEventListener("click", handleClick);
+               // function handleClick(event) {
 
-              
 
-                //instructionScreen.addEventListener("click", handleClick);
-                //function handleClick(event) {
-                //    //console.log("clicked it);
                 //    self.stage.addChild(indtroductionScreen, instructionsScreen, titleText, panelBG, playButton)
 
 

@@ -78,12 +78,10 @@
     <Content Include="Memory\Assets\matchingGameFeedbackBox.png" />
     <Content Include="Memory\Assets\mechanical-2_01.mp3" />
     <Content Include="Memory\Assets\memoryCONSOLE.png" />
-    <Content Include="Memory\Assets\openingInstructionsPanel.png" />
-    <Content Include="Memory\Assets\question.png" />
+    <Content Include="Memory\Assets\memoryMatchIcon.png" />
+    <Content Include="Memory\Assets\MemoryMatchText.png" />
+    <Content Include="Memory\Assets\openingInstructionPanel.png" />
     <Content Include="Memory\Assets\roundStartButton.png" />
-    <Content Include="Memory\Assets\SequencePlayButton.png" />
-    <Content Include="Memory\Assets\space.png" />
-    <Content Include="Memory\Assets\starrySkyBackground.png" />
     <Content Include="Memory\Assets\_cardBack.png" />
     <Content Include="Memory\Assets\_cardFace.png" />
     <Content Include="Memory\game.js" />
