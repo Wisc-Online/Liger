@@ -88,62 +88,50 @@ var Game = Game || (function (createjs) {
                 
                 var instructionsScreen = new createjs.Container();
                
-                titleText = new createjs.Text(gameData.Title, "24px Alegreya", "#FFFFFF");
-                titleText.X = 100;
-                titleText.y = 75;
-                titleText.lineWidth = 600;
-
-
                 var panelBG = new createjs.Bitmap(queue.getResult("panel"));
                 panelBG.x = 50;
                 panelBG.y = 100;
 
+                titleText = new createjs.Text(gameData.Title, "24px Alegreya", "#FFFFFF");
+                titleText.x = panelBG.x + 45;
+                titleText.y = panelBG.y + 30;
+                
                 var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
                 
                 playButton.regX = 97;
                 playButton.regY = 100;
-                playButton.x = 650;
-                playButton.y = 350;
+                playButton.x = panelBG.x + 550;
+                playButton.y = panelBG.y + 300;
                 playButton.scaleX = playButton.scaleY = 0.20;
 
-                var directionsScreen = new createjs.Container();
+                var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#FFFFF2");
+                descriptionText.x = panelBG.x + 80;
+                descriptionText.y = panelBG.y + 100;
+    
+                var directionsText = new createjs.Text("Directions:" + " " + gameData.Directions, "20px Alegreya", "#FFFFFF");
+                directionsText.x = panelBG.x + 80;
+                directionsText.y = panelBG.y + 200;
+     
 
-                displaybox = new createjs.Shape();
-                displaybox.graphics.beginFill("#ffba3e").drawRoundRect(0, 0, 380, 200, 8);
-                displaybox.name = "DirectionsBox";
-                displaybox.x = 225;
-                displaybox.y = 200;
-
-                var label = new createjs.Text("Directions \n \n Catch the Squid", "bold 24px Alegreya", "#000000");
-                label.textAlign = "center";
-                label.lineWidth = 370;
-                label.y = displaybox.y + 5;
-                label.x = displaybox.y + 190;
-
-
-                instructionsScreen.addChild(titleText, panelBG, playButton, displaybox, label);
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, playButton);
                 createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000);
-                self.stage.addChild(instructionsScreen)
+                self.stage.addChild(instructionsScreen);
 
+               instructionsScreen.addEventListener("click", handleClick);
+               function handleClick(event) {
+                    
+                   self.stage.removeChild(instructionScreen);
 
-               // instructionScreen.addEventListener("click", handleClick);
-               // function handleClick(event) {
-
-
-                //    self.stage.addChild(indtroductionScreen, instructionsScreen, titleText, panelBG, playButton)
-
-
-                //    StartInteraction();
-                //};
+                StartInteraction();
+               };
 
             }
 
 
-
-
             function StartInteraction() {
                 // load enemies load players load 
-
+                
+                
 
                 function deliverQuestions() {
 
