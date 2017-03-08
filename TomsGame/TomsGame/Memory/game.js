@@ -54,7 +54,6 @@
 
             var assets = [               
                 { id: "gamescreen", src: assetsPath + "matchgameBackground8x6.png" },
-                { id: "start_button", src: assetsPath + "SequencePlayButton.png" },
                 { id: "restart_button", src: assetsPath + "greenButtonOutline.png" },
                 { id: "question", src: assetsPath + "question.png" },
                 { id: "card", src: assetsPath + "_cardBack.png" },
@@ -67,7 +66,7 @@
                 { id: "success", src: assetsPath + "complete_success.wav" },
                 { id: "matchFound", src: assetsPath + "goodTone.mp3" },
                 { id: "memoryMatchLarge", src: assetsPath + "MemoryMatchText.png" },
-                { id: "panel", src: assetsPath + "openingInstructionsPanel.png" },
+                { id: "panel", src: assetsPath + "openingInstructionPanel.png" },
                 { id: "closePanel", src: assetsPath + "matchingGameFeedbackBox.png" },
                 { id: "startbutton", src: assetsPath + "roundStartButton.png" },
                 { id: "levelup", src: assetsPath + "level-up.mp3" }
@@ -133,16 +132,17 @@
 
                 var instructionScreen = new createjs.Container();
 
-                var dirlabel = new createjs.Text("Directions  \n \n You have 30 seconds to match the terms to their definitions. Good luck!", "bold 20px Arial", "#000000");
+                var dirlabel = new createjs.Text("DIRECTIONS:  \n \n You have 30 seconds to match the terms to their definitions. Good luck!", "bold 20px Arial", "#000000");
                 dirlabel.textAlign = "center";
-                dirlabel.lineWidth = 300;
+                dirlabel.lineWidth = 400;
                 dirlabel.x = 275;
-                dirlabel.y = 245;
+                dirlabel.y = 255;
                 
                 var dirBackgroundImage = new createjs.Bitmap(queue.getResult("panel"));
-                dirBackgroundImage.x = 50;
+                dirBackgroundImage.x = 49;
                 dirBackgroundImage.y = 225;
-
+                dirBackgroundImage.scaleX = 0.64;
+                dirBackgroundImage.scaleY = 0.56;
 
                 var memoryMatch = new createjs.Bitmap(queue.getResult("memoryMatchLarge"));
                 memoryMatch.x = 32;
@@ -151,14 +151,14 @@
 
 
                 var startButton = new createjs.Bitmap(queue.getResult("startbutton"));
-                // wait(2000).createjs.Sound.play("intro"); //squeeky metalic intro
                 startButton.regX = 93;
                 startButton.regY = 95;
                 startButton.x = 600;
-                startButton.y = 295;
-                startButton.scaleX = startButton.scaleY = 0.0;
+                startButton.y = 282;
+                startButton.scaleX = startButton.scaleY = 0.50;
+                startButton.shadow = new createjs.Shadow("gray", 1, 3, 5);
                 instructionScreen.addChild(dirBackgroundImage, startButton, dirlabel, instructionScreen, memoryMatch);
-                createjs.Tween.get(startButton, { loop: false }).to({ rotation: 360, scaleX: 1.0, scaleY: 1.0 }, 2000);
+                createjs.Tween.get(startButton, { loop: false }).to({ rotation: 360, scaleX: .9, scaleY: .9 }, 2000);
 
                 startButton.addEventListener("click", function () {
 
