@@ -117,10 +117,9 @@ var Game = Game || (function (createjs) {
                 createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000);
                 self.stage.addChild(instructionsScreen);
 
-               instructionsScreen.addEventListener("click", handleClick);
+               playButton.addEventListener("click", handleClick);
                function handleClick(event) {
-                    
-                   self.stage.removeChild(instructionScreen);
+                   self.stage.removeChild(instructionsScreen);
 
                 StartInteraction();
                };
@@ -130,7 +129,8 @@ var Game = Game || (function (createjs) {
 
             function StartInteraction() {
                 // load enemies load players load 
-                
+                var player = new Container();
+                player = createjs.Bitmap
                 
 
                 function deliverQuestions() {
