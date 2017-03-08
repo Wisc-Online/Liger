@@ -57,13 +57,21 @@ var Game = Game || (function (createjs, $) {
             movesLeftContainer.x = 580;
             movesLeftContainer.y = 50;
 
-            // adding elements to stage
-            stage.addChild(mainBox, userScoreContainer, questionContainer, movesLeftContainer);
+            gameOverContainer = createGameOverContainer();
+            gameOverContainer.x = 20;
+            gameOverContainer.y = 20;
+            
 
-            showQuestionContainer(gameData.Questions[0]);
+
+            // adding elements to stage
+            stage.addChild(mainBox, userScoreContainer, questionContainer, movesLeftContainer, gameOverContainer);
+
+            
 
             //checks for matches and eliminates all matches when the game loads
             scanAndCompactTable();
+
+            showQuestionContainer(gameData.Questions[0]);
 
             function createMainContainer() {
 
@@ -297,8 +305,15 @@ var Game = Game || (function (createjs, $) {
                            if(movesLeft<=0)
                            {
                                currentQuestion++;
-                               showQuestionContainer(gameData.Questions[currentQuestion]);
-                           }
+                               if (currentQuestion > gameData.Questions.length)
+                               {
+                                   showGameOver();
+                               }
+                               else
+                               {
+                                   showQuestionContainer(gameData.Questions[currentQuestion]);
+                               }
+                        }
 
                            movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
                        }
@@ -549,7 +564,15 @@ var Game = Game || (function (createjs, $) {
                   tableCompactTimeout = setTimeout(scanAndCompactTable, 100);
           }
          
+          function showGameOver() {
 
+              mainBox.mouseEnabled = false;
+
+              var container = gameOverContainer;
+              container.visible = true;
+              
+              stage.setChildIndex(container, mainBox.getNumChildren() - 1);
+          }
 
           function showQuestionContainer(question) {
 
@@ -563,28 +586,31 @@ var Game = Game || (function (createjs, $) {
               while (answer)
               {
                   answer.removeAllEventListeners();
+                  answer.removeAllChildren();
                   container.removeChild(answer);
                   answer=container.getChildByName('answer');
               }
+              var startY = container.getChildByName('question').getBounds().height+30;
               for (var i = 0; i < question.Answers.length; i++)
               {
                   var ac = new createjs.Container();
 
-                  var answerText = new createjs.Text("", "20px Verdana", "");
+                  var answerText = new createjs.Text("", "16px Verdana", "");
                   answerText.color = "black";
                   answerText.text = question.Answers[i].Text;
                   answerText.x = 10;
                   answerText.y = 10;
                   answerText.lineWidth = 380;
-                  answerText.name = "answer";
+                  //answerText.maxWidth = 380;
+                  ac.name = "answer";
 
                   var answer = new createjs.Shape();
                   answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("grey");
-                  answer.graphics.drawRect(0, 0, 370, 60);
+                  answer.graphics.drawRect(0, 0, 370, 40);
 
 
                   ac.x = 10;
-                  ac.y = 100 + i * 70;
+                  ac.y = startY + i * 50;
 
                   ac.addChild(answer);
                   ac.addChild(answerText);
@@ -607,6 +633,21 @@ var Game = Game || (function (createjs, $) {
                   questionContainer.visible = false;
                   movesLeft += maxMoveNbr;
                   movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
+              }
+              else
+              {
+                  alert('You answer is WRONG');
+   
+
+                  maxMoveNbr--;
+                  currentQuestion++;
+                  if (currentQuestion == gameData.Questions.length) {
+                      showGameOver();
+                  }
+                  else {
+                      showQuestionContainer(gameData.Questions[currentQuestion]);
+                  }
+
               }
           }
 
@@ -635,7 +676,29 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
+          function createGameOverContainer() {
 
+              //library container
+              var container = new createjs.Container();
+
+              //library background
+              var background = new createjs.Shape();
+              background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("aqua");
+              background.graphics.drawRect(0, 0, 400, 400);
+              background.alpha = 0.95;
+              container.addChild(background);
+
+              var text = new createjs.Text("", "20px Verdana", "");
+              text.color = "black";
+              text.text = "GAME OVER!!!!!!!!!!!!!!!";
+              text.x = 10;
+              text.y = 20;
+              text.lineWidth = 380;
+              container.addChild(text);
+
+              container.visible = false;
+              return container;
+          }
             function createUserScoreContainer() {
                 //user score container
                 var container = new createjs.Container();
