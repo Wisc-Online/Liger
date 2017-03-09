@@ -60,7 +60,9 @@ var Game = Game || (function (createjs) {
                 { id: "start_button", src: assetsPath + "SequencePlayButton.png" },
                  { id: "background", src: assetsPath + "background.jpg" },
                    { id: "panel", src: assetsPath + "Panel.png" },
-                   { id: "playbutton", src: assetsPath + "SequencePlayButton.png" }
+                   { id: "playbutton", src: assetsPath + "SequencePlayButton.png" },
+                   { id: "crate", src: assetsPath + "crate.png" },
+                   { id: "enemy", src: assetsPath + "enemy.png" }
             ];
 
             var queue = new createjs.LoadQueue(false);
@@ -85,9 +87,9 @@ var Game = Game || (function (createjs) {
             }
             //load introduction screen /play button
             function introductionScreen() {
-                
+
                 var instructionsScreen = new createjs.Container();
-               
+
                 var panelBG = new createjs.Bitmap(queue.getResult("panel"));
                 panelBG.x = 50;
                 panelBG.y = 100;
@@ -95,9 +97,9 @@ var Game = Game || (function (createjs) {
                 titleText = new createjs.Text(gameData.Title, "24px Alegreya", "#FFFFFF");
                 titleText.x = panelBG.x + 45;
                 titleText.y = panelBG.y + 30;
-                
+
                 var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
-                
+
                 playButton.regX = 97;
                 playButton.regY = 100;
                 playButton.x = panelBG.x + 550;
@@ -107,31 +109,87 @@ var Game = Game || (function (createjs) {
                 var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#FFFFF2");
                 descriptionText.x = panelBG.x + 80;
                 descriptionText.y = panelBG.y + 100;
-    
+
                 var directionsText = new createjs.Text("Directions:" + " " + gameData.Directions, "20px Alegreya", "#FFFFFF");
                 directionsText.x = panelBG.x + 80;
                 directionsText.y = panelBG.y + 200;
-     
+
 
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, playButton);
                 createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000);
                 self.stage.addChild(instructionsScreen);
 
-               playButton.addEventListener("click", handleClick);
-               function handleClick(event) {
-                   self.stage.removeChild(instructionsScreen);
+                playButton.addEventListener("click", handleClick);
+                function handleClick(event) {
+                    self.stage.removeChild(instructionsScreen);
 
-                StartInteraction();
-               };
+                    StartInteraction();
+                };
 
             }
 
 
             function StartInteraction() {
-                // load enemies load players load 
-                var player = new Container();
-                player = createjs.Bitmap
+                // load players
+
+                var playerContainer = new createjs.Container();
+                var player = new createjs.Bitmap(queue.getResult("crate"))
+                var playerMovement = 4
+
+                player.x = 000
+                player.y = 500
+
+                playerContainer.addChild(player)
+          
+                this.document.onkeydown = keyPressed;
+                var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39
+
+                // load enemy
+                var enemyContainer = new createjs.Container();
+                var enemy = new createjs.Bitmap(queue.getResult("enemy"))
+                enemy.x = 350
+                enemy.y = 100
                 
+                enemyContainer.addChild(enemy)
+
+                self.stage.addChild(playerContainer, enemyContainer);
+
+                function keyPressed(event) {
+                    //  console.log(event.keyCode);
+                    switch (event.keyCode) {
+                        case KEYCODE_LEFT:
+                            moveLeft();
+                            event.preventDefault();
+                            break;
+                        case KEYCODE_RIGHT:
+                            moveRight();
+                            event.preventDefault();
+                            break;
+
+                    }
+
+                    function moveRight() {
+                        // Console.log("in move right")
+                        playerContainer.x += playerMovement;
+                        if (playerContainer.x > 730) {
+                            playerContainer.x = 730
+                        }
+                    }
+
+                    function moveLeft() {
+                        // console.log(playerContainer.x)
+                        playerContainer.x -= playerMovement;
+                        if (playerContainer.x < 20) {
+                            playerContainer.x = 20
+                        }
+
+
+                    }
+
+                }
+
+                
+
 
                 function deliverQuestions() {
 
