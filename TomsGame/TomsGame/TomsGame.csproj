@@ -77,10 +77,13 @@
     <Content Include="Memory\Assets\matchgameBackground8x6.png" />
     <Content Include="Memory\Assets\matchingGameFeedbackBox.png" />
     <Content Include="Memory\Assets\mechanical-2_01.mp3" />
+    <Content Include="Memory\Assets\MemoryBG.png" />
     <Content Include="Memory\Assets\memoryCONSOLE.png" />
     <Content Include="Memory\Assets\memoryMatchIcon.png" />
     <Content Include="Memory\Assets\MemoryMatchText.png" />
+    <Content Include="Memory\Assets\MemoryMatchText2.png" />
     <Content Include="Memory\Assets\openingInstructionPanel.png" />
+    <Content Include="Memory\Assets\openingInstructionPanel2.png" />
     <Content Include="Memory\Assets\roundStartButton.png" />
     <Content Include="Memory\Assets\_cardBack.png" />
     <Content Include="Memory\Assets\_cardFace.png" />

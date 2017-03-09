@@ -61,11 +61,12 @@
                 { id: "clockBack", src: assetsPath + "clockBack.png" },
                 { id: "clockHand", src: assetsPath + "clockHand.png" },
                 { id: "intro", src: assetsPath + "mechanical-2_01.mp3" },
+                { id: "memoryBG", src: assetsPath + "MemoryBG.png" },
                 { id: "buttonClick", src: assetsPath + "click.mp3" },
                 { id: "gameOver", src: assetsPath + "GameOver.mp3" },
                 { id: "success", src: assetsPath + "complete_success.wav" },
                 { id: "matchFound", src: assetsPath + "goodTone.mp3" },
-                { id: "memoryMatchLarge", src: assetsPath + "MemoryMatchText.png" },
+                { id: "memoryMatchLarge", src: assetsPath + "MemoryMatchText2.png" },
                 { id: "panel", src: assetsPath + "openingInstructionPanel.png" },
                 { id: "closePanel", src: assetsPath + "matchingGameFeedbackBox.png" },
                 { id: "startbutton", src: assetsPath + "roundStartButton.png" },
@@ -132,21 +133,27 @@
 
                 var instructionScreen = new createjs.Container();
 
-                var dirlabel = new createjs.Text("DIRECTIONS:  \n \n You have 30 seconds to match the terms to their definitions. Good luck!", "bold 20px Arial", "#000000");
+                var memBG = new createjs.Bitmap(queue.getResult("memoryBG"));
+                memBG.x = 0;
+                memBG.y = 0;
+                memBG.scaleX = 1;
+                memBG.scaleY = 1;
+
+                var dirlabel = new createjs.Text("DIRECTIONS:  \n \n You have 60 seconds to match the terms to their definitions. Good luck!", "bold 20px Arial", "#000000");
                 dirlabel.textAlign = "center";
                 dirlabel.lineWidth = 400;
-                dirlabel.x = 275;
-                dirlabel.y = 255;
+                dirlabel.x = 280;
+                dirlabel.y = 265;
                 
                 var dirBackgroundImage = new createjs.Bitmap(queue.getResult("panel"));
                 dirBackgroundImage.x = 49;
-                dirBackgroundImage.y = 225;
+                dirBackgroundImage.y = 235;
                 dirBackgroundImage.scaleX = 0.64;
                 dirBackgroundImage.scaleY = 0.56;
 
                 var memoryMatch = new createjs.Bitmap(queue.getResult("memoryMatchLarge"));
                 memoryMatch.x = 32;
-                memoryMatch.y = 80;
+                memoryMatch.y = 90;
                 memoryMatch.scaleX = memoryMatch.scaleY = 0.94;
 
 
@@ -154,10 +161,10 @@
                 startButton.regX = 93;
                 startButton.regY = 95;
                 startButton.x = 600;
-                startButton.y = 282;
+                startButton.y = 295;
                 startButton.scaleX = startButton.scaleY = 0.50;
                 startButton.shadow = new createjs.Shadow("gray", 1, 3, 5);
-                instructionScreen.addChild(dirBackgroundImage, startButton, dirlabel, instructionScreen, memoryMatch);
+                instructionScreen.addChild(memBG, dirBackgroundImage, startButton, dirlabel, instructionScreen, memoryMatch);
                 createjs.Tween.get(startButton, { loop: false }).to({ rotation: 360, scaleX: .9, scaleY: .9 }, 2000);
 
                 startButton.addEventListener("click", function () {
@@ -210,6 +217,7 @@
             var allCardContainers = [];
             var previousCardClicked = null;
             var gameIsRunning = false;
+            var practiceRound = false;
             var gamescreenContainer = new createjs.Container();
             var gamescreen;
             var cardContainer;            
@@ -259,7 +267,7 @@
                                     var itsaMatch = new createjs.Text("MATCH", "40px Arial Black", "lime");
                                     itsaMatch.shadow = new createjs.Shadow("gray", 1, 1, 3);
                                     itsaMatch.lineWidth = 780;
-                                    itsaMatch.x = 300;
+                                    itsaMatch.x = 305;
                                     itsaMatch.y = 200;
 
                                    
@@ -541,7 +549,7 @@
                 exploreMore.x = 590;
                 exploreMore.y = 505;
 
-                var exploreText = new createjs.Text("60 Second Practice Round", "bold 16px Arial", "#fff");
+                var exploreText = new createjs.Text("90 Second Practice Round", "bold 16px Arial", "#fff");
                 exploreText.textAlign = "center";
                 exploreText.lineWidth = 140;
                 exploreText.y = exploreMore.y + 5;
@@ -559,23 +567,48 @@
                 var directionsbox = new createjs.Container();
                 var closePanel = new createjs.Bitmap(queue.getResult("closePanel"));
 
-                // total matches plus timeRemaining                
-                if (timeRemaining != 0) {
-                    points = parseInt((numberOfmatches * 100) + (Math.round(timeRemaining)));
-                } else {
-                    points = parseInt(numberOfmatches * 100);
+                // total matches plus timeRemaining  
+                if (practiceRound == true) {
+                    points = 0
                 }
 
+                if (practiceRound == false) {
+                    if (timeRemaining != 0) {
+                        points = parseInt((numberOfmatches * 100) + (Math.round(timeRemaining)));
+                    } else {
+                        points = parseInt(numberOfmatches * 100);
+                    }
+                }
                 closePanel.x = 190;
                 closePanel.y = 450;
-                if (isCompleted == true) {
-                    var endingText = new createjs.Text("Congratulations! All matches made with " + timeRemaining.toString() + " Seconds remaining! SCORE: " + points.toString(), "bold 16px Arial", "#FFF");
 
+                if (practiceRound == false) {
+                    if (isCompleted == true) {
+
+                        var endingText = new createjs.Text("Congratulations! All matches made with " + timeRemaining.toString() + " Seconds remaining! SCORE: " + points.toString(), "bold 16px Arial", "#FFF");
+
+                    } else {
+
+                        // display number of matches in ending text
+                        var endingText = new createjs.Text("You got " + numberOfmatches.toString() + " of the possible matches. Try a 90 second practice round or click \"Replay\" to try again. SCORE: " + points.toString(), "bold 16px Arial", "#FFF");
+
+                    }
+                    
                 } else {
-                   
-                    // display number of matches in ending text
-                    var endingText = new createjs.Text("You got " + numberOfmatches.toString() + " of the possible matches. Try a 60 second practice round or click \"Replay\" to try again. SCORE: " + points.toString(), "bold 16px Arial", "#FFF");
-                 
+                    // if practice round
+                    if (isCompleted == true) {
+
+                        var endingText = new createjs.Text("All matches made with " + timeRemaining.toString() + " seconds remaining during the 90 second practice round. click \"Replay\" to try a 60 second game!", "bold 16px Arial", "#FFF");
+
+                    } else {
+
+                        // display number of matches during practice round
+                        var endingText = new createjs.Text("You got " + numberOfmatches.toString() + " of the possible matches. Try another 90 second practice round or click \"Replay\" to try again.", "bold 16px Arial", "#FFF");
+
+                    }
+
+                    
+
                 }
 
                 endingText.textAlign = "center";
@@ -596,10 +629,11 @@
                     self.removeChild(gamescreenContainer)
                     self.removeChild(cardContainer);
                     self.removeAllChildren();
+                    practiceRound = false;
                     self.start();
                 }
 
-                // explore more  / change speed button to 1 minute
+                // explore more  / change speed button to 90 seconds minutes
                 exploreContainer.addEventListener("click", handleClickexploreContainer);
                 function handleClickexploreContainer(event) {
                     createjs.Sound.play("buttonClick");                    
@@ -610,9 +644,9 @@
                     self.removeChild(gamescreenContainer)
                     self.removeChild(cardContainer);
                     self.removeAllChildren();
-                    // 60 second practice round
-                    TimerLength = 60000;
-
+                    // 90 second practice round
+                    TimerLength = 90000;
+                    practiceRound = true;
                     StartInteraction();
                     
                 }
@@ -622,7 +656,7 @@
             }
 
 
-            TimerLength = 30000;
+            TimerLength = 60000; //60 seconds
             var startTime;
             var time;
             function Clock() {
