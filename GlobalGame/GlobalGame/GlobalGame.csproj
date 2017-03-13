@@ -47,6 +47,8 @@
     <Content Include="ButtonClickDry.mp3" />
     <Content Include="createjs.min.js" />
     <Content Include="deflate.mp3" />
+    <Content Include="game - Copy.js" />
+    <Content Include="gameRapidFire.js" />
     <Content Include="game_old.js" />
     <Content Include="game.js" />
     <Content Include="game1 - .js" />
