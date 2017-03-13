@@ -936,9 +936,11 @@ var Game = Game || (function (createjs, $) {
                   //answerText.maxWidth = 380;
                   ac.name = "answer";
 
+
                   var answer = new createjs.Shape();
-                  answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("grey");
+                  answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
                   answer.graphics.drawRect(0, 0, 370, 40);
+                
 
 
                   ac.x = 10;
@@ -970,9 +972,8 @@ var Game = Game || (function (createjs, $) {
               }
               else
               {
-                  alert('You answer is WRONG');
-   
-
+                  alert('Your answer is WRONG');
+         
                   maxMoveNbr--;
                   currentQuestion++;
                   if (currentQuestion >= gameData.Questions.length) {
@@ -993,13 +994,13 @@ var Game = Game || (function (createjs, $) {
 
                 //library background
                 var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
+                background.graphics.setStrokeStyle(1).beginStroke("yellow").beginFill("purple");
                 background.graphics.drawRect(0, 0, 400, 400);
                 background.alpha = 0.95;
                 container.addChild(background);
 
                 var questionText = new createjs.Text("", "20px Verdana", "");
-                questionText.color = "black";
+                questionText.color = "yellow";
                 questionText.text = "";
                 questionText.x = 10;
                 questionText.y = 20;
@@ -1040,13 +1041,13 @@ var Game = Game || (function (createjs, $) {
 
                 //user score background
                 var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("blue");
+                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("purple");
                 background.graphics.drawRect(0, 0, 100, 50);
                 container.addChild(background);
 
                 //user score title
                 var scoreLabel = new createjs.Text("", "15px Verdana", "");
-                scoreLabel.color = "white";
+                scoreLabel.color = "yellow";
                 scoreLabel.text = "Score:";
                 scoreLabel.x = 25;
                 scoreLabel.y = 2;
@@ -1054,7 +1055,7 @@ var Game = Game || (function (createjs, $) {
 
                 //user score score
                 var scoreText = new createjs.Text("", "20px Verdana", "");
-                scoreText.color = "orange";
+                scoreText.color = "white";
                 scoreText.text = 900; //this will need to change later to be a var to hold user score. 
                 scoreText.x = 30;
                 scoreText.y = 20;
@@ -1069,13 +1070,13 @@ var Game = Game || (function (createjs, $) {
 
                 //user score background
                 var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("pink");
+                background.graphics.setStrokeStyle(1).beginStroke("white").beginFill("purple");
                 background.graphics.drawRect(0, 0, 100, 50);
                 container.addChild(background);
 
                 //user score title
                 var movesLeftLabel = new createjs.Text("", "15px Verdana", "");
-                movesLeftLabel.color = "black";
+                movesLeftLabel.color = "yellow";
                 movesLeftLabel.text = "Moves Left:";
                 movesLeftLabel.x = 5;
                 movesLeftLabel.y = 2;
@@ -1083,7 +1084,7 @@ var Game = Game || (function (createjs, $) {
 
                 //user score score
                 var movesLeftText = new createjs.Text("", "20px Verdana", "");
-                movesLeftText.color = "black";
+                movesLeftText.color = "white";
                 movesLeftText.text = movesLeft; //this will need to change later to be a var to hold user score. 
                 movesLeftText.x = 30;
                 movesLeftText.y = 20;

@@ -48,7 +48,10 @@ var Game = Game || (function (createjs, $) {
             { id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
             { id: "rf_POP", src: assetsPath + "rf_POP.png" },
             { id: "musicOn", src: assetsPath + "musicOn.png" },
-            { id: "musicOff", src: assetsPath + "musicOff.png" }
+            { id: "musicOff", src: assetsPath + "musicOff.png" },
+            { id: "rf_turbitt", src: assetsPath + "rf_turbitt.png" },
+            { id: "rf_rabbit", src: assetsPath + "rf_rabbit.png" },
+            { id: "rf_turtle", src: assetsPath + "rf_turtle.png" }
         ];
         var queue = new createjs.LoadQueue(false);
         var mainView = null;
