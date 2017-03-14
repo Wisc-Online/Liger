@@ -1,14 +1,28 @@
-﻿/// <reference path="htp://code.createjs.com/createjs-2013.12.12.min.js" />
+﻿// <reference path="htp://code.createjs.com/createjs-2013.12.12.min.js" />
 /// <reference path="../../../Content/GamesDownloadTemplate/lib/ScormHelper.js" />
-(function (createjs) {
+var Game = Game ||(function (createjs) {
 
-    function miniGame(gameData) {
+    function Game(gameData) {
         ////++++++++++++   Create a stage by getting a reference to the canvas   +++++++++++++++
         // Game variables
 
         this.Container_constructor();
         var self = this;
         self.gameData = gameData;
+
+     
+        //var stage = new createjs.Stage(canvas);
+        //var game = new MemoryGame(gameData);
+
+        //stage.addChild(game);
+        //game.start();
+
+        //createjs.Ticker.addEventListener("tick", handleTick);
+        //function handleTick(event) {
+        //    stage.update();
+        //}
+
+
 
         self.start = function () {
 
@@ -745,7 +759,9 @@
         }
     }
 
-    // THIS IS BOTTOM OF MINIGAME SCRIPT
-    var p = createjs.extend(miniGame, createjs.Container);
-    window.MemoryGame = createjs.promote(miniGame, "Container");
-})(createjs); // END OF function miniGame(gameData)
+    // THIS IS BOTTOM OF Game SCRIPT
+    var p = createjs.extend(Game, createjs.Container);
+    window.MemoryGame = createjs.promote(Game, "Container");
+
+     return Game;
+})(createjs); // END OF function Game(gameData)
