@@ -1199,19 +1199,19 @@ var Game = Game || (function (createjs, $) {
                   if (currentBestMatch)
                   {
                       createjs.Tween.get(currentBestMatch.source)
-                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
-                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000)
-                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
-                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000)
-                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
-                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000);
+                                  .to({ scaleX: 1.1, scaleY: 1.1, alpha:0.2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 1000)
+                                  .to({ scaleX: 1.1, scaleY: 1.1, alpha: 0.2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 1000)
+                                  .to({ scaleX: 1.1, scaleY: 1.1, alpha:0.2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 1000)
                       createjs.Tween.get(currentBestMatch.target)
-                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
-                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000)
-                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
-                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000)
-                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
-                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000);
+                                  .to({ scaleX: 1.1, scaleY: 1.1, alpha:0.2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 1000)
+                                  .to({ scaleX: 1.1, scaleY: 1.1, alpha: 0.2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 1000)
+                                  .to({ scaleX: 1.1, scaleY: 1.1, alpha:0.2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 1000);
                   }
                   
                  
