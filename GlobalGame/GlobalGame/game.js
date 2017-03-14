@@ -97,6 +97,9 @@ var Game = Game || (function (createjs, $) {
         var boardStartX = 100;
         var boardStartY = 100;
 
+        var currentBestMatch = null;
+
+
         stage.enableMouseOver(10);
         // stage.mouseMoveOutside = true;
 
@@ -145,12 +148,6 @@ var Game = Game || (function (createjs, $) {
             var soundContainer = createSoundContainer();
 
          
-
-            
-
-           // gameOverContainer = createGameOverContainer();
-           // gameOverContainer.x = 20;
-           // gameOverContainer.y = 20;
             var instructionsView = null;
 
             instructionsContainer = createInstructionContainer();
@@ -360,7 +357,10 @@ var Game = Game || (function (createjs, $) {
 
                 startButton.addEventListener("click", function (event) {
                     createjs.Sound.play("buttonClick");
-
+                    gameState.score = 0;
+                    gameState.questionsMissed = 0;
+                    gameState.initialize = true;
+                    maxMoveNbr=5;
                     showView(createQuestionView());
                 });
 
@@ -405,9 +405,13 @@ var Game = Game || (function (createjs, $) {
                 movesLeftContainer = createMovesLeftContainer();
                 movesLeftContainer.x = 580;
                 movesLeftContainer.y = 50;
-
-                
                 container.addChild(movesLeftContainer);
+                
+
+                var hintButtonContainer = createHintButton();
+                hintButtonContainer.x = 580;
+                hintButtonContainer.x = 400;
+                container.addChild(hintButtonContainer);
                 return container;
             }
 
@@ -429,13 +433,7 @@ var Game = Game || (function (createjs, $) {
                 return circle;
             }
 
-            function getCoordinatesFromIndexes(i, j) {
-                return {
-                    x: i * maxWidth,
-                    y: j * maxWidth
-                }
 
-            }
             function createCircleDraggableContainer() {
 
                 //library of terms
@@ -446,13 +444,16 @@ var Game = Game || (function (createjs, $) {
                 background.graphics.drawRect(0, 0, maxWidth, 40);
                 container.setBounds(0, 0, maxWidth, 40);
 
-                container.on("pressmove", handleTermDrag);
-                container.on("pressup", handleTermPressUp);
+                container.on("pressmove", handleElementDrag);
+                container.on("pressup", handleElementPressUp);
 
                 var mouseDragPosition = null;
 
                 container.addChild(background);
                 container.addChild(createCircle());
+                container.color = container.getChildByName("circle").color;
+
+
 
                 var label = new createjs.Text("", "10px Verdana", "");
                 label.color = "white";
@@ -469,7 +470,7 @@ var Game = Game || (function (createjs, $) {
 
                 //drag functionality
                 
-               function handleTermDrag(evt) {
+                function handleElementDrag(evt) {
 
                     if (mouseDragPosition != null) {
                         var deltaX = evt.stageX - mouseDragPosition.x;
@@ -587,7 +588,7 @@ var Game = Game || (function (createjs, $) {
                 }
 
                 //determine if term is outside mainbox and return to terms library container
-               function handleTermPressUp(evt) {
+                function handleElementPressUp(evt) {
                    if (evt.currentTarget.targetNeighbour != null) {
                        var targetCircle = evt.currentTarget.targetNeighbour;
 
@@ -605,7 +606,7 @@ var Game = Game || (function (createjs, $) {
 
                        gameData[targetCircle.i][targetCircle.j] = targetCircle;
 
-                       if (scanTableForMatches()) {
+                       if (swapMatchesFound()) {
 
                            mainBox.setChildIndex(targetCircle, mainBox.getNumChildren() - 1);
                            createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 50);
@@ -701,9 +702,109 @@ var Game = Game || (function (createjs, $) {
 
             }
 
+            function findPotentialElementMatchesReturnBest() {
+                var bestMatch = null;
+
+                for (var i = 0; i < 10; i++) {
+                
+                    for (var j = 0; j < 10; j++) {
+                        gameData[i][j].left = gameData[i][j].right = gameData[i][j].top = gameData[i][j].bottom = null;
+                    }
+                }
+                for (var i = 0; i < 10; i++) {
+                
+                    for (var j = 0; j < 10; j++) {
+
+                        if (i == 0) gameData[i][j].left = 0;
+
+                        if (i == 9) gameData[i][j].right = 0;
+  
+                        if (j == 0) gameData[i][j].top = 0;
+
+                        if (j == 9) gameData[i][j].bottom = 0;
 
 
-          function findElementMatches(element) {
+
+
+                        var weight = 0;
+                        //we need to check for matches only in one direction, because we've already checked neigbouring matches for i-1 and j-1
+                        if (gameData[i][j].right == null)
+                        {
+                            swapColors(gameData[i][j], gameData[i + 1][j]);
+                            var matches = findElementMatches(gameData[i][j]);
+
+                            if (matches.horMatchArr.length > 2 || matches.verMatchArr.length > 2) {
+                                weight = matches.horMatchArr.length + matches.verMatchArr.length;
+                            }
+                            
+                            if (weight > 0)
+                            {
+                                
+                                gameData[i][j].right = gameData[i + 1][j].left = weight;
+
+                                if (bestMatch==null)
+                                {
+                                    bestMatch = { source: gameData[i][j], target: gameData[i + 1][j] }
+                                }
+                                else
+                                {
+                                    if (Math.max(bestMatch.source.left,bestMatch.source.right,bestMatch.source.top,bestMatch.source.bottom,
+                                                bestMatch.target.left, bestMatch.target.right, bestMatch.target.top, bestMatch.target.bottom) < weight)
+                                    {
+                                        bestMatch = { source: gameData[i][j], target: gameData[i + 1][j] }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                gameData[i][j].right = gameData[i + 1][j].left = 0;
+                            }
+                            swapColors(gameData[i + 1][j],gameData[i][j]);   
+                        }
+                        if (gameData[i][j].bottom == null)
+                        {
+                            swapColors(gameData[i][j], gameData[i][j+1]);
+                            var matches = findElementMatches(gameData[i][j]);
+
+                            if (matches.horMatchArr.length > 2 || matches.verMatchArr.length > 2) {
+                                weight = matches.horMatchArr.length + matches.verMatchArr.length;
+                            }
+
+                            if (weight > 0)
+                            {
+                                gameData[i][j].bottom = gameData[i][j + 1].top = weight;
+                                if (bestMatch == null) {
+                                    bestMatch = { source: gameData[i][j], target: gameData[i][j+1] }
+                                }
+                                else {
+                                    if (Math.max(bestMatch.source.left, bestMatch.source.right, bestMatch.source.top, bestMatch.source.bottom,
+                                                bestMatch.target.left, bestMatch.target.right, bestMatch.target.top, bestMatch.target.bottom) < weight) {
+                                        bestMatch = { source: gameData[i][j], target: gameData[i][j+1] }
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                gameData[i][j].bottom = gameData[i][j+1].top = 0;
+                            }
+                            swapColors(gameData[i][j+1],gameData[i][j]);   
+                        }
+                    }
+
+                }
+                return bestMatch;
+            }
+
+            function swapColors(source, target) {
+                var tmpcolor = source.color;
+                source.color = target.color;
+                target.color = tmpcolor;
+            }
+
+
+
+            function findElementMatches(element) {
               //horizontal 
               var horMatchArr = [element];
               var verMatchArr = [element];
@@ -715,13 +816,13 @@ var Game = Game || (function (createjs, $) {
               var topBoundary=element.j-2;
               var bottomBoundary = element.j + 2;
 
-              var color = element.getChildByName("circle").color;
+              var color = element.color;
 
 
               while ((newI > -1) && (newI >= leftBoundary))
               {
                   var leftElement = gameData[newI][element.j];
-                  if (color == leftElement.getChildByName("circle").color)
+                  if (color == leftElement.color)
                   {
                       //insert match into array
                       horMatchArr.splice(0, 0, leftElement);
@@ -736,7 +837,7 @@ var Game = Game || (function (createjs, $) {
               newI = element.i + 1;
               while ((newI < 10) && (newI <= rightBoundary)) {
                   var rightElement = gameData[newI][element.j];
-                  if (color == rightElement.getChildByName("circle").color) {
+                  if (color == rightElement.color) {
                       horMatchArr.push(rightElement);
 
                   }
@@ -750,7 +851,7 @@ var Game = Game || (function (createjs, $) {
 
               while ((newJ > -1) && (newJ >= topBoundary)) {
                   var topElement = gameData[element.i][newJ];
-                  if (color == topElement.getChildByName("circle").color) {
+                  if (color == topElement.color) {
                       verMatchArr.splice(0, 0, topElement);
 
                   }
@@ -763,7 +864,7 @@ var Game = Game || (function (createjs, $) {
               newJ = element.j + 1;
               while ((newJ < 10) && (newJ <= bottomBoundary)) {
                   var bottomElement = gameData[element.i][newJ];
-                  if (color == bottomElement.getChildByName("circle").color) {
+                  if (color == bottomElement.color) {
                       verMatchArr.push(bottomElement);
 
                   }
@@ -776,8 +877,8 @@ var Game = Game || (function (createjs, $) {
              return { horMatchArr: horMatchArr, verMatchArr: verMatchArr };
           
           }
-          //this function searches for matches
-          function scanTableForMatches() {
+            //this function searches for matches
+            function swapMatchesFound() {
               var matchesfound = false;
               //vertical 
               for (var i = 0; i < 10; i++) {
@@ -802,35 +903,20 @@ var Game = Game || (function (createjs, $) {
                       }
 
 
-                     /* if (matches.verMatchArr.length > 3) {
-                          for (var x = 0; x < matches.verMatchArr.length ; x++) {
-                              alert("50 Extra ponits to you ");
-                              gameCounter = gameCounter +  10;
-
-                          }
-                      } else {
-
-                          if (matches.horMatchArr.length > 3) {
-                              for (var x = 0; x < matches.horMatchArr.length; x++) {
-                                  alert("50 Extra ponits to you ");
-                                  gameCounter = gameCounter + 10;
-                              }
-                          }
-                      }*/
-
-                   
+                 
                   }
               }
               return matchesfound;
           }
           
-          function scanAndCompactTable() {
-
-              if (scanTableForMatches())
+            function scanAndCompactTable() {
+              currentBestMatch = findPotentialElementMatchesReturnBest();
+              if (swapMatchesFound())
                     compactTable();
-          }
+            }
          //this function removes matches and generates new circles
-          function compactTable() {
+            function compactTable() {
+              mainBox.mouseEnabled = false;
               var changed = false;
               
               for (var i = 0; i < 10; i++) {
@@ -848,18 +934,18 @@ var Game = Game || (function (createjs, $) {
                           }
                           if (k < 0) {
                               mainBox.removeChild(gameData[i][j]);
-                              gameData[i][j] = createElement(i, j, xx, 0);
+                              gameData[i][j] = createElement(i, j, xx, boardStartY);
                               gameData[i][j].original_y = yy;
 
                               mainBox.addChild(gameData[i][j]);
                               var el = gameData[i][j];
-                              createjs.Tween.get(el, { override: true }).to({ y: yy }, 50);//, createjs.Ease.bounceOut).call);
+                              createjs.Tween.get(el, { override: true }).to({ y: yy }, 100);//, createjs.Ease.bounceOut).call);
                           }
                           else {
                               var topCircle = gameData[i][k];
                               var yy1 = topCircle.y;
 
-                              createjs.Tween.get(topCircle, { override: true }).to({ y: yy }, 50);
+                              createjs.Tween.get(topCircle, { override: true }).to({ y: yy }, 100);
 
                               topCircle.j = j;
  
@@ -891,11 +977,17 @@ var Game = Game || (function (createjs, $) {
                   }
                  
               }
+              mainBox.mouseEnabled = true;
               if (changed)
-                  tableCompactTimeout = setTimeout(scanAndCompactTable, 100);
+              {
+                  
+                  tableCompactTimeout = setTimeout(scanAndCompactTable, 1000);
+              }
+                  
+             
           }
          
-          function showGameOver() {
+            function showGameOver() {
 
               mainBox.mouseEnabled = false;
 
@@ -903,9 +995,9 @@ var Game = Game || (function (createjs, $) {
               container.visible = true;
               
               stage.setChildIndex(container, mainBox.getNumChildren() - 1);
-          }
+            }
 
-          function showQuestionContainer(question) {
+            function showQuestionContainer(question) {
 
               if (mainBox)
                 mainBox.mouseEnabled = false;
@@ -960,7 +1052,7 @@ var Game = Game || (function (createjs, $) {
                 stage.setChildIndex(container, mainBox.getNumChildren() - 1);
           }
 
-          function handleAnswerPressUp(evt)
+            function handleAnswerPressUp(evt)
           {
               if (evt.currentTarget.IsCorrect) {
                   alert('You answer is correct');
@@ -987,7 +1079,7 @@ var Game = Game || (function (createjs, $) {
               }
           }
 
-          function createQuestionContainer() {
+            function createQuestionContainer() {
 
                 //library container
                 var container = new createjs.Container();
@@ -1012,7 +1104,7 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
-          function createGameOverContainer() {
+            function createGameOverContainer() {
 
               //library container
               var container = new createjs.Container();
@@ -1034,8 +1126,8 @@ var Game = Game || (function (createjs, $) {
 
               container.visible = false;
               return container;
-          }
-          function createUserScoreContainer() {
+            }
+            function createUserScoreContainer() {
                 //user score container
                 var container = new createjs.Container();
 
@@ -1062,9 +1154,63 @@ var Game = Game || (function (createjs, $) {
                 scoreText.name="score";
                 container.addChild(scoreText);
                 return container;
-            }
+          }
 
-          function createMovesLeftContainer() {
+
+
+
+            function createHintButton() {
+    
+              var container = new createjs.Container();
+
+
+              var background = new createjs.Shape();
+              background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("purple");
+              background.graphics.drawRect(0, 0, 100, 50);
+              container.addChild(background);
+
+
+              var buttonLabel = new createjs.Text("", "15px Verdana", "");
+              buttonLabel.color = "yellow";
+              buttonLabel.text = "HINT";
+              buttonLabel.x = 25;
+              buttonLabel.y = 2;
+              container.addChild(buttonLabel);
+              container.on("pressup", handleButtonPressUp);
+
+              function handleButtonPressUp(evt) {
+                  
+                  if (currentBestMatch)
+                  {
+                      createjs.Tween.get(currentBestMatch.source)
+                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000)
+                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000)
+                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000);
+                      createjs.Tween.get(currentBestMatch.target)
+                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000)
+                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000)
+                                  .to({ scaleX: 2, scaleY: 2 }, 1000)
+                                  .to({ scaleX: 1.0, scaleY: 1.0 }, 1000);
+                  }
+                  
+                 
+                  
+                 
+
+
+              }
+
+
+
+
+              return container;
+          }
+            function createMovesLeftContainer() {
                 //user score container
                 var container = new createjs.Container();
 
@@ -1095,7 +1241,7 @@ var Game = Game || (function (createjs, $) {
 
 
 
-          function createWinnerView() {
+            function createWinnerView() {
 
                 var view = new createjs.Container();
                 view.addChild(new createjs.Bitmap(queue.getResult("rf_skyFinalBackground")))
@@ -1272,7 +1418,7 @@ var Game = Game || (function (createjs, $) {
                 return view;
             }
 
-          function submitScore(score) {
+            function submitScore(score) {
 
                 var url = gameData.leaderboardUrl;
 
