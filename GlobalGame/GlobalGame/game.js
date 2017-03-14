@@ -471,7 +471,7 @@ var Game = Game || (function (createjs, $) {
                 //drag functionality
                 
                 function handleElementDrag(evt) {
-
+                    
                     if (mouseDragPosition != null) {
                         var deltaX = evt.stageX - mouseDragPosition.x;
                         var deltaY = evt.stageY - mouseDragPosition.y;
@@ -483,7 +483,8 @@ var Game = Game || (function (createjs, $) {
                         //we don't want a circle to move diagonally, so we are eliminating one of the axis 
                         
 
-                        if (isDragging && evt.currentTarget.targetNeighbour==null) {
+                        if (isDragging && evt.currentTarget.targetNeighbour == null) {
+                            
                             var iIndex = evt.currentTarget.i;
                             var jIndex = evt.currentTarget.j;
                             if (Math.abs(deltaX) > Math.abs(deltaY))
@@ -502,12 +503,12 @@ var Game = Game || (function (createjs, $) {
                                     xx = targetNeighbour.original_x;
 
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget).to({ x: xx }, 50);
+                                createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: xx }, 50);
 
                                 //identify right neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
 
-
+                                evt.currentTarget.allowSwap = (evt.currentTarget.right > 0);
                                 mouseDragPosition = null;
                                 isDragging = false;
 
@@ -521,11 +522,11 @@ var Game = Game || (function (createjs, $) {
                                 if (xx < targetNeighbour.original_x - dragThreshold)
                                 xx = targetNeighbour.original_x;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget).to({ x: xx }, 100);
+                                createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: xx }, 100);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
-
+                                evt.currentTarget.allowSwap = (evt.currentTarget.left > 0);
                                 mouseDragPosition = null;
                                 isDragging = false;
 
@@ -540,11 +541,11 @@ var Game = Game || (function (createjs, $) {
                                 if (yy < targetNeighbour.original_y - dragThreshold)
                                     yy = targetNeighbour.original_y;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget).to({ y: yy }, 50);
+                                createjs.Tween.get(evt.currentTarget, { override: true }).to({ y: yy }, 50);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
-
+                                evt.currentTarget.allowSwap = (evt.currentTarget.top > 0);
 
 
                                 mouseDragPosition = null;
@@ -562,11 +563,11 @@ var Game = Game || (function (createjs, $) {
                                 if (yy > targetNeighbour.original_y + dragThreshold)
                                     yy = targetNeighbour.original_y;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget).to({ y: yy  }, 50);
+                                createjs.Tween.get(evt.currentTarget, { override: true }).to({ y: yy }, 50);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
-
+                                evt.currentTarget.allowSwap = (evt.currentTarget.bottom > 0);
 
                               
                                 mouseDragPosition = null;
@@ -592,8 +593,8 @@ var Game = Game || (function (createjs, $) {
                    if (evt.currentTarget.targetNeighbour != null) {
                        var targetCircle = evt.currentTarget.targetNeighbour;
 
-                       createjs.Tween.get(evt.currentTarget).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 50);
-                       var curi = evt.currentTarget.i;
+                       createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 250);
+                     /*  var curi = evt.currentTarget.i;
                        var curj = evt.currentTarget.j;
 
                        evt.currentTarget.i = targetCircle.i;
@@ -604,12 +605,25 @@ var Game = Game || (function (createjs, $) {
 
                        gameData[evt.currentTarget.i][evt.currentTarget.j] = evt.currentTarget;
 
-                       gameData[targetCircle.i][targetCircle.j] = targetCircle;
+                       gameData[targetCircle.i][targetCircle.j] = targetCircle;*/
 
-                       if (swapMatchesFound()) {
+                       if (evt.currentTarget.allowSwap===true) {
+
+                           var curi = evt.currentTarget.i;
+                           var curj = evt.currentTarget.j;
+
+                           evt.currentTarget.i = targetCircle.i;
+                           evt.currentTarget.j = targetCircle.j;
+
+                           targetCircle.i = curi;
+                           targetCircle.j = curj;
+
+                           gameData[evt.currentTarget.i][evt.currentTarget.j] = evt.currentTarget;
+
+                           gameData[targetCircle.i][targetCircle.j] = targetCircle;
 
                            mainBox.setChildIndex(targetCircle, mainBox.getNumChildren() - 1);
-                           createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 50);
+                           createjs.Tween.get(targetCircle, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 250);
 
                            var curx = evt.currentTarget.original_x; var cury = evt.currentTarget.original_y;
                            evt.currentTarget.original_x = targetCircle.original_x;
@@ -625,7 +639,7 @@ var Game = Game || (function (createjs, $) {
                            ///////////////////////////
 
                            gameState.initialize= false;
-                           tableCompactTimeout = setTimeout(compactTable, 100);
+                           tableCompactTimeout = setTimeout(scanAndCompactTable, 100);
 
                            ///////////////////////////
                            movesLeft--;
@@ -647,8 +661,8 @@ var Game = Game || (function (createjs, $) {
                        }
                        else {
                            mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                           createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 50);
-
+                           createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 250);
+                           /*
 
 
                            curi = evt.currentTarget.i; var curj = evt.currentTarget.j;
@@ -658,7 +672,7 @@ var Game = Game || (function (createjs, $) {
 
                            gameData[evt.currentTarget.i][evt.currentTarget.j] = evt.currentTarget;
 
-                           gameData[targetCircle.i][targetCircle.j] = targetCircle;
+                           gameData[targetCircle.i][targetCircle.j] = targetCircle;*/
 
                        }
                        targetCircle.targetNeighbour = null;
@@ -731,13 +745,8 @@ var Game = Game || (function (createjs, $) {
                         if (gameData[i][j].right == null)
                         {
                             swapColors(gameData[i][j], gameData[i + 1][j]);
-                            var matches = findElementMatches(gameData[i][j]);
-
-                            if (matches.horMatchArr.length > 2 || matches.verMatchArr.length > 2) {
-                                weight = matches.horMatchArr.length + matches.verMatchArr.length;
-                            }
                             
-                            if (weight > 0)
+                            if ((weight = matchWeight(gameData[i][j], gameData[i + 1][j])) > 0)
                             {
                                 
                                 gameData[i][j].right = gameData[i + 1][j].left = weight;
@@ -764,13 +773,9 @@ var Game = Game || (function (createjs, $) {
                         if (gameData[i][j].bottom == null)
                         {
                             swapColors(gameData[i][j], gameData[i][j+1]);
-                            var matches = findElementMatches(gameData[i][j]);
 
-                            if (matches.horMatchArr.length > 2 || matches.verMatchArr.length > 2) {
-                                weight = matches.horMatchArr.length + matches.verMatchArr.length;
-                            }
 
-                            if (weight > 0)
+                            if ((weight = matchWeight(gameData[i][j], gameData[i][j+1])) > 0)
                             {
                                 gameData[i][j].bottom = gameData[i][j + 1].top = weight;
                                 if (bestMatch == null) {
@@ -790,6 +795,8 @@ var Game = Game || (function (createjs, $) {
                             }
                             swapColors(gameData[i][j+1],gameData[i][j]);   
                         }
+
+                        gameData[i][j].getChildByName('label').text = gameData[i][j].left + ", " + gameData[i][j].top + "\n" + gameData[i][j].right + ", " + gameData[i][j].bottom;
                     }
 
                 }
@@ -801,7 +808,16 @@ var Game = Game || (function (createjs, $) {
                 source.color = target.color;
                 target.color = tmpcolor;
             }
+            function matchWeight(source, target) {
+                var weight = 0;
+                var matchesS = findElementMatches(source);
+                var matchesT = findElementMatches(target);
 
+                if (matchesS.horMatchArr.length > 2 || matchesS.verMatchArr.length > 2 || matchesT.horMatchArr.length > 2 || matchesT.verMatchArr.length > 2) {
+                    weight = matchesS.horMatchArr.length + matchesS.verMatchArr.length + matchesT.horMatchArr.length + matchesT.verMatchArr.length;
+                }
+                return weight;
+            }
 
 
             function findElementMatches(element) {
