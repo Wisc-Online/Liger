@@ -62,7 +62,8 @@ var Game = Game || (function (createjs) {
                    { id: "panel", src: assetsPath + "Panel.png" },
                    { id: "playbutton", src: assetsPath + "SequencePlayButton.png" },
                    { id: "crate", src: assetsPath + "crate.png" },
-                   { id: "enemy", src: assetsPath + "enemy.png" }
+                   { id: "enemy", src: assetsPath + "enemy.png" },
+                  { id: "beam", src: assetsPath + "beam.png" }
             ];
 
             var queue = new createjs.LoadQueue(false);
@@ -128,31 +129,40 @@ var Game = Game || (function (createjs) {
 
             }
 
+           // var player; 
+           // var playerContainer;
 
             function StartInteraction() {
-                // load players
-
+                // load player
                 var playerContainer = new createjs.Container();
                 var player = new createjs.Bitmap(queue.getResult("crate"))
                 var playerMovement = 4
-
                 player.x = 000
                 player.y = 500
 
                 playerContainer.addChild(player)
-          
+
+                //load controls
                 this.document.onkeydown = keyPressed;
-                var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39
+                var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39, KEYCODE_SPACEBAR = 32
+
 
                 // load enemy
                 var enemyContainer = new createjs.Container();
                 var enemy = new createjs.Bitmap(queue.getResult("enemy"))
                 enemy.x = 350
                 enemy.y = 100
-                
+
                 enemyContainer.addChild(enemy)
 
                 self.stage.addChild(playerContainer, enemyContainer);
+
+                //load beam
+                var beamContainer = new createjs.Container();
+                beamContainer = new createjs.Bitmap(queue.getResult("beam"))
+                var beamMovement = 10
+           
+
 
                 function keyPressed(event) {
                     //  console.log(event.keyCode);
@@ -165,6 +175,13 @@ var Game = Game || (function (createjs) {
                             moveRight();
                             event.preventDefault();
                             break;
+                            //beam mapped to spacebar
+                        case KEYCODE_SPACEBAR:
+                            makeBeam();
+                            event.preventDefault();
+                            break;
+
+
 
                     }
 
@@ -183,12 +200,22 @@ var Game = Game || (function (createjs) {
                             playerContainer.x = 20
                         }
 
+                    }
+                    //beam display when space pressed
+                    function makeBeam() {
+                    
+                        beamContainer.x = player.x;
+                        beamContainer.y = player.y;
 
+                        self.stage.addChild(beamContainer);
+
+
+                      //  }
                     }
 
                 }
 
-                
+            }
 
 
                 function deliverQuestions() {
@@ -199,7 +226,6 @@ var Game = Game || (function (createjs) {
 
                 }
 
-            }
 
             function gameOverScreen() {
 

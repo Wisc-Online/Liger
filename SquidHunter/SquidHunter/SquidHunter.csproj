@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\background.jpg" />
+    <Content Include="Assets\beam.png" />
     <Content Include="Assets\crate.png" />
     <Content Include="Assets\enemy.png" />
     <Content Include="packages.config" />
