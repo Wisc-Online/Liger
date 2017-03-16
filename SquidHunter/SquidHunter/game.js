@@ -129,16 +129,25 @@ var Game = Game || (function (createjs) {
 
             }
 
-           // var player; 
-           // var playerContainer;
-
+            // var player; 
+            // var playerContainer;
+     
+           // var beamContainer = new createjs.Container();
+           // var beam = new createjs.Bitmap(queue.getResult("beam"));
+            var beamContainer;
+            var beam;
+            var enemy;
+         
             function StartInteraction() {
+
+                //madeEnemy();
+
                 // load player
                 var playerContainer = new createjs.Container();
                 var player = new createjs.Bitmap(queue.getResult("crate"))
-                var playerMovement = 4
-                player.x = 000
-                player.y = 500
+                var playerMovement = 6
+                //player.x = 000
+                //player.y = 500
 
                 playerContainer.addChild(player)
 
@@ -147,21 +156,20 @@ var Game = Game || (function (createjs) {
                 var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39, KEYCODE_SPACEBAR = 32
 
 
-                // load enemy
+                self.stage.addChild(playerContainer);
+                playerContainer.x = 400;
+                playerContainer.y = 550;
+             
+                //load enemy
+                console.log("made enemy")
                 var enemyContainer = new createjs.Container();
-                var enemy = new createjs.Bitmap(queue.getResult("enemy"))
+                enemy = new createjs.Bitmap(queue.getResult("enemy"));
                 enemy.x = 350
                 enemy.y = 100
 
                 enemyContainer.addChild(enemy)
 
-                self.stage.addChild(playerContainer, enemyContainer);
-
-                //load beam
-                var beamContainer = new createjs.Container();
-                beamContainer = new createjs.Bitmap(queue.getResult("beam"))
-                var beamMovement = 10
-           
+                self.stage.addChild(enemyContainer);
 
 
                 function keyPressed(event) {
@@ -201,30 +209,71 @@ var Game = Game || (function (createjs) {
                         }
 
                     }
-                    //beam display when space pressed
+                    //beam display when space pressed ////////i should add an if or a do while here 
+                    //to only have 1 beam on screen at a time
+
                     function makeBeam() {
-                    
-                        beamContainer.x = player.x;
-                        beamContainer.y = player.y;
 
+                        console.log("making beam")
+                        beamContainer = new createjs.Container();
+                        beam = new createjs.Bitmap(queue.getResult("beam"));
+                        beamContainer.addChild(beam);
                         self.stage.addChild(beamContainer);
-
-
-                      //  }
+                        
+                        beamContainer.x = playerContainer.x;
+                        beamContainer.y = 500;
+                     
+                        madeBeam = true;
+                        
                     }
 
                 }
 
             }
 
+            var madeBeam = false;
 
-                function deliverQuestions() {
 
-                }
 
-                function deliverAnswers() {
+            function moveBeam() {
+               // console.log("did it")
+              beamContainer.y -= 10
+          //      enemy.alpha = 0.2
+           //     var pt = beamContainer.localToLocal(100, 0, enemy);
+           //     if (enemy.hitTest(pt.x, pt.y)) {
+           //         enemy.alpha = 1
+           //     }
 
-                }
+
+            }
+
+            //load enemy
+            function madeEnemy() {
+
+               //    console.log("made enemy")
+               //     var enemyContainer = new createjs.Container();
+               //     var enemy = new createjs.Bitmap(queue.getResult("enemy"));
+               //         enemy.x = 350
+               //         enemy.y = 100
+                       
+               //enemyContainer.addChild(enemy)
+
+               //self.stage.addChild(enemyContainer);
+
+            }
+
+         
+
+            function deliverQuestions() {
+
+            }
+
+
+
+
+            function deliverAnswers() {
+
+            }
 
 
             function gameOverScreen() {
@@ -238,13 +287,28 @@ var Game = Game || (function (createjs) {
                 }
             }
 
-
+            var fps = 30;
+            var tickCount = 0;
             //this updates the stage every tick not sure if we need it but
             createjs.Ticker.addEventListener("tick", handleTick);
             createjs.Ticker.on("tick", handleTick);
-            createjs.Ticker.setFPS(30);
+            createjs.Ticker.setFPS(fps);
 
             function handleTick(event) {
+                tickCount++
+                  
+               // if (tickCount == 30) {
+                  //  console.log("hey" + tickCount)
+                    tickCount = 0;
+                    if (madeBeam == true) {
+                        moveBeam();
+                    
+
+                    }
+
+              //  }
+
+
                 self.stage.update();
 
             }
