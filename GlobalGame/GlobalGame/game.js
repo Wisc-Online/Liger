@@ -593,7 +593,7 @@ var Game = Game || (function (createjs, $) {
                    if (evt.currentTarget.targetNeighbour != null) {
                        var targetCircle = evt.currentTarget.targetNeighbour;
 
-                       createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 250);
+                       createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 100);
                      /*  var curi = evt.currentTarget.i;
                        var curj = evt.currentTarget.j;
 
@@ -623,7 +623,7 @@ var Game = Game || (function (createjs, $) {
                            gameData[targetCircle.i][targetCircle.j] = targetCircle;
 
                            mainBox.setChildIndex(targetCircle, mainBox.getNumChildren() - 1);
-                           createjs.Tween.get(targetCircle, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 250);
+                           createjs.Tween.get(targetCircle, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 100);
 
                            var curx = evt.currentTarget.original_x; var cury = evt.currentTarget.original_y;
                            evt.currentTarget.original_x = targetCircle.original_x;
@@ -639,7 +639,7 @@ var Game = Game || (function (createjs, $) {
                            ///////////////////////////
 
                            gameState.initialize= false;
-                           tableCompactTimeout = setTimeout(scanAndCompactTable, 100);
+                           tableCompactTimeout = setTimeout(scanAndCompactTable, 102);
 
                            ///////////////////////////
                            movesLeft--;
