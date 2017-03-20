@@ -1054,7 +1054,7 @@ var Game = Game || (function (createjs, $) {
               {
                   alert('Your answer is WRONG');
          
-                  maxMoveNbr--;
+                  maxMoveNbr;
                   currentQuestion++;
                   if (currentQuestion >= gameData.Questions.length) {
                       currentArea = createWinnerView();
