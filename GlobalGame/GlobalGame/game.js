@@ -96,8 +96,10 @@ var Game = Game || (function (createjs, $) {
         var currentQuestion = 0;
         var boardStartX = 100;
         var boardStartY = 100;
-
         var currentBestMatch = null;
+        var containerAtX = 580;
+        var maxI = 10;
+        var maxJ = 10;
 
 
         stage.enableMouseOver(10);
@@ -116,15 +118,7 @@ var Game = Game || (function (createjs, $) {
 
         createjs.Ticker.on("tick", handleTick);
 
-        
-
-
-
         function initialize() {
-
-
-
-
             self.gameData = gameData;
             var gameState = {
                 score: 0,
@@ -139,30 +133,17 @@ var Game = Game || (function (createjs, $) {
                 movesLeft: 0
             }
 
-
-
             //create game objects
             var mainBox, questionContainer, userScoreContainer, layer, rectangle, movesLeftContainer, instructionsContainer;
             var button1, button2;
-
             var soundContainer = createSoundContainer();
-
-         
             var instructionsView = null;
 
             instructionsContainer = createInstructionContainer();
             // adding elements to stage
             stage.addChild(instructionsContainer);
 
-            
-
             //checks for matches and eliminates all matches when the game loads
-            
-
-            
-
-            
-
             var showView = function (view) {
 
                 // TODO: add transition animation (fade)
@@ -281,6 +262,9 @@ var Game = Game || (function (createjs, $) {
 
             function createSoundContainer()
             {
+                var scaleX = .75;
+                var scaleY = .75;
+
                 var soundContainer = new createjs.Container();
                 soundContainer.x = 0;
                 soundContainer.y = 0;
@@ -295,16 +279,16 @@ var Game = Game || (function (createjs, $) {
                 soundContainer.addChild(bg);
                 var sound = new createjs.Bitmap(queue.getResult("musicOn"));
                 sound.name = "musicOnImage"
-                sound.scaleX = .75;
-                sound.scaleY = .75;
+                sound.scaleX = scaleX;
+                sound.scaleY = scaleY;
                 soundContainer.addChild(sound);
                 soundContainer.addEventListener("click", function (evt) {
                     if (musicOn == true) {
 
                         musicOn = false;
                         var sound = new createjs.Bitmap(queue.getResult("musicOff"));
-                        sound.scaleX = .75;
-                        sound.scaleY = .75;
+                        sound.scaleX = scaleX;
+                        sound.scaleY = scaleY;
                         sound.name = "musicOffImage"
                         var destroy = evt.currentTarget.getChildByName("musicOnImage");
                         evt.currentTarget.removeChild(destroy);
@@ -314,8 +298,8 @@ var Game = Game || (function (createjs, $) {
                     } else {
                         musicOn = true;
                         var sound = new createjs.Bitmap(queue.getResult("musicOn"));
-                        sound.scaleX = .75;
-                        sound.scaleY = .75;
+                        sound.scaleX = scaleX;
+                        sound.scaleY = scaleY;
                         sound.name = "musicOnImage"
                         var destroy = evt.currentTarget.getChildByName("musicOffImage");
                         evt.currentTarget.removeChild(destroy);
@@ -397,20 +381,20 @@ var Game = Game || (function (createjs, $) {
 
                 //add user score container
                 userScoreContainer = createUserScoreContainer();
-                userScoreContainer.x = 580;
-                userScoreContainer.y = 265;
+                userScoreContainer.x = containerAtX;
+                userScoreContainer.y = 350;
                 container.addChild(userScoreContainer);
 
                 //
                 movesLeftContainer = createMovesLeftContainer();
-                movesLeftContainer.x = 580;
-                movesLeftContainer.y = 50;
+                movesLeftContainer.x = containerAtX;
+                movesLeftContainer.y = 250;
                 container.addChild(movesLeftContainer);
                 
 
                 var hintButtonContainer = createHintButton();
-                hintButtonContainer.x = 580;
-                hintButtonContainer.x = 400;
+                hintButtonContainer.x = containerAtX;
+                hintButtonContainer.y = 150;
                 container.addChild(hintButtonContainer);
                 return container;
             }
@@ -604,7 +588,6 @@ var Game = Game || (function (createjs, $) {
                        targetCircle.j = curj;
 
                        gameData[evt.currentTarget.i][evt.currentTarget.j] = evt.currentTarget;
-
                        gameData[targetCircle.i][targetCircle.j] = targetCircle;*/
 
                        if (evt.currentTarget.allowSwap===true) {
@@ -631,11 +614,7 @@ var Game = Game || (function (createjs, $) {
 
                            targetCircle.original_x = curx;
                            targetCircle.original_y = cury;
-
-
-                           
-
-
+                            
                            ///////////////////////////
 
                            gameState.initialize= false;
@@ -662,16 +641,10 @@ var Game = Game || (function (createjs, $) {
                        else {
                            mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
                            createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 250);
-                           /*
-
-
-                           curi = evt.currentTarget.i; var curj = evt.currentTarget.j;
-
+                           /*curi = evt.currentTarget.i; var curj = evt.currentTarget.j;
                            evt.currentTarget.i = targetCircle.i; evt.currentTarget.j = targetCircle.j;
                            targetCircle.i = curi; targetCircle.j = curj;
-
                            gameData[evt.currentTarget.i][evt.currentTarget.j] = evt.currentTarget;
-
                            gameData[targetCircle.i][targetCircle.j] = targetCircle;*/
 
                        }
@@ -680,8 +653,7 @@ var Game = Game || (function (createjs, $) {
                     mouseDragPosition = null;
                     isDragging = false;
                     evt.currentTarget.targetNeighbour = null;
-                    
-                    
+
                 }
 
                 return container;
@@ -703,7 +675,7 @@ var Game = Game || (function (createjs, $) {
 
             function fillBoard() {
                 var xCord = boardStartX;
-                for (var i = 0; i < 10; i++) {
+                for (var i = 0; i < maxI; i++) {
                     var yCord = boardStartY;
                     gameData[i] = [];
                     for (var j = 0; j < 10; j++) {
@@ -719,15 +691,15 @@ var Game = Game || (function (createjs, $) {
             function findPotentialElementMatchesReturnBest() {
                 var bestMatch = null;
 
-                for (var i = 0; i < 10; i++) {
+                for (var i = 0; i < maxI; i++) {
                 
-                    for (var j = 0; j < 10; j++) {
+                    for (var j = 0; j < maxJ; j++) {
                         gameData[i][j].left = gameData[i][j].right = gameData[i][j].top = gameData[i][j].bottom = null;
                     }
                 }
-                for (var i = 0; i < 10; i++) {
+                for (var i = 0; i < maxI; i++) {
                 
-                    for (var j = 0; j < 10; j++) {
+                    for (var j = 0; j < maxJ; j++) {
 
                         if (i == 0) gameData[i][j].left = 0;
 
@@ -851,7 +823,7 @@ var Game = Game || (function (createjs, $) {
               }
 
               newI = element.i + 1;
-              while ((newI < 10) && (newI <= rightBoundary)) {
+              while ((newI < maxI) && (newI <= rightBoundary)) {
                   var rightElement = gameData[newI][element.j];
                   if (color == rightElement.color) {
                       horMatchArr.push(rightElement);
@@ -878,7 +850,7 @@ var Game = Game || (function (createjs, $) {
               }
 
               newJ = element.j + 1;
-              while ((newJ < 10) && (newJ <= bottomBoundary)) {
+              while ((newJ < maxJ) && (newJ <= bottomBoundary)) {
                   var bottomElement = gameData[element.i][newJ];
                   if (color == bottomElement.color) {
                       verMatchArr.push(bottomElement);
@@ -897,8 +869,8 @@ var Game = Game || (function (createjs, $) {
             function swapMatchesFound() {
               var matchesfound = false;
               //vertical 
-              for (var i = 0; i < 10; i++) {
-                  for (var j = 0; j < 10; j++) {
+              for (var i = 0; i < maxI; i++) {
+                  for (var j = 0; j < maxJ; j++) {
                       var matches = findElementMatches(gameData[i][j]);
 
                       if (matches.horMatchArr.length > 2) {
@@ -935,8 +907,8 @@ var Game = Game || (function (createjs, $) {
               mainBox.mouseEnabled = false;
               var changed = false;
               
-              for (var i = 0; i < 10; i++) {
-                  for (var j = 9; j >= 0; j--) {
+              for (var i = 0; i < maxI; i++) {
+                  for (var j = maxJ - 1; j >= 0; j--) {
 
                       if (gameData[i][j].isEmpty) {
                           changed = true;
