@@ -1253,7 +1253,7 @@ var Game = Game || (function (createjs, $) {
 
 
                 var startOverButton = new createjs.Container();
-                startOverButtonBackground = new createjs.Bitmap(queue.getResult("rf_greenRoundBalloon"));
+                startOverButtonBackground = new createjs.Bitmap(queue.getResult("orange"));
                 startOverButtonBackground.scaleX = 2;
                 startOverButtonBackground.scaleY = 2;
 
@@ -1361,7 +1361,7 @@ var Game = Game || (function (createjs, $) {
                    ) {
 
                     var quitButton = new createjs.Container();
-                    quitButtonBackground = new createjs.Bitmap(queue.getResult("rf_blueRoundBalloon"))
+                    quitButtonBackground = new createjs.Bitmap(queue.getResult("red"))
                     quitButtonBackground.scaleX = 2;
                     quitButtonBackground.scaleY = 2;
                     quitButton.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#f00").drawCircle(80, 80, 80));
