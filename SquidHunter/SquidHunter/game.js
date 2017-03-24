@@ -62,7 +62,8 @@ var Game = Game || (function (createjs) {
                    { id: "panel", src: assetsPath + "Panel.png" },
                    { id: "playbutton", src: assetsPath + "SequencePlayButton.png" },
                    { id: "crate", src: assetsPath + "crate.png" },
-                   { id: "enemy", src: assetsPath + "enemy.png" }
+                   { id: "enemy", src: assetsPath + "enemy.png" },
+                  { id: "beam", src: assetsPath + "beam.png" }
             ];
 
             var queue = new createjs.LoadQueue(false);
@@ -128,31 +129,61 @@ var Game = Game || (function (createjs) {
 
             }
 
+            // var player; 
+            // var playerContainer;
+
+            // var beamContainer = new createjs.Container();
+            // var beam = new createjs.Bitmap(queue.getResult("beam"));
+            var beamContainer;
+            var beam;
+            var enemyContainer;
 
             function StartInteraction() {
-                // load players
 
+                //madeEnemy();
+
+                // load player
                 var playerContainer = new createjs.Container();
                 var player = new createjs.Bitmap(queue.getResult("crate"))
-                var playerMovement = 4
-
-                player.x = 000
-                player.y = 500
+                var playerMovement = 6
+                //player.x = 000
+                //player.y = 500
 
                 playerContainer.addChild(player)
-          
+
+                //load controls
                 this.document.onkeydown = keyPressed;
-                var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39
+                var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39, KEYCODE_SPACEBAR = 32
 
-                // load enemy
-                var enemyContainer = new createjs.Container();
-                var enemy = new createjs.Bitmap(queue.getResult("enemy"))
-                enemy.x = 350
-                enemy.y = 100
+
+                self.stage.addChild(playerContainer);
+                playerContainer.x = 400;
+                playerContainer.y = 550;
+
+                var widthOfSquid = 200;
+
+                //load enemy
+                console.log("made enemy")
+                enemyContainer = new createjs.Container();
+                enemyContainer.x = Math.random() * (self.stage.canvas.width - widthOfSquid);
+                enemyContainer.y = 100
+                var enemy = new createjs.Bitmap(queue.getResult("enemy"));
+
                 
+                createjs.Tween.get(enemyContainer, {loop: true}).to({ x: 0 }, 5000)
+                                                  .to({ x: self.stage.canvas.width - widthOfSquid }, 10000);
                 enemyContainer.addChild(enemy)
+                self.stage.addChild(enemyContainer);
 
-                self.stage.addChild(playerContainer, enemyContainer);
+                //load enemies
+                //  console.log("made enemies")
+                // function generate enemy (every 10 shots)
+              // new enemy = new enemyContainer
+                //array 
+                //var newenemy
+                //for (var i=0;i<10;i++) {
+                //newenemy[i] = new enemyContainer(random(10, 300), random(10, 300), 40, 20);
+
 
                 function keyPressed(event) {
                     //  console.log(event.keyCode);
@@ -165,6 +196,13 @@ var Game = Game || (function (createjs) {
                             moveRight();
                             event.preventDefault();
                             break;
+                            //beam mapped to spacebar
+                        case KEYCODE_SPACEBAR:
+                            makeBeam();
+                            event.preventDefault();
+                            break;
+
+
 
                     }
 
@@ -183,23 +221,101 @@ var Game = Game || (function (createjs) {
                             playerContainer.x = 20
                         }
 
+                    }
+
+                    //blow up the squid when the beam hits the squid
+                    function onBeamContainerTweenChange(evt) {
+                        var theTween = evt.target;
+
+                        var theBeamContainer = theTween.target;
+
+                        var pt = enemyContainer.globalToLocal(theBeamContainer.x, theBeamContainer.y);
+
+                        if (enemyContainer.hitTest(pt.x, pt.y)) {
+                            
+                            createjs.Tween.get(enemyContainer)
+                                            .to({ scaleX: 1.25, scaleY: 1.25 }, 200)
+                                            .to({ scaleX: 1, scaleY: 1 }, 100)
+                                            .to({ alpha: 0 }, 100)
+
+                        }
+                    }
+
+                    function makeBeam() {
+
+                        console.log("making beam")
+                        beamContainer = new createjs.Container();
+                        beam = new createjs.Bitmap(queue.getResult("beam"));
+                        beamContainer.addChild(beam);
+                        self.stage.addChild(beamContainer);
+
+                        beamContainer.x = playerContainer.x + 9;
+                        beamContainer.y = 500;
+
+                        //when beam hits the squid
+                        createjs.Tween.get(beamContainer, {
+                            onChange: onBeamContainerTweenChange
+                        })
+                                      .to({ y: -200 }, 500)
+                                       .call(function (evt) {
+                                           var theThingBeingTweened = evt.target;
+                                           self.stage.removeChild(theThingBeingTweened);
+                                       });
+
+                        madeBeam = true;
 
                     }
 
                 }
 
-                
+            }
+
+            var madeBeam = false;
 
 
-                function deliverQuestions() {
 
+            function moveBeam() {
+                // console.log("did it")
+                beamContainer.y -= 10
+
+
+
+                var pt = beamContainer.localToLocal(beamContainer.x, beamContainer.y, enemyContainer);
+                if (enemyContainer.hitTest(pt.x, pt.y)) {
+                    enemyContainer.alpha = 1
                 }
 
-                function deliverAnswers() {
-
-                }
 
             }
+
+            //load enemy
+            function madeEnemy() {
+
+                //    console.log("made enemy")
+                //     var enemyContainer = new createjs.Container();
+                //     var enemy = new createjs.Bitmap(queue.getResult("enemy"));
+                //         enemy.x = 350
+                //         enemy.y = 100
+
+                //enemyContainer.addChild(enemy)
+
+                //self.stage.addChild(enemyContainer);
+
+            }
+
+
+
+            function deliverQuestions() {
+
+            }
+
+
+
+
+            function deliverAnswers() {
+
+            }
+
 
             function gameOverScreen() {
 
@@ -212,13 +328,28 @@ var Game = Game || (function (createjs) {
                 }
             }
 
-
+            var fps = 30;
+            var tickCount = 0;
             //this updates the stage every tick not sure if we need it but
             createjs.Ticker.addEventListener("tick", handleTick);
             createjs.Ticker.on("tick", handleTick);
-            createjs.Ticker.setFPS(30);
+            createjs.Ticker.setFPS(fps);
 
             function handleTick(event) {
+                tickCount++
+
+                // if (tickCount == 30) {
+                //  console.log("hey" + tickCount)
+                tickCount = 0;
+                if (madeBeam == true) {
+                    //moveBeam();
+
+
+                }
+
+                //  }
+
+
                 self.stage.update();
 
             }
