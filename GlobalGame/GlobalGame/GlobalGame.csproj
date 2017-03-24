@@ -52,10 +52,12 @@
     <Content Include="game_old.js" />
     <Content Include="game.js" />
     <Content Include="game1 - .js" />
+    <Content Include="green.png" />
     <Content Include="index1.html" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="yellow.png" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -68,8 +70,11 @@
     <Content Include="instructions_question.png" />
     <Content Include="musicOff.png" />
     <Content Include="musicOn.png" />
+    <Content Include="orange.png" />
     <Content Include="plain_background.jpg" />
+    <Content Include="purple.png" />
     <Content Include="RapidFireInstructions.png" />
+    <Content Include="red.png" />
     <Content Include="rf_Balloon_Pop.mp3" />
     <Content Include="rf_blueLongBalloon.png" />
     <Content Include="rf_blueRoundBalloon.png" />
