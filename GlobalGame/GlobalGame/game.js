@@ -415,6 +415,10 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
+
+
+
+
             function createCircle(color)
             {
                 var circle = new createjs.Shape();
