@@ -46,6 +46,11 @@ var Game = Game || (function (createjs, $) {
             { id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
             { id: "rf_POP", src: assetsPath + "rf_POP.png" },
             { id: "musicOn", src: assetsPath + "musicOn.png" },
+            { id: "orange", src: assetsPath + "orange.png" },
+            { id: "red", src: assetsPath + "red.png" },
+            { id: "purple", src: assetsPath + "purple.png" },
+            { id: "yellow", src: assetsPath + "yellow.png" },
+            { id: "green", src: assetsPath + "green.png" },
             { id: "musicOff", src: assetsPath + "musicOff.png" }
         ];
         var queue = new createjs.LoadQueue(false);
@@ -1253,7 +1258,7 @@ var Game = Game || (function (createjs, $) {
 
 
                 var startOverButton = new createjs.Container();
-                startOverButtonBackground = new createjs.Bitmap(queue.getResult("orange"));
+                startOverButtonBackground = new createjs.Bitmap(queue.getResult("rf_blueRoundBalloon"));
                 startOverButtonBackground.scaleX = 2;
                 startOverButtonBackground.scaleY = 2;
 

@@ -44,6 +44,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="blue.png" />
     <Content Include="ButtonClickDry.mp3" />
     <Content Include="createjs.min.js" />
     <Content Include="deflate.mp3" />
