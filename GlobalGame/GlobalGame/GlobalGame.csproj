@@ -46,6 +46,8 @@
   <ItemGroup>
     <Content Include="blue.png" />
     <Content Include="ButtonClickDry.mp3" />
+    <Content Include="chakalaka.png" />
+    <Content Include="chakalaka1.jpg" />
     <Content Include="createjs.min.js" />
     <Content Include="deflate.mp3" />
     <Content Include="game - Copy.js" />

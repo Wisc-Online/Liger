@@ -30,6 +30,8 @@ var Game = Game || (function (createjs, $) {
             { id: "rf_instructions", src: assetsPath + "RapidFireInstructions.png" },
             { id: "rf_skyBackground", src: assetsPath + "rf_skyBackground.jpg" },
             { id: "rf_skyFinalBackground", src: assetsPath + "rf_skyFinalBackground.png" },
+             { id: "chakalaka", src: assetsPath + "chakalaka.png" },
+              { id: "chakalaka1", src: assetsPath + "chakalaka1.jpg" },
             { id: "rf_spaceBackground", src: assetsPath + "rf_spaceBackground.jpg" },
             { id: "rf_blueLongBalloon", src: assetsPath + "rf_blueLongBalloon.png" },
             { id: "rf_blueRoundBalloon", src: assetsPath + "rf_blueRoundBalloon.png" },
@@ -215,6 +217,7 @@ var Game = Game || (function (createjs, $) {
                 var exitContainer = new createjs.Container();
                 var exitBox = new createjs.Shape();
 
+             
                 exitContainer.x = 720;
                 exitContainer.y = 570;
                 var exitText = new createjs.Text("BACK", 'bold 18px Arial', "#fff");
@@ -414,7 +417,7 @@ var Game = Game || (function (createjs, $) {
                 var c = color;
                 if(!color)
                 {
-                    var colors = ["pink", "blue", "red", "orange", "green", "purple"];
+                    var colors = ["pink", "brown", "red", "orange", "green", "blue"];
                     var randomNum = Math.floor((Math.random() * 6) + 0);
                     color = colors[randomNum];
                 }
@@ -964,6 +967,13 @@ var Game = Game || (function (createjs, $) {
                                   gameState.score++;
                               }
                               
+                              if (gameState.score == 100)
+                              {
+                                  alert("Congratulations**, Your score is: " + gameState.score + " You will receive 10 eXtra points");
+                                  gameState.score += 10
+
+                              }
+
                               userScoreContainer.getChildByName('score').text = gameState.score;
                               
                           }
@@ -1086,13 +1096,13 @@ var Game = Game || (function (createjs, $) {
 
                 //library background
                 var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("yellow").beginFill("purple");
+                background.graphics.setStrokeStyle(1).beginStroke("yellow").beginFill("brown");
                 background.graphics.drawRect(0, 0, 400, 400);
                 background.alpha = 0.95;
                 container.addChild(background);
 
                 var questionText = new createjs.Text("", "20px Verdana", "");
-                questionText.color = "yellow";
+                questionText.color = "green";
                 questionText.text = "";
                 questionText.x = 10;
                 questionText.y = 20;
@@ -1133,7 +1143,7 @@ var Game = Game || (function (createjs, $) {
 
                 //user score background
                 var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("purple");
+                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("orange");
                 background.graphics.drawRect(0, 0, 100, 50);
                 container.addChild(background);
 
@@ -1156,16 +1166,12 @@ var Game = Game || (function (createjs, $) {
                 return container;
           }
 
-
-
-
             function createHintButton() {
     
               var container = new createjs.Container();
 
-
               var background = new createjs.Shape();
-              background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("purple");
+              background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("orange");
               background.graphics.drawRect(0, 0, 100, 50);
               container.addChild(background);
 
@@ -1198,15 +1204,7 @@ var Game = Game || (function (createjs, $) {
                                   .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 1000);
                   }
                   
-                 
-                  
-                 
-
-
               }
-
-
-
 
               return container;
           }
@@ -1216,7 +1214,7 @@ var Game = Game || (function (createjs, $) {
 
                 //user score background
                 var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("white").beginFill("purple");
+                background.graphics.setStrokeStyle(1).beginStroke("white").beginFill("orange");
                 background.graphics.drawRect(0, 0, 100, 50);
                 container.addChild(background);
 
@@ -1239,14 +1237,12 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
-
-
             function createWinnerView() {
 
                 var view = new createjs.Container();
-                view.addChild(new createjs.Bitmap(queue.getResult("rf_skyFinalBackground")))
+                view.addChild(new createjs.Bitmap(queue.getResult("chakalaka1")))
                 if (gameState.score > 0) {
-                    var titleText = new createjs.Text("You won " + gameState.score + " points!", "40pt Arial bold", "white");
+                    var titleText = new createjs.Text("BOOM CHAKALAKA You won " + gameState.score + " points!", "60pt Arial bold", "white");
                 } else {
 
                     var titleText = new createjs.Text("Sorry, you didn't win any points!", "40pt Arial bold", "white");
@@ -1258,10 +1254,8 @@ var Game = Game || (function (createjs, $) {
                 titleText.x = 400;
                 titleText.y = 50;
 
-
-
                 var startOverButton = new createjs.Container();
-                startOverButtonBackground = new createjs.Bitmap(queue.getResult("rf_blueRoundBalloon"));
+                startOverButtonBackground = new createjs.Bitmap(queue.getResult("rf_redRoundBalloon"));
                 startOverButtonBackground.scaleX = 2;
                 startOverButtonBackground.scaleY = 2;
 
@@ -1291,6 +1285,7 @@ var Game = Game || (function (createjs, $) {
                     ////////////////////
                     startOverButton.addEventListener("click", function (evt) {
 
+                        gameState.initialize = true;
                         nextStep = "startOver";
                         questionIndex = 0;
                         gameState.score = 0;
@@ -1346,18 +1341,11 @@ var Game = Game || (function (createjs, $) {
                                     quit();
                                 }
 
-
-
-
                             })
                     ;
 
 
                 };
-
-
-
-
 
                 if (isLmsConnected || navigator.userAgent.match(/Android/i)
                    || navigator.userAgent.match(/webOS/i)
@@ -1450,8 +1438,6 @@ var Game = Game || (function (createjs, $) {
             stage.removeAllChildren();
             initialize();
         }
-
-
 
     }
     return Game;
