@@ -372,8 +372,7 @@ var Game = Game || (function (createjs, $) {
                     createjs.Tween.get(event.currentTarget).to({ scaleX: 1.0, scaleY: 1.0 }, 100);
                 }
             }
-
-
+           
             function createMainContainer() {
 
                 var container = new createjs.Container();
@@ -1061,7 +1060,8 @@ var Game = Game || (function (createjs, $) {
               }
               else
               {
-                  alert('Your answer is WRONG');
+                  CustomAlert();
+                  //alert('Your answer is WRONG');
          
                   maxMoveNbr;
                   currentQuestion++;
@@ -1074,7 +1074,10 @@ var Game = Game || (function (createjs, $) {
                   }
 
               }
-          }
+            }
+           
+         
+
 
             function createQuestionContainer() {
 

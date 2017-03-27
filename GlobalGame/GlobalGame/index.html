@@ -5,8 +5,51 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="createjs.min.js" type="text/javascript"></script>
     <script src="game.js" type="text/javascript"></script>
+   <link rel = "stylesheet" href ="StyleSheet1.css"/>
 </head>
+
 <body style="background-color: #808080" >
+
+   <!--<div id="dialogoverlay"></div>
+    <div id="dialogbox">
+        <div>
+            <div id="=dialogboxhead"></div>
+            <div id="dialogboxbody"></div>
+            <div id="=dialogboxfoot"></div>
+        </div>
+    </div>
+ 
+
+    <h1>Try the custom Alert </h1>
+    <button onclick="alert('The Alert is working.')">Initiate Default Alert</button>
+    <script>
+
+        function CustomAlert() {
+            this.render = function () {
+                var winW = window.innerWidth;
+                var winH = window.innerHeight;
+                var dialogoverlay = document.getElementById('dialogoverlay');
+                var dialogbox = document.getElementById('dialogbox');
+                dialogboxoverlay.style.display = "block";
+                dialogoverlay.style.height = winH + "px";
+                dialogbox.style.left = (winW / 2) - (550 * .5) + "px";
+                dialogbox.style.top = "100px";
+                dialogbox.style.display = "block";
+
+                document.getElementById('dialogboxhead').innerHTML = "Acknowledge This Message";
+                document.getElementById('dialogboxbody').innerHTML = dialog;
+                document.getElementById('dialogboxfoot').innerHTML = '<button onclick="Alert.ok()">Ok</button>';
+            }
+            this.ok = function () {
+                document.getElementById('dialogbox').style.display = "none";
+                document.getElementById('dialogboxoverlay').style.display = "none";
+
+            }
+        }
+        var Alert = new CustomAlert();
+    </script>-->
+
+   
     <div >
         <canvas id="myCanvas" width="800" height="600" style="background-color: white;">
             <p>Your browser does not support HTML5!</p>
