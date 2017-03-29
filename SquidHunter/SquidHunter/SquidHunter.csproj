@@ -70,6 +70,7 @@
     <Content Include="Assets\beam.png" />
     <Content Include="Assets\crate.png" />
     <Content Include="Assets\enemy.png" />
+    <Content Include="Assets\laser.png" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
