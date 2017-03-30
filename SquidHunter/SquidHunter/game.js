@@ -59,13 +59,13 @@ var Game = Game || (function (createjs) {
             var assets = [
 
                 { id: "start_button", src: assetsPath + "SequencePlayButton.png" },
-                 { id: "background", src: assetsPath + "background.jpg" },
-                   { id: "panel", src: assetsPath + "Panel.png" },
-                   { id: "playbutton", src: assetsPath + "SequencePlayButton.png" },
-                   { id: "crate", src: assetsPath + "crate.png" },
-                   { id: "enemy", src: assetsPath + "enemy.png" },
-                  { id: "beam", src: assetsPath + "beam.png" },
-                  { id: "laser", src: assetsPath + "laser.png" }
+                { id: "background", src: assetsPath + "background.jpg" },
+                { id: "panel", src: assetsPath + "Panel.png" },
+                { id: "playbutton", src: assetsPath + "SequencePlayButton.png" },
+                { id: "crate", src: assetsPath + "crate.png" },
+                { id: "enemy", src: assetsPath + "enemy.png" },
+                { id: "beam", src: assetsPath + "beam.png" },
+                { id: "laser", src: assetsPath + "laser.png" }
             ];
 
             var queue = new createjs.LoadQueue(false);
@@ -141,7 +141,7 @@ var Game = Game || (function (createjs) {
 
             var enemyContainer;
             var enemies = [];
-            var widthOfSquid = 200;
+            var widthOfSquid = 50;
             var maxEnemyCount = 5;
 
 
@@ -181,6 +181,18 @@ var Game = Game || (function (createjs) {
                 setTimeout(delayEnemyShootLaser, Math.random() * 500 + 1000)
 
 
+                function onLaserContainerTweenChange(evt) {
+                    var theTween = evt.target;
+                    var theLaserContainer = theTween.target;
+
+                    var pt = playerContainer.globalToLocal(theLaserContainer.x, theLaserContainer.y);
+
+                    if (playerContainer.hitTest(pt.x, pt.y)) {
+
+                        console.log("you sunk my battle ship!")
+                    }
+                }
+
                 function makeLaser(theenemy) {
 
                     console.log("making laser")
@@ -189,18 +201,18 @@ var Game = Game || (function (createjs) {
                     laserContainer.addChild(laser);
                     self.stage.addChild(laserContainer);
 
-                    laserContainer.x = theenemy.x + 100;
-                    laserContainer.y = theenemy.y + 100;
+                    laserContainer.x = theenemy.x;
+                    laserContainer.y = theenemy.y;
 
                     //when laser hits the player
                     createjs.Tween.get(laserContainer, {
-                        //      onChange: onLaserContainerTweenChange
+                              onChange: onLaserContainerTweenChange
                     })
-                                  .to({ y: playerContainer.y, x : playerContainer.x + (Math.random() * 200) - 100 }, 1000)
-                                    .call(function (evt) {
-                                        var theThingBeingTweened = evt.target;
-                                        self.stage.removeChild(theThingBeingTweened);
-                                    });
+                        .to({ y: self.stage.canvas.height, x: playerContainer.x + (Math.random() * 200) - 100 }, 1000)
+                        .call(function (evt) {
+                            var theThingBeingTweened = evt.target;
+                            self.stage.removeChild(theThingBeingTweened);
+                        });
 
                     madeLaser = true;
 
@@ -231,7 +243,7 @@ var Game = Game || (function (createjs) {
                             moveRight();
                             event.preventDefault();
                             break;
-                            //beam mapped to spacebar
+                        //beam mapped to spacebar
                         case KEYCODE_SPACEBAR:
                             if (beamdelay <= 0) {
                                 beamdelay = 30
@@ -273,12 +285,12 @@ var Game = Game || (function (createjs) {
                                 // we hit the enemy... KILL IT!
 
                                 createjs.Tween.get(enemies[i])
-                                                .to({ scaleX: 1.25, scaleY: 1.25 }, 200)
-                                                .to({ scaleX: 1, scaleY: 1 }, 100)
-                                                .to({ alpha: 0 }, 100)
-                                                .call(function (evt) {
-                                                    stage.removeChild(evt.currentTarget);
-                                                });
+                                    .to({ scaleX: 1.25, scaleY: 1.25 }, 200)
+                                    .to({ scaleX: 1, scaleY: 1 }, 100)
+                                    .to({ alpha: 0 }, 100)
+                                    .call(function (evt) {
+                                        stage.removeChild(evt.currentTarget);
+                                    });
 
 
                                 // remove it from the array
@@ -305,11 +317,11 @@ var Game = Game || (function (createjs) {
                         createjs.Tween.get(beamContainer, {
                             onChange: onBeamContainerTweenChange
                         })
-                                      .to({ y: -200 }, 500)
-                                       .call(function (evt) {
-                                           var theThingBeingTweened = evt.target;
-                                           self.stage.removeChild(theThingBeingTweened);
-                                       });
+                            .to({ y: -200 }, 500)
+                            .call(function (evt) {
+                                var theThingBeingTweened = evt.target;
+                                self.stage.removeChild(theThingBeingTweened);
+                            });
 
                         madeBeam = true;
 
@@ -323,22 +335,51 @@ var Game = Game || (function (createjs) {
             var madeBeam = false;
             var madeLaser = false;
 
+            function isEnemyAtY(y) {
+
+                for (var i = 0; i < enemies.length; ++i) {
+                    if (enemies[i].y == y)
+                        return true;
+                }
+
+                return false;
+            }
+
             function spawnEnemy() {
                 //spawn enemies
                 console.log("made enemy")
                 enemyContainer = makeEnemy();
+                enemyContainer.scaleX = 0;
+                enemyContainer.scaleY = 0;
+                enemyContainer.alpha = 0;
+
+                do {
+                    enemyContainer.y = 30 + (Math.floor((Math.random() * maxEnemyCount)) * 50);
+                } while (isEnemyAtY(enemyContainer.y));
+
                 enemies.push(enemyContainer);
-                enemyContainer.x = Math.random() * (self.stage.canvas.width - widthOfSquid);
-                enemyContainer.y = 100
+
+                enemyContainer.x = 50 + Math.random() * (self.stage.canvas.width - widthOfSquid / 2);
+
+                var totalTime = 3000;
+
+                var totalWidth = self.stage.canvas.width - (widthOfSquid / 2) - 50;
+
+                var timeToTake = (enemyContainer.x / totalWidth) * totalTime;
+
+                createjs.Tween.get(enemyContainer)
+                    .to({ alpha: 1, scaleX: 0.5, scaleY: 0.5 }, 1000)
+                    .wait(100)
+                    .to({ x: 50 }, timeToTake, createjs.Ease.sinInOut)
+                    .call(function (evt) {
+                        createjs.Tween.get(evt.target, { loop: true })
+                            .to({ x: totalWidth }, totalTime, createjs.Ease.sinInOut)
+                            .to({ x: 50 }, totalTime, createjs.Ease.sinInOut);
+                    })
+                //.to({ rotation: 360 }, 1000)
 
 
-                createjs.Tween.get(enemyContainer, { loop: true })
-                    .to({ x: 50 }, 5000)
-                    
-                    .to({ rotation: 360 }, 1000)
-                    .to({ x:300 + Math.random() * self.stage.canvas.width - widthOfSquid}, 10000)
-                    
-                    
+
 
                 self.stage.addChild(enemyContainer);
             }
@@ -347,15 +388,19 @@ var Game = Game || (function (createjs) {
             function makeEnemy() {
                 var container = new createjs.Container();
                 var enemy = new createjs.Bitmap(queue.getResult("enemy"));
+                enemy.x = -100;
+                enemy.y = -56.5;
+
                 container.addChild(enemy);
+
                 return container;
             }
 
             function deliverQuestions() {
-          //      if (laserContainer.x  = playerContainer) {
-           //         window.alert("hit the player")
+                //      if (laserContainer.x  = playerContainer) {
+                //         window.alert("hit the player")
 
-                }
+                //}
             }
             function deliverAnswers() {
 
