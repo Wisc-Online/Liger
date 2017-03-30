@@ -1,4 +1,5 @@
-﻿/// <reference path="//code.createjs.com/createjs-2013.12.12.min.js" />
+﻿
+/// <reference path="//code.createjs.com/createjs-2013.12.12.min.js" />
 /// <reference path="../../../Content/GamesDownloadTemplate/lib/ScormHelper.js" />
 var Game = Game || (function (createjs) {
     //alert("Game starting");
@@ -282,8 +283,6 @@ var Game = Game || (function (createjs) {
 
                                 // remove it from the array
                                 enemies.splice(i, 1);
-
-
                                 // we removed an item from the array, fix the index so we dont skip checking any enemies.
                                 --i;
                             }
@@ -337,8 +336,8 @@ var Game = Game || (function (createjs) {
                     .to({ x: 50 }, 5000)
                     
                     .to({ rotation: 360 }, 1000)
-                 //   .to({x:Math.random()})
-                    .to({ x: self.stage.canvas.width - widthOfSquid}, 10000)
+                    .to({ x:300 + Math.random() * self.stage.canvas.width - widthOfSquid}, 10000)
+                    
                     
 
                 self.stage.addChild(enemyContainer);
@@ -353,7 +352,10 @@ var Game = Game || (function (createjs) {
             }
 
             function deliverQuestions() {
+          //      if (laserContainer.x  = playerContainer) {
+           //         window.alert("hit the player")
 
+                }
             }
             function deliverAnswers() {
 
