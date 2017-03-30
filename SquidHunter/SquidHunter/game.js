@@ -65,7 +65,8 @@ var Game = Game || (function (createjs) {
                 { id: "crate", src: assetsPath + "crate.png" },
                 { id: "enemy", src: assetsPath + "enemy.png" },
                 { id: "beam", src: assetsPath + "beam.png" },
-                { id: "laser", src: assetsPath + "laser.png" }
+                { id: "laser", src: assetsPath + "laser.png" },
+                { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
             ];
 
             var queue = new createjs.LoadQueue(false);
@@ -88,7 +89,7 @@ var Game = Game || (function (createjs) {
                 introductionScreen();
 
             }
-            //load introduction screen /play button
+            //load introduction screen/play button
             function introductionScreen() {
 
                 var instructionsScreen = new createjs.Container();
@@ -143,7 +144,12 @@ var Game = Game || (function (createjs) {
             var enemies = [];
             var widthOfSquid = 50;
             var maxEnemyCount = 5;
-
+            var beamCount = false;  //not used yet
+            
+            var isQuestionDisplayed = false;
+            var questionArray = [];
+               
+            var pausedGame = false; //not used yet
 
             function StartInteraction() {
 
@@ -188,8 +194,10 @@ var Game = Game || (function (createjs) {
                     var pt = playerContainer.globalToLocal(theLaserContainer.x, theLaserContainer.y);
 
                     if (playerContainer.hitTest(pt.x, pt.y)) {
-
-                        console.log("you sunk my battle ship!")
+                        console.log("laser hit the player")
+                        if (!isQuestionDisplayed) {
+                            deliverQuestions();
+                        }
                     }
                 }
 
@@ -217,6 +225,7 @@ var Game = Game || (function (createjs) {
                     madeLaser = true;
 
                 }
+
                 function enemyShootLaser() {
                     if (enemies.length > 0) {
                         var enemyindex = Math.floor(Math.random() * enemies.length)
@@ -303,6 +312,9 @@ var Game = Game || (function (createjs) {
 
 
                     function makeBeam() {
+                     //   if (beamCount = true) {
+
+                     //   }
 
                         console.log("making beam")
                         beamContainer = new createjs.Container();
@@ -329,14 +341,11 @@ var Game = Game || (function (createjs) {
                 }
             }
 
-
-
-
             var madeBeam = false;
             var madeLaser = false;
 
             function isEnemyAtY(y) {
-
+                //check enemies array to spawn at diff y locations
                 for (var i = 0; i < enemies.length; ++i) {
                     if (enemies[i].y == y)
                         return true;
@@ -353,18 +362,16 @@ var Game = Game || (function (createjs) {
                 enemyContainer.scaleY = 0;
                 enemyContainer.alpha = 0;
 
+                //enemy functionality
                 do {
                     enemyContainer.y = 30 + (Math.floor((Math.random() * maxEnemyCount)) * 50);
                 } while (isEnemyAtY(enemyContainer.y));
 
                 enemies.push(enemyContainer);
-
                 enemyContainer.x = 50 + Math.random() * (self.stage.canvas.width - widthOfSquid / 2);
 
                 var totalTime = 3000;
-
                 var totalWidth = self.stage.canvas.width - (widthOfSquid / 2) - 50;
-
                 var timeToTake = (enemyContainer.x / totalWidth) * totalTime;
 
                 createjs.Tween.get(enemyContainer)
@@ -376,10 +383,6 @@ var Game = Game || (function (createjs) {
                             .to({ x: totalWidth }, totalTime, createjs.Ease.sinInOut)
                             .to({ x: 50 }, totalTime, createjs.Ease.sinInOut);
                     })
-                //.to({ rotation: 360 }, 1000)
-
-
-
 
                 self.stage.addChild(enemyContainer);
             }
@@ -392,33 +395,42 @@ var Game = Game || (function (createjs) {
                 enemy.y = -56.5;
 
                 container.addChild(enemy);
-
                 return container;
             }
 
+            //deliver questions when player is by laser
             function deliverQuestions() {
-                //      if (laserContainer.x  = playerContainer) {
-                //         window.alert("hit the player")
+                var questionContainer = new createjs.Container();
+                var questionPanel = new createjs.Bitmap(queue.getResult("questionPanel"));
+                isQuestionDisplayed = true;
+                questionPanel.x = 220;
+                questionPanel.y = 200;
 
-                //}
+                questionContainer.addChild(questionPanel);
+           
+                    self.stage.addChild(questionContainer);
+
+                return questionContainer;
+
             }
             function deliverAnswers() {
 
             }
-
-
             function gameOverScreen() {
 
             }
-
             function DisplayEndingNotes(EndedHow) {
                 replayContainer.addEventListener("click", handleClick);
                 function handleClick(event) {
                     StartitALL()
                 }
             }
+            
+            function pauseGame() {
 
-            var fps = 30;
+            }
+
+            var fps = 45;
 
             //this updates the stage every tick not sure if we need it but
             createjs.Ticker.addEventListener("tick", handleTick);
