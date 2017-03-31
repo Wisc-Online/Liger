@@ -150,6 +150,30 @@ var Game = Game || (function (createjs, $) {
             // adding elements to stage
             stage.addChild(instructionsContainer);
 
+
+            function displayMessage(message) {
+
+                var text = new createjs.Text(message, "bold 86px Arial", "red");
+                text.set({
+                    x: stage.canvas.width / 2,
+                    y: stage.canvas.height / 2,
+                    textAlign: "center",
+                    textBaseline: "middle",
+                    alpha: 0
+                });
+                
+                stage.addChild(text);
+                
+                createjs.Tween.get(text)    
+                    .to({ alpha: 1 }, 1000)
+                    .wait(1000)
+                    .to({ alpha: 0 }, 500)
+                    .call(function () {
+                        stage.removeChild(text);
+                    })
+
+            }
+
             //checks for matches and eliminates all matches when the game loads
             var showView = function (view) {
 
@@ -1061,7 +1085,10 @@ var Game = Game || (function (createjs, $) {
             function handleAnswerPressUp(evt)
           {
               if (evt.currentTarget.IsCorrect) {
-                  alert('You answer is correct');
+                  //alert('You answer is correct');
+
+                  displayMessage("Way to go!");
+
                   mainBox.mouseEnabled = true;
                   questionContainer.visible = false;
                   movesLeft += maxMoveNbr;
@@ -1070,8 +1097,11 @@ var Game = Game || (function (createjs, $) {
               }
               else
               {
-                  CustomAlert();
+                  
                   //alert('Your answer is WRONG');
+
+              
+
          
                   maxMoveNbr;
                   currentQuestion++;
@@ -1082,6 +1112,25 @@ var Game = Game || (function (createjs, $) {
                   else {
                       showQuestionContainer(gameData.Questions[currentQuestion]);
                   }
+
+                  var text = new createjs.Text("Wrong!", "bold 86px Arial", "blue");
+                  text.set({
+                      x: 200,
+                      y: 300,
+                      textAlign: "center",
+                      textBaseline: "middle",
+                      alpha: 0
+                  });
+
+                  questionContainer.addChild(text);
+
+                  createjs.Tween.get(text)
+                      .to({ alpha: 1 }, 1000)
+                      .wait(1000)
+                      .to({ alpha: 0 }, 500)
+                      .call(function () {
+                          questionContainer.removeChild(text);
+                      })
 
               }
             }
