@@ -3,10 +3,7 @@
 <head>
     <title>Preload Images example</title>
 
-    <link href="../_assets/css/shared.css" rel="stylesheet" type="text/css" />
-    <link href="../_assets/css/examples.css" rel="stylesheet" type="text/css" />
-    <script src="../_assets/js/examples.js"></script>
-
+    <script src="createjs.min.js" type="text/javascript"></script>
 </head>
 <body onload="init()">
 
@@ -26,10 +23,6 @@
 
     <div><canvas id="myCanvas" width="960" height="400"></canvas></div>
 
-    <script src="../_assets/libs/easeljs-NEXT.min.js"></script>
-    <script src="../_assets/libs/tweenjs-NEXT.min.js"></script>
-
-    <script type="text/javascript" src="../lib/preloadjs-NEXT.combined.js"></script>
     <!-- We also provide hosted minified versions of all CreateJS libraries.
          http://code.createjs.com -->
 
@@ -69,18 +62,18 @@
 		loaderBar.addChild(bar, bgBar);
 		stage.addChild(loaderBar);
 		manifest = [
-			{src: "image0.jpg", id: "image0"},
-			{src: "image1.jpg", id: "image1"},
-			{src: "image2.jpg", id: "image2"},
-			{src: "image3.jpg", id: "image3"}
+            { src: "green.png", id: "green"},
+            { src: "orange.png", id: "orange"},
+            { src: "purple.png", id: "purple"},
+            { src: "yellow.png", id: "yellow"}
 		];
-		preload = new createjs.LoadQueue(true, "test/");
+		preload = new createjs.LoadQueue(true);
 		// Use this instead to use tag loading
 		//preload = new createjs.PreloadJS(false);
 		preload.on("progress", handleProgress);
 		preload.on("complete", handleComplete);
 		preload.on("fileload", handleFileLoad);
-		preload.loadManifest(manifest, true, "../_assets/art/");
+		preload.loadManifest(manifest, true);
 		createjs.Ticker.setFPS(30);
 	}
 	function stop() {

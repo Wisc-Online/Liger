@@ -53,6 +53,7 @@ var Game = Game || (function (createjs, $) {
             { id: "purple", src: assetsPath + "purple.png" },
             { id: "yellow", src: assetsPath + "yellow.png" },
             { id: "green", src: assetsPath + "green.png" },
+            { id: "blue", src: assetsPath + "blue.png" },
             { id: "musicOff", src: assetsPath + "musicOff.png" }
         ];
         var queue = new createjs.LoadQueue(false);
@@ -437,19 +438,13 @@ var Game = Game || (function (createjs, $) {
             function createCircle(color)
             {
                 var circle = new createjs.Shape();
+                
+                var image = queue.getResult(color);
 
-                var c = color;
-                if(!color)
-                {
-                    var colors = ["pink", "brown", "red", "orange", "green", "blue"];
-                    var randomNum = Math.floor((Math.random() * 6) + 0);
-                    color = colors[randomNum];
-                }
-                circle.graphics.beginFill(color).drawCircle(maxWidth / 2, maxWidth / 2, maxWidth / 2);
+                var bitmap = new createjs.Bitmap(image);
 
-                circle.name = "circle";
-                circle.color = color;
-                return circle;
+                bitmap.name = "circle";
+                return bitmap;
             }
 
 
@@ -469,11 +464,13 @@ var Game = Game || (function (createjs, $) {
                 var mouseDragPosition = null;
 
                 container.addChild(background);
-                container.addChild(createCircle());
-                container.color = container.getChildByName("circle").color;
+                
+                var colors = ["orange", "red", "purple", "yellow", "green", "blue"];
+                var colorIndex = Math.floor(Math.random() * colors.length);
 
-
-
+                container.color = colors[colorIndex];
+                container.addChild(createCircle(container.color));
+                
                 var label = new createjs.Text("", "10px Verdana", "");
                 label.color = "white";
                 label.text = "";
