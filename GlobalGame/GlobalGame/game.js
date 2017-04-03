@@ -154,19 +154,27 @@ var Game = Game || (function (createjs, $) {
 
             function displayMessage(message) {
 
-                var text = new createjs.Text(message, "bold 86px Arial", "red");
+                
+
+
+                var text = new createjs.Text(message, "bold 70px Edwardian Script ITC", "red");
+               
                 text.set({
-                    x: stage.canvas.width / 2,
-                    y: stage.canvas.height / 2,
+                    //x: stage.canvas.width / 2,
+                    //y: stage.canvas.height / 2,
+                    x: 350,
+                    y: 65,
+                  
                     textAlign: "center",
                     textBaseline: "middle",
                     alpha: 0
                 });
                 
                 stage.addChild(text);
-                
+
+             
                 createjs.Tween.get(text)    
-                    .to({ alpha: 1 }, 1000)
+                    .to({ alpha: 100 }, 1000)
                     .wait(1000)
                     .to({ alpha: 0 }, 500)
                     .call(function () {
@@ -990,12 +998,31 @@ var Game = Game || (function (createjs, $) {
                               
                               if (gameState.score == 100)
                               {
-                                  alert("Congratulations**, Your score is: " + gameState.score + " You will receive 10 eXtra points");
+
+                                  displayMessage("Congratulations!!! 10 eXtra points");
+                                  
+                 
                                   gameState.score += 10
 
+                              } else if (gameState.score >= 200) {
+                                  displayMessage("Congratulations!!! 15 eXtra points");
+
+
+                                  gameState.score += 10
                               }
 
+                           else if (gameState.score >= 300) {
+                              displayMessage("Congratulations!!! 25 eXtra points");
+
+
+                              gameState.score += 10
+                          }
+
+
                               userScoreContainer.getChildByName('score').text = gameState.score;
+
+                           
+                              
                               
                           }
 
@@ -1090,7 +1117,7 @@ var Game = Game || (function (createjs, $) {
                   questionContainer.visible = false;
                   movesLeft += maxMoveNbr;
                   movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
-                  
+                  currentQuestion++;
               }
               else
               {
@@ -1101,7 +1128,7 @@ var Game = Game || (function (createjs, $) {
 
          
                   maxMoveNbr;
-                  currentQuestion++;
+                  //currentQuestion++;
                   if (currentQuestion >= gameData.Questions.length) {
                       currentArea = createWinnerView();
                       stage.addChild(currentArea);
@@ -1110,7 +1137,7 @@ var Game = Game || (function (createjs, $) {
                       showQuestionContainer(gameData.Questions[currentQuestion]);
                   }
 
-                  var text = new createjs.Text("Wrong!", "bold 86px Arial", "blue");
+                  var text = new createjs.Text("Your Answer is Wrong!", "bold 43px Bernard MT Condensed ", "blue");
                   text.set({
                       x: 200,
                       y: 300,
@@ -1128,8 +1155,10 @@ var Game = Game || (function (createjs, $) {
                       .call(function () {
                           questionContainer.removeChild(text);
                       })
-
+                    
+                      
               }
+
             }
            
          
@@ -1140,7 +1169,8 @@ var Game = Game || (function (createjs, $) {
                 //library container
                 var container = new createjs.Container();
 
-                //library background
+                //library background   
+        
                 var background = new createjs.Shape();
                 background.graphics.setStrokeStyle(1).beginStroke("yellow").beginFill("brown");
                 background.graphics.drawRect(0, 0, 400, 400);
