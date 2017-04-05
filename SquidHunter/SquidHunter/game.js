@@ -67,6 +67,9 @@ var Game = Game || (function (createjs) {
                 { id: "beam", src: assetsPath + "beam.png" },
                 { id: "laser", src: assetsPath + "laser.png" },
                 { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
+                { id: "answerPanel", src: assetsPath + "SmallPanel2.png" },
+                { id: "redx", src: assetsPath + "redx.png" }
+
             ];
 
             var queue = new createjs.LoadQueue(false);
@@ -118,7 +121,6 @@ var Game = Game || (function (createjs) {
                 directionsText.x = panelBG.x + 80;
                 directionsText.y = panelBG.y + 200;
 
-
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, playButton);
                 createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000);
                 self.stage.addChild(instructionsScreen);
@@ -144,11 +146,14 @@ var Game = Game || (function (createjs) {
             var enemies = [];
             var widthOfSquid = 50;
             var maxEnemyCount = 5;
-            var beamCount = false;  //not used yet
-            
+            var beamCount = 10;  //not used yet  //for or while loop needed
+
             var isQuestionDisplayed = false;
             var questionArray = [];
-               
+
+            var isAnswerDisplayed = false;
+            var answerArray = [];
+
             var pausedGame = false; //not used yet
 
             function StartInteraction() {
@@ -167,7 +172,6 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(playerContainer);
                 playerContainer.x = 400;
                 playerContainer.y = 550;
-
 
                 spawnEnemy();
 
@@ -214,7 +218,7 @@ var Game = Game || (function (createjs) {
 
                     //when laser hits the player
                     createjs.Tween.get(laserContainer, {
-                              onChange: onLaserContainerTweenChange
+                        onChange: onLaserContainerTweenChange
                     })
                         .to({ y: self.stage.canvas.height, x: playerContainer.x + (Math.random() * 200) - 100 }, 1000)
                         .call(function (evt) {
@@ -223,7 +227,6 @@ var Game = Game || (function (createjs) {
                         });
 
                     madeLaser = true;
-
                 }
 
                 function enemyShootLaser() {
@@ -252,7 +255,7 @@ var Game = Game || (function (createjs) {
                             moveRight();
                             event.preventDefault();
                             break;
-                        //beam mapped to spacebar
+                            //beam mapped to spacebar
                         case KEYCODE_SPACEBAR:
                             if (beamdelay <= 0) {
                                 beamdelay = 30
@@ -261,7 +264,6 @@ var Game = Game || (function (createjs) {
 
                             event.preventDefault();
                             break;
-
                     }
 
                     function moveRight() {
@@ -292,7 +294,6 @@ var Game = Game || (function (createjs) {
                             if (enemies[i].hitTest(pt.x, pt.y)) {
 
                                 // we hit the enemy... KILL IT!
-
                                 createjs.Tween.get(enemies[i])
                                     .to({ scaleX: 1.25, scaleY: 1.25 }, 200)
                                     .to({ scaleX: 1, scaleY: 1 }, 100)
@@ -300,7 +301,6 @@ var Game = Game || (function (createjs) {
                                     .call(function (evt) {
                                         stage.removeChild(evt.currentTarget);
                                     });
-
 
                                 // remove it from the array
                                 enemies.splice(i, 1);
@@ -312,33 +312,45 @@ var Game = Game || (function (createjs) {
 
 
                     function makeBeam() {
-                     //   if (beamCount = true) {
+                        //   if (beamCount = true) {   //beamActivate  ???
+                        ////////////////////// ARRAY FOR BEAM COUNT - while loop - for loop//////////////////////
 
-                     //   }
+                        //doesnt work
+                        for (var beamCount = 0; beamCount < 10; beamCount++) {
 
-                        console.log("making beam")
-                        beamContainer = new createjs.Container();
-                        beam = new createjs.Bitmap(queue.getResult("beam"));
-                        beamContainer.addChild(beam);
-                        self.stage.addChild(beamContainer);
+                            console.log("making beam")
+                            beamContainer = new createjs.Container();
+                            beam = new createjs.Bitmap(queue.getResult("beam"));
+                            beamContainer.addChild(beam);
+                            self.stage.addChild(beamContainer);
 
-                        beamContainer.x = playerContainer.x + 9;
-                        beamContainer.y = 500;
+                            beamContainer.x = playerContainer.x + 9;
+                            beamContainer.y = 500;
 
-                        //when beam hits the squid
-                        createjs.Tween.get(beamContainer, {
-                            onChange: onBeamContainerTweenChange
-                        })
-                            .to({ y: -200 }, 500)
-                            .call(function (evt) {
-                                var theThingBeingTweened = evt.target;
-                                self.stage.removeChild(theThingBeingTweened);
-                            });
+                            //when beam hits the squid
+                            createjs.Tween.get(beamContainer, {
+                                onChange: onBeamContainerTweenChange
+                            })
+                                .to({ y: -200 }, 500)
+                                .call(function (evt) {
+                                    var theThingBeingTweened = evt.target;
+                                    self.stage.removeChild(theThingBeingTweened);
+                                });
 
-                        madeBeam = true;
+                            madeBeam = true
+                            //seems like beam happens over and over again so long as you hold down spacebar, c
+                            //probably in the hit spacebar function ( dont want to hold )
+                            //doesnt work
+                     //       if (beamCount[i] > 0) { madeBeam = true }
+                       //     else if (beamcount[i] < 0) { madeBeam = false }
+
+
+                        }
 
                     }
+
                 }
+
             }
 
             var madeBeam = false;
@@ -406,14 +418,56 @@ var Game = Game || (function (createjs) {
                 questionPanel.x = 220;
                 questionPanel.y = 200;
 
-                questionContainer.addChild(questionPanel);
-           
-                    self.stage.addChild(questionContainer);
+                var questionsText = new createjs.Text("Question:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
+                questionsText.x = questionPanel.x + 20;
+                questionsText.y = questionPanel.y + 40;
+
+                var redx = new createjs.Bitmap(queue.getResult("redx"))
+                redx.x = questionPanel.x + 280;
+                redx.y = questionPanel.y + 130;
+
+                redx.addEventListener("click", handleClick);
+                function handleClick(event) {
+                    self.stage.removeChild(questionContainer);
+                }
+
+                questionContainer.addChild(questionPanel, questionsText, redx)
+
+                self.stage.addChild(questionContainer);
+
+                var redx = new createjs.Bitmap(queue.getResult("redx"))
 
                 return questionContainer;
 
             }
             function deliverAnswers() {
+                var answerContainer = new createjs.Container();
+                var answerPanel = new createjs.Bitmap(queue.getResult("answerPanel"));
+                isAnswerDisplayed = true;
+                answerPanel.x = 220;
+                answerPanel.y = 200;
+
+                var answersText = new createjs.Text("Answer:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
+                answersText.x = answerPanel.x + 20;
+                answersText.y = answerPanel.y + 40;
+
+                var redx = new createjs.Bitmap(queue.getResult("redx"))
+                redx.x = answerPanel.x + 50;
+                redx.y = answerPanel.y + 50;
+
+                redx.addEventListener("click", handleClick);
+                function handleClick(event) {
+                    self.stage.removeChild(answerContainer);
+                }
+
+                answerContainer.addChild(answerPanel, answersText, redx)
+
+                self.stage.addChild(answerContainer);
+
+                var redx = new createjs.Bitmap(queue.getResult("redx"))
+
+                return answerContainer;
+
 
             }
             function gameOverScreen() {
@@ -425,7 +479,7 @@ var Game = Game || (function (createjs) {
                     StartitALL()
                 }
             }
-            
+
             function pauseGame() {
 
             }
