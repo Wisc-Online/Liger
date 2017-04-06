@@ -71,6 +71,8 @@
     <Content Include="Assets\crate.png" />
     <Content Include="Assets\enemy.png" />
     <Content Include="Assets\laser.png" />
+    <Content Include="Assets\redx.png" />
+    <Content Include="Assets\SmallPanel2.png" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

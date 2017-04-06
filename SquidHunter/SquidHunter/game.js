@@ -18,8 +18,6 @@ var Game = Game || (function (createjs) {
             self.stage.enableMouseOver(25);
             self.stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
 
-
-
             // ***********     Declare all assests and preload them. (declare the path) ************************
             var assetsPath = gameData.assetsPath || "";
 
@@ -27,7 +25,6 @@ var Game = Game || (function (createjs) {
 
 
             var QuestionsRandomized = [];
-
 
             for (var d = 0; d < gameData.Questions.length; d++) {
                 gameData.Questions[d].OrderId = d;
@@ -146,7 +143,9 @@ var Game = Game || (function (createjs) {
             var enemies = [];
             var widthOfSquid = 50;
             var maxEnemyCount = 5;
-            var beamCount = 10;  //not used yet  //for or while loop needed
+            var beamCount = 10;
+            
+            var canEnemyFire = true;
 
             var isQuestionDisplayed = false;
             var questionArray = [];
@@ -200,13 +199,42 @@ var Game = Game || (function (createjs) {
                     if (playerContainer.hitTest(pt.x, pt.y)) {
                         console.log("laser hit the player")
                         if (!isQuestionDisplayed) {
-                            deliverQuestions();
+                            canEnemyFire = false;
+                            deliverQuestion();
+                            //deliver answers?
+                        }
+                    }
+                }
+
+                //blow up the squid when the beam hits the squid
+                function onBeamContainerTweenChange(evt) {
+                    var theTween = evt.target;
+                    var theBeamContainer = theTween.target;
+                    for (var i = 0; i < enemies.length; ++i) {
+
+                        var pt = enemies[i].globalToLocal(theBeamContainer.x, theBeamContainer.y);
+
+                        if (enemies[i].hitTest(pt.x, pt.y)) {
+
+                            // we hit the enemy... KILL IT!
+                            createjs.Tween.get(enemies[i])
+                                .to({ scaleX: 1.25, scaleY: 1.25 }, 200)
+                                .to({ scaleX: 1, scaleY: 1 }, 100)
+                                .to({ alpha: 0 }, 100)
+                                .call(function (evt) {
+                                    stage.removeChild(evt.currentTarget);
+                                });
+
+                            // remove it from the array
+                            enemies.splice(i, 1);
+                            // we removed an item from the array, fix the index so we dont skip checking any enemies.
+                            --i;
                         }
                     }
                 }
 
                 function makeLaser(theenemy) {
-
+                    
                     console.log("making laser")
                     laserContainer = new createjs.Container();
                     laser = new createjs.Bitmap(queue.getResult("laser"));
@@ -234,7 +262,9 @@ var Game = Game || (function (createjs) {
                         var enemyindex = Math.floor(Math.random() * enemies.length)
                         var theenemy = enemies[enemyindex];
 
-                        if (theenemy) {
+                        //another boolean can enemy fire back
+                        // add if
+                        if (canEnemyFire && theenemy) {
                             makeLaser(theenemy);
                         }
                         else {
@@ -259,8 +289,13 @@ var Game = Game || (function (createjs) {
                         case KEYCODE_SPACEBAR:
                             if (beamdelay <= 0) {
                                 beamdelay = 30
-                                makeBeam();
+
+                                if (beamCount > 0)
+                             { makeBeam(); 
+                               beamCount--
                             }
+                                //answer question
+                                //beamcount + = 10
 
                             event.preventDefault();
                             break;
@@ -283,45 +318,15 @@ var Game = Game || (function (createjs) {
 
                     }
 
-                    //blow up the squid when the beam hits the squid
-                    function onBeamContainerTweenChange(evt) {
-                        var theTween = evt.target;
-                        var theBeamContainer = theTween.target;
-                        for (var i = 0; i < enemies.length; ++i) {
-
-                            var pt = enemies[i].globalToLocal(theBeamContainer.x, theBeamContainer.y);
-
-                            if (enemies[i].hitTest(pt.x, pt.y)) {
-
-                                // we hit the enemy... KILL IT!
-                                createjs.Tween.get(enemies[i])
-                                    .to({ scaleX: 1.25, scaleY: 1.25 }, 200)
-                                    .to({ scaleX: 1, scaleY: 1 }, 100)
-                                    .to({ alpha: 0 }, 100)
-                                    .call(function (evt) {
-                                        stage.removeChild(evt.currentTarget);
-                                    });
-
-                                // remove it from the array
-                                enemies.splice(i, 1);
-                                // we removed an item from the array, fix the index so we dont skip checking any enemies.
-                                --i;
-                            }
-                        }
-                    }
-
-
+                        //only called when enough beams available
                     function makeBeam() {
-                        //   if (beamCount = true) {   //beamActivate  ???
-                        ////////////////////// ARRAY FOR BEAM COUNT - while loop - for loop//////////////////////
-
-                        //doesnt work
-                        for (var beamCount = 0; beamCount < 10; beamCount++) {
-
+                             
                             console.log("making beam")
                             beamContainer = new createjs.Container();
                             beam = new createjs.Bitmap(queue.getResult("beam"));
                             beamContainer.addChild(beam);
+                           
+
                             self.stage.addChild(beamContainer);
 
                             beamContainer.x = playerContainer.x + 9;
@@ -337,24 +342,12 @@ var Game = Game || (function (createjs) {
                                     self.stage.removeChild(theThingBeingTweened);
                                 });
 
-                            madeBeam = true
-                            //seems like beam happens over and over again so long as you hold down spacebar, c
-                            //probably in the hit spacebar function ( dont want to hold )
-                            //doesnt work
-                     //       if (beamCount[i] > 0) { madeBeam = true }
-                       //     else if (beamcount[i] < 0) { madeBeam = false }
-
-
-                        }
-
                     }
-
+                    
+                        
+                    }
                 }
-
             }
-
-            var madeBeam = false;
-            var madeLaser = false;
 
             function isEnemyAtY(y) {
                 //check enemies array to spawn at diff y locations
@@ -362,7 +355,6 @@ var Game = Game || (function (createjs) {
                     if (enemies[i].y == y)
                         return true;
                 }
-
                 return false;
             }
 
@@ -411,7 +403,7 @@ var Game = Game || (function (createjs) {
             }
 
             //deliver questions when player is by laser
-            function deliverQuestions() {
+            function deliverQuestion() {
                 var questionContainer = new createjs.Container();
                 var questionPanel = new createjs.Bitmap(queue.getResult("questionPanel"));
                 isQuestionDisplayed = true;
