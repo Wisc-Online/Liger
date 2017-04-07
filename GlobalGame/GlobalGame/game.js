@@ -154,10 +154,7 @@ var Game = Game || (function (createjs, $) {
 
             function displayMessage(message) {
 
-                
-
-
-                var text = new createjs.Text(message, "bold 70px Edwardian Script ITC", "red");
+                var text = new createjs.Text(message, "bold 40px Monotype Corsiva", "blue");
                
                 text.set({
                     //x: stage.canvas.width / 2,
@@ -278,6 +275,10 @@ var Game = Game || (function (createjs, $) {
                 questionContainer.y = boardStartY;
                 showQuestionContainer(gameData.Questions[0]);
                 return questionContainer;
+            }
+
+           if( gameData.Questions[0].Id == 2) {
+               alert("hi");
             }
 
             function createInstructionContainer()
@@ -439,10 +440,6 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
-
-
-
-
             function createCircle(color)
             {
                 var circle = new createjs.Shape();
@@ -454,7 +451,6 @@ var Game = Game || (function (createjs, $) {
                 bitmap.name = "circle";
                 return bitmap;
             }
-
 
             function createCircleDraggableContainer() {
 
@@ -1004,18 +1000,18 @@ var Game = Game || (function (createjs, $) {
                  
                                   gameState.score += 10
 
-                              } else if (gameState.score >= 200) {
+                              } else if (gameState.score == 200) {
                                   displayMessage("Congratulations!!! 15 eXtra points");
 
 
-                                  gameState.score += 10
+                                  gameState.score += 15
                               }
 
-                           else if (gameState.score >= 300) {
+                           else if (gameState.score == 300) {
                               displayMessage("Congratulations!!! 25 eXtra points");
 
 
-                              gameState.score += 10
+                              gameState.score += 25
                           }
 
 
@@ -1051,6 +1047,18 @@ var Game = Game || (function (createjs, $) {
               stage.setChildIndex(container, mainBox.getNumChildren() - 1);
             }
 
+            if (gameData.Questions[0].Id == 1) {
+                alert("Boom-Chakalaka, you completed LEVEL 1", "Level 1");
+            }
+            else if (gameData.Questions[0].Id == 5) {
+                alert("Boom-Chakalaka, you completed LEVEL 2", "Level 2");
+            }
+            else if (gameData.Questions[0].Answers.length == 21) {
+                alert("Boom-Chakalaka, you completed LEVEL 3", "Level 3");
+            }
+            else { }
+
+
             function showQuestionContainer(question) {
 
               if (mainBox)
@@ -1082,13 +1090,10 @@ var Game = Game || (function (createjs, $) {
                   //answerText.maxWidth = 380;
                   ac.name = "answer";
 
-
                   var answer = new createjs.Shape();
                   answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
                   answer.graphics.drawRect(0, 0, 370, 40);
                 
-
-
                   ac.x = 10;
                   ac.y = startY + i * 50;
 
@@ -1098,8 +1103,6 @@ var Game = Game || (function (createjs, $) {
                   ac.on("pressup", handleAnswerPressUp);
 
                   ac.IsCorrect = question.Answers[i].IsCorrect;
-
-
                   container.addChild(ac);
               }
               if (mainBox)
@@ -1121,12 +1124,8 @@ var Game = Game || (function (createjs, $) {
               }
               else
               {
-                  
                   //alert('Your answer is WRONG');
 
-              
-
-         
                   maxMoveNbr;
                   //currentQuestion++;
                   if (currentQuestion >= gameData.Questions.length) {
@@ -1137,7 +1136,7 @@ var Game = Game || (function (createjs, $) {
                       showQuestionContainer(gameData.Questions[currentQuestion]);
                   }
 
-                  var text = new createjs.Text("Your Answer is Wrong!", "bold 43px Bernard MT Condensed ", "blue");
+                  var text = new createjs.Text("Your Answer is Wrong!", "bold 43px courier New ", "red");
                   text.set({
                       x: 200,
                       y: 300,
@@ -1161,6 +1160,7 @@ var Game = Game || (function (createjs, $) {
 
             }
            
+          
          
 
 
