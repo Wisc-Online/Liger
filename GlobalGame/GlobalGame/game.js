@@ -130,6 +130,7 @@ var Game = Game || (function (createjs, $) {
             self.gameData = gameData;
             var gameState = {
                 score: 0,
+                level: 0,
                 name: gameData.UserName || "",
                 color: "#008080",
                 questionsMissed: 0,
@@ -277,9 +278,7 @@ var Game = Game || (function (createjs, $) {
                 return questionContainer;
             }
 
-           if( gameData.Questions[0].Id == 2) {
-               alert("hi");
-            }
+        
 
             function createInstructionContainer()
             {
@@ -426,6 +425,10 @@ var Game = Game || (function (createjs, $) {
                 userScoreContainer.y = 350;
                 container.addChild(userScoreContainer);
 
+                userLevelContainer = createLevelContainer();
+                userLevelContainer.x = containerAtX;
+                userLevelContainer.y = 50;
+                container.addChild(userLevelContainer);
                 //
                 movesLeftContainer = createMovesLeftContainer();
                 movesLeftContainer.x = containerAtX;
@@ -995,20 +998,20 @@ var Game = Game || (function (createjs, $) {
                               if (gameState.score == 100)
                               {
 
-                                  displayMessage("Congratulations!!! 10 eXtra points");
+                                  displayMessage("10 eXtra points");
                                   
                  
                                   gameState.score += 10
 
                               } else if (gameState.score == 200) {
-                                  displayMessage("Congratulations!!! 15 eXtra points");
+                                  displayMessage("15 eXtra points");
 
 
                                   gameState.score += 15
                               }
 
                            else if (gameState.score == 300) {
-                              displayMessage("Congratulations!!! 25 eXtra points");
+                              displayMessage("25 eXtra points");
 
 
                               gameState.score += 25
@@ -1027,6 +1030,7 @@ var Game = Game || (function (createjs, $) {
                   }
                  
               }
+
               mainBox.mouseEnabled = true;
               if (changed)
               {
@@ -1038,7 +1042,7 @@ var Game = Game || (function (createjs, $) {
           }
          
             function showGameOver() {
-
+                
               mainBox.mouseEnabled = false;
 
               var container = gameOverContainer;
@@ -1046,18 +1050,6 @@ var Game = Game || (function (createjs, $) {
               
               stage.setChildIndex(container, mainBox.getNumChildren() - 1);
             }
-
-            if (gameData.Questions[0].Id == 1) {
-                alert("Boom-Chakalaka, you completed LEVEL 1", "Level 1");
-            }
-            else if (gameData.Questions[0].Id == 5) {
-                alert("Boom-Chakalaka, you completed LEVEL 2", "Level 2");
-            }
-            else if (gameData.Questions[0].Answers.length == 21) {
-                alert("Boom-Chakalaka, you completed LEVEL 3", "Level 3");
-            }
-            else { }
-
 
             function showQuestionContainer(question) {
 
@@ -1114,13 +1106,13 @@ var Game = Game || (function (createjs, $) {
               if (evt.currentTarget.IsCorrect) {
                   //alert('You answer is correct');
 
-                  displayMessage("Way to go!");
+                  displayMessage("Good job!");
 
                   mainBox.mouseEnabled = true;
                   questionContainer.visible = false;
                   movesLeft += maxMoveNbr;
                   movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
-                  currentQuestion++;
+                  //currentQuestion++;
               }
               else
               {
@@ -1159,11 +1151,7 @@ var Game = Game || (function (createjs, $) {
               }
 
             }
-           
           
-         
-
-
             function createQuestionContainer() {
 
                 //library container
@@ -1312,7 +1300,34 @@ var Game = Game || (function (createjs, $) {
                 container.addChild(movesLeftText);
                 return container;
             }
+            function createLevelContainer() {
+                //user score container
+                var container = new createjs.Container();
 
+                //user score background
+                var background = new createjs.Shape();
+                background.graphics.setStrokeStyle(1).beginStroke("white").beginFill("orange");
+                background.graphics.drawRect(0, 0, 100, 50);
+                container.addChild(background);
+
+                //user score title
+                var levelLabel = new createjs.Text("", "15px Verdana", "");
+                levelLabel.color = "yellow";
+                levelLabel.text = "Level:";
+                levelLabel.x = 35;
+                levelLabel.y = 2;
+                container.addChild(levelLabel);
+
+                //user score score
+                var levelText = new createjs.Text("", "20px Verdana", "");
+                levelText.color = "white";
+                levelText.text = "0"; //this will need to change later to be a var to hold user score. 
+                levelText.x = 30;
+                levelText.y = 20;
+                levelText.name = "level";
+                container.addChild(levelText);
+                return container;
+            }
             function createWinnerView() {
 
                 var view = new createjs.Container();
