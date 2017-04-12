@@ -166,7 +166,7 @@ var Game = Game || (function (createjs) {
                 // load player
                 var playerContainer = new createjs.Container();
                 var player = new createjs.Bitmap(queue.getResult("crate"))
-                var playerMovement = 6
+                var playerMovement = 10
 
                 playerContainer.addChild(player)
 
@@ -220,6 +220,9 @@ var Game = Game || (function (createjs) {
                             printScore();
                             //deliver answers?
                         }
+                        
+
+                        
                     }
                 }
 
@@ -295,8 +298,6 @@ var Game = Game || (function (createjs) {
                         var enemyindex = Math.floor(Math.random() * enemies.length)
                         var theenemy = enemies[enemyindex];
 
-                        //another boolean can enemy fire back
-                        // add if
                         if (canEnemyFire && theenemy) {
                             makeLaser(theenemy);
                         }
@@ -323,10 +324,16 @@ var Game = Game || (function (createjs) {
                                 beamdelay = 30
 
                                 if (beamCount > 0)
-                             { makeBeam(); 
+                                {
+                                    makeBeam();
+
                                beamCount--
                             }
-                                
+                                if (beamCount == 0) {
+                                    deliverQuestion();
+                                }
+
+
                             event.preventDefault();
                             break;
                     }
@@ -459,13 +466,15 @@ var Game = Game || (function (createjs) {
                 redx.addEventListener("click", handleClick);
                 function handleClick(event) {
                     self.stage.removeChild(questionContainer);
+                    canEnemyFire = true;
                 }
 
-                greenchk.addEventListener("click", handleClick);
-                function handleClick(event) {
-                    self.stage.removeChild(questionContainer)
+                greenchk.addEventListener("click", handleClick2);
+                function handleClick2(event) {
+                    self.stage.removeChild(questionContainer);
                     deliverAnswers();
-                    ;
+                    canEnemyFire = true;
+
                 }
 
 
@@ -495,6 +504,7 @@ var Game = Game || (function (createjs) {
                 function handleClick(event) {
                     self.stage.removeChild(answerContainer);
                     beamCount = 10;
+                    canEnemyFire = true;
                 }
 
                 answerContainer.addChild(answerPanel, answersText, redx)
