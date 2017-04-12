@@ -144,6 +144,7 @@ var Game = Game || (function (createjs) {
             var enemies = [];
             var widthOfSquid = 50;
             var maxEnemyCount = 5;
+            var isEnemySpawnedEnabled = true;
             var beamCount = 10;
             
             var canEnemyFire = true;
@@ -189,8 +190,8 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(scoreLabel);
 
                 setInterval(function () {
-                    if (enemies.length < maxEnemyCount) {
-                        spawnEnemy();
+                    if (isEnemySpawnedEnabled && enemies.length < maxEnemyCount) {
+                        spawnEnemy();          
                     }
                 }, 2000);
 
@@ -248,12 +249,17 @@ var Game = Game || (function (createjs) {
                                 .to({ alpha: 0 }, 100)
                                 .call(function (evt) {
                                     stage.removeChild(evt.currentTarget);
+
                                     Score = Score + 10;
                                     printScore();
                                 });
 
                             // remove it from the array
                             enemies.splice(i, 1);
+
+                            if (enemies.length == 0) {
+                                isEnemySpawnedEnabled = true;
+                            }
                             // we removed an item from the array, fix the index so we dont skip checking any enemies.
                             --i;
                         }
@@ -396,6 +402,10 @@ var Game = Game || (function (createjs) {
                 } while (isEnemyAtY(enemyContainer.y));
 
                 enemies.push(enemyContainer);
+
+                if (enemies.length == maxEnemyCount)
+                    isEnemySpawnedEnabled = false;
+
                 enemyContainer.x = 50 + Math.random() * (self.stage.canvas.width - widthOfSquid / 2);
 
                 var totalTime = 3000;
