@@ -70,6 +70,7 @@
     <Content Include="Assets\beam.png" />
     <Content Include="Assets\crate.png" />
     <Content Include="Assets\enemy.png" />
+    <Content Include="Assets\greenchk.png" />
     <Content Include="Assets\laser.png" />
     <Content Include="Assets\redx.png" />
     <Content Include="Assets\SmallPanel2.png" />

@@ -65,7 +65,8 @@ var Game = Game || (function (createjs) {
                 { id: "laser", src: assetsPath + "laser.png" },
                 { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
                 { id: "answerPanel", src: assetsPath + "SmallPanel2.png" },
-                { id: "redx", src: assetsPath + "redx.png" }
+                { id: "redx", src: assetsPath + "redx.png" },
+                { id: "greenchk", src: assetsPath + "greenchk.png" }
 
             ];
 
@@ -110,11 +111,11 @@ var Game = Game || (function (createjs) {
                 playButton.y = panelBG.y + 300;
                 playButton.scaleX = playButton.scaleY = 0.20;
 
-                var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#FFFFF2");
+                var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#000000");
                 descriptionText.x = panelBG.x + 80;
                 descriptionText.y = panelBG.y + 100;
 
-                var directionsText = new createjs.Text("Directions:" + " " + gameData.Directions, "20px Alegreya", "#FFFFFF");
+                var directionsText = new createjs.Text("Directions:" + " " + gameData.Directions, "20px Alegreya", "#000000");
                 directionsText.x = panelBG.x + 80;
                 directionsText.y = panelBG.y + 200;
 
@@ -155,6 +156,10 @@ var Game = Game || (function (createjs) {
 
             var pausedGame = false; //not used yet
 
+            var Score = 0; //not used yet
+            var scoreLabel;
+
+
             function StartInteraction() {
 
                 // load player
@@ -173,6 +178,15 @@ var Game = Game || (function (createjs) {
                 playerContainer.y = 550;
 
                 spawnEnemy();
+
+                scoreLabel = new createjs.Text("Score: " + Score, "bold 16px Alegreya", "#000000");
+                scoreLabel.textAlign = "center";
+                scoreLabel.lineWidth = 270;
+                scoreLabel.color = "black";
+                scoreLabel.y = 30;
+                scoreLabel.x = 740;
+
+                self.stage.addChild(scoreLabel);
 
                 setInterval(function () {
                     if (enemies.length < maxEnemyCount) {
@@ -201,10 +215,21 @@ var Game = Game || (function (createjs) {
                         if (!isQuestionDisplayed) {
                             canEnemyFire = false;
                             deliverQuestion();
+                            Score = Score - 20;
+                            printScore();
                             //deliver answers?
                         }
                     }
                 }
+
+                function printScore() {
+                   //self.stage.removeChild(scoreLabel);
+                    scoreLabel.text = "Score: " + Score;
+
+
+
+                }
+
 
                 //blow up the squid when the beam hits the squid
                 function onBeamContainerTweenChange(evt) {
@@ -223,6 +248,8 @@ var Game = Game || (function (createjs) {
                                 .to({ alpha: 0 }, 100)
                                 .call(function (evt) {
                                     stage.removeChild(evt.currentTarget);
+                                    Score = Score + 10;
+                                    printScore();
                                 });
 
                             // remove it from the array
@@ -256,7 +283,7 @@ var Game = Game || (function (createjs) {
 
                     madeLaser = true;
                 }
-
+                 
                 function enemyShootLaser() {
                     if (enemies.length > 0) {
                         var enemyindex = Math.floor(Math.random() * enemies.length)
@@ -270,7 +297,6 @@ var Game = Game || (function (createjs) {
                         else {
                             console.log("wtf?");
                         }
-
                     }
                 }
 
@@ -294,9 +320,7 @@ var Game = Game || (function (createjs) {
                              { makeBeam(); 
                                beamCount--
                             }
-                                //answer question
-                                //beamcount + = 10
-
+                                
                             event.preventDefault();
                             break;
                     }
@@ -418,16 +442,26 @@ var Game = Game || (function (createjs) {
                 redx.x = questionPanel.x + 280;
                 redx.y = questionPanel.y + 130;
 
+                var greenchk = new createjs.Bitmap(queue.getResult("greenchk"))
+                greenchk.x = questionPanel.x + 220;
+                greenchk.y = questionPanel.y + 130;
+
                 redx.addEventListener("click", handleClick);
                 function handleClick(event) {
                     self.stage.removeChild(questionContainer);
                 }
 
-                questionContainer.addChild(questionPanel, questionsText, redx)
+                greenchk.addEventListener("click", handleClick);
+                function handleClick(event) {
+                    self.stage.removeChild(questionContainer)
+                    deliverAnswers();
+                    ;
+                }
+
+
+                questionContainer.addChild(questionPanel, questionsText, redx, greenchk)
 
                 self.stage.addChild(questionContainer);
-
-                var redx = new createjs.Bitmap(queue.getResult("redx"))
 
                 return questionContainer;
 
@@ -444,12 +478,13 @@ var Game = Game || (function (createjs) {
                 answersText.y = answerPanel.y + 40;
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
-                redx.x = answerPanel.x + 50;
-                redx.y = answerPanel.y + 50;
+                redx.x = answerPanel.x + 280;
+                redx.y = answerPanel.y + 130;
 
                 redx.addEventListener("click", handleClick);
                 function handleClick(event) {
                     self.stage.removeChild(answerContainer);
+                    beamCount = 10;
                 }
 
                 answerContainer.addChild(answerPanel, answersText, redx)
