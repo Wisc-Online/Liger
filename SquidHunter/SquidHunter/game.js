@@ -146,7 +146,7 @@ var Game = Game || (function (createjs) {
             var maxEnemyCount = 5;
             var isEnemySpawnedEnabled = true;
             var beamCount = 10;
-            
+
             var canEnemyFire = true;
 
             var isQuestionDisplayed = false;
@@ -172,7 +172,7 @@ var Game = Game || (function (createjs) {
 
                 //load controls
                 this.document.onkeydown = keyPressed;
-                var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39, KEYCODE_SPACEBAR = 32
+                var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39, KEYCODE_SPACEBAR = 32, KEYCODE_UP = 38, KEYCODE_DOWN = 40
 
                 self.stage.addChild(playerContainer);
                 playerContainer.x = 400;
@@ -191,7 +191,7 @@ var Game = Game || (function (createjs) {
 
                 setInterval(function () {
                     if (isEnemySpawnedEnabled && enemies.length < maxEnemyCount) {
-                        spawnEnemy();          
+                        spawnEnemy();
                     }
                 }, 2000);
 
@@ -213,6 +213,7 @@ var Game = Game || (function (createjs) {
 
                     if (playerContainer.hitTest(pt.x, pt.y)) {
                         console.log("laser hit the player")
+
                         if (!isQuestionDisplayed) {
                             canEnemyFire = false;
                             deliverQuestion();
@@ -220,17 +221,14 @@ var Game = Game || (function (createjs) {
                             printScore();
                             //deliver answers?
                         }
-                        
+                        //  isQuestionDisplayed = false
 
-                        
                     }
                 }
 
                 function printScore() {
-                   //self.stage.removeChild(scoreLabel);
+                    //self.stage.removeChild(scoreLabel);
                     scoreLabel.text = "Score: " + Score;
-
-
 
                 }
 
@@ -270,7 +268,7 @@ var Game = Game || (function (createjs) {
                 }
 
                 function makeLaser(theenemy) {
-                    
+
                     console.log("making laser")
                     laserContainer = new createjs.Container();
                     laser = new createjs.Bitmap(queue.getResult("laser"));
@@ -284,7 +282,8 @@ var Game = Game || (function (createjs) {
                     createjs.Tween.get(laserContainer, {
                         onChange: onLaserContainerTweenChange
                     })
-                        .to({ y: self.stage.canvas.height, x: playerContainer.x + (Math.random() * 200) - 100 }, 1000)
+                        //add a .to for the y  //// self.stage.canvas.height
+                        .to({ y: playerContainer.y + (Math.random() * 200 - 100) , x: playerContainer.x + (Math.random() * 200) - 100 }, 2000)
                         .call(function (evt) {
                             var theThingBeingTweened = evt.target;
                             self.stage.removeChild(theThingBeingTweened);
@@ -292,11 +291,12 @@ var Game = Game || (function (createjs) {
 
                     madeLaser = true;
                 }
-                 
+
                 function enemyShootLaser() {
                     if (enemies.length > 0) {
                         var enemyindex = Math.floor(Math.random() * enemies.length)
                         var theenemy = enemies[enemyindex];
+
 
                         if (canEnemyFire && theenemy) {
                             makeLaser(theenemy);
@@ -318,70 +318,87 @@ var Game = Game || (function (createjs) {
                             moveRight();
                             event.preventDefault();
                             break;
-                            //beam mapped to spacebar
+                        case KEYCODE_UP:
+                            moveUp();
+                            event.preventDefault();
+                            break;
+                        case KEYCODE_DOWN:
+                            moveDown();
+                            event.preventDefault();
+                            break;
+                            //map beam to spacebar
                         case KEYCODE_SPACEBAR:
                             if (beamdelay <= 0) {
                                 beamdelay = 30
 
-                                if (beamCount > 0)
-                                {
+                                if (beamCount > 0) {
                                     makeBeam();
-
-                               beamCount--
-                            }
-                                if (beamCount == 0) {
+                                    beamCount--
+                                }
+                                if (beamCount == 0 && !isQuestionDisplayed) {
                                     deliverQuestion();
                                 }
 
+                                event.preventDefault();
+                                break;
+                            }
 
-                            event.preventDefault();
-                            break;
-                    }
+                            function moveRight() {
+                                playerContainer.x += playerMovement;
+                                if (playerContainer.x > 730) {
+                                    playerContainer.x = 730
+                                }
+                            }
 
-                    function moveRight() {
-                        // Console.log("in move right")
-                        playerContainer.x += playerMovement;
-                        if (playerContainer.x > 730) {
-                            playerContainer.x = 730
-                        }
-                    }
+                            function moveLeft() {
+                                playerContainer.x -= playerMovement;
+                                if (playerContainer.x < 20) {
+                                    playerContainer.x = 20
+                                }
+                            }
 
-                    function moveLeft() {
-                        // console.log(playerContainer.x)
-                        playerContainer.x -= playerMovement;
-                        if (playerContainer.x < 20) {
-                            playerContainer.x = 20
-                        }
+                            function moveUp() {
+                                playerContainer.y -= playerMovement;
+                                if (playerContainer.y < 400) {
+                                    playerContainer.y = 400
+                                }
+                            }
+                            function moveDown() {
+                                playerContainer.y += playerMovement;
+                                if (playerContainer.y > 550) {
+                                    playerContainer.y = 550
+                                }
+                            }
 
-                    }
 
-                        //only called when enough beams available
-                    function makeBeam() {
-                             
-                            console.log("making beam")
-                            beamContainer = new createjs.Container();
-                            beam = new createjs.Bitmap(queue.getResult("beam"));
-                            beamContainer.addChild(beam);
-                           
 
-                            self.stage.addChild(beamContainer);
+                            //only called when enough beams available
+                            function makeBeam() {
 
-                            beamContainer.x = playerContainer.x + 9;
-                            beamContainer.y = 500;
+                                console.log("making beam")
+                                beamContainer = new createjs.Container();
+                                beam = new createjs.Bitmap(queue.getResult("beam"));
+                                beamContainer.addChild(beam);
 
-                            //when beam hits the squid
-                            createjs.Tween.get(beamContainer, {
-                                onChange: onBeamContainerTweenChange
-                            })
-                                .to({ y: -200 }, 500)
-                                .call(function (evt) {
-                                    var theThingBeingTweened = evt.target;
-                                    self.stage.removeChild(theThingBeingTweened);
-                                });
 
-                    }
-                    
-                        
+                                self.stage.addChild(beamContainer);
+
+                                beamContainer.x = playerContainer.x + 9;
+                                beamContainer.y = playerContainer.y + 9;
+
+                                //when beam hits the squid
+                                createjs.Tween.get(beamContainer, {
+                                    onChange: onBeamContainerTweenChange
+                                })
+                                    .to({ y: -200 }, 500)
+                                    .call(function (evt) {
+                                        var theThingBeingTweened = evt.target;
+                                        self.stage.removeChild(theThingBeingTweened);
+                                    });
+
+                            }
+
+
                     }
                 }
             }
@@ -465,8 +482,10 @@ var Game = Game || (function (createjs) {
 
                 redx.addEventListener("click", handleClick);
                 function handleClick(event) {
+
                     self.stage.removeChild(questionContainer);
                     canEnemyFire = true;
+                    isQuestionDisplayed = false;
                 }
 
                 greenchk.addEventListener("click", handleClick2);
@@ -474,9 +493,8 @@ var Game = Game || (function (createjs) {
                     self.stage.removeChild(questionContainer);
                     deliverAnswers();
                     canEnemyFire = true;
-
+                    isQuestionDisplayed = false;
                 }
-
 
                 questionContainer.addChild(questionPanel, questionsText, redx, greenchk)
 
@@ -508,7 +526,6 @@ var Game = Game || (function (createjs) {
                 }
 
                 answerContainer.addChild(answerPanel, answersText, redx)
-
                 self.stage.addChild(answerContainer);
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
