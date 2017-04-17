@@ -130,7 +130,6 @@ var Game = Game || (function (createjs, $) {
             self.gameData = gameData;
             var gameState = {
                 score: 0,
-                level: 0,
                 name: gameData.UserName || "",
                 color: "#008080",
                 questionsMissed: 0,
@@ -425,10 +424,6 @@ var Game = Game || (function (createjs, $) {
                 userScoreContainer.y = 350;
                 container.addChild(userScoreContainer);
 
-                userLevelContainer = createLevelContainer();
-                userLevelContainer.x = containerAtX;
-                userLevelContainer.y = 50;
-                container.addChild(userLevelContainer);
                 //
                 movesLeftContainer = createMovesLeftContainer();
                 movesLeftContainer.x = containerAtX;
@@ -1020,9 +1015,6 @@ var Game = Game || (function (createjs, $) {
 
                               userScoreContainer.getChildByName('score').text = gameState.score;
 
-                           
-                              
-                              
                           }
 
                       }
@@ -1100,11 +1092,17 @@ var Game = Game || (function (createjs, $) {
               if (mainBox)
                 stage.setChildIndex(container, mainBox.getNumChildren() - 1);
           }
-
+            i = 1;
             function handleAnswerPressUp(evt)
           {
               if (evt.currentTarget.IsCorrect) {
                   //alert('You answer is correct');
+
+                  /* Working on displaying details on alert box 
+                  
+                  details = gameData.Questions[0].Answers[i].Details;
+
+                  alert(details);*/
 
                   displayMessage("Good job!");
 
@@ -1112,6 +1110,7 @@ var Game = Game || (function (createjs, $) {
                   questionContainer.visible = false;
                   movesLeft += maxMoveNbr;
                   movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
+                  i++;
                   //currentQuestion++;
               }
               else
@@ -1300,34 +1299,10 @@ var Game = Game || (function (createjs, $) {
                 container.addChild(movesLeftText);
                 return container;
             }
-            function createLevelContainer() {
-                //user score container
-                var container = new createjs.Container();
+           
 
-                //user score background
-                var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("white").beginFill("orange");
-                background.graphics.drawRect(0, 0, 100, 50);
-                container.addChild(background);
 
-                //user score title
-                var levelLabel = new createjs.Text("", "15px Verdana", "");
-                levelLabel.color = "yellow";
-                levelLabel.text = "Level:";
-                levelLabel.x = 35;
-                levelLabel.y = 2;
-                container.addChild(levelLabel);
 
-                //user score score
-                var levelText = new createjs.Text("", "20px Verdana", "");
-                levelText.color = "white";
-                levelText.text = "0"; //this will need to change later to be a var to hold user score. 
-                levelText.x = 30;
-                levelText.y = 20;
-                levelText.name = "level";
-                container.addChild(levelText);
-                return container;
-            }
             function createWinnerView() {
 
                 var view = new createjs.Container();
