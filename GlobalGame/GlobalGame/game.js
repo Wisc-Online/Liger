@@ -154,17 +154,23 @@ var Game = Game || (function (createjs, $) {
 
 
             function displayMessage(message) {
+               
+
 
                 var text = new createjs.Text(message, "bold 40px Monotype Corsiva", "blue");
                
+
+
+
                 text.set({
                     //x: stage.canvas.width / 2,
                     //y: stage.canvas.height / 2,
-                    x: 350,
+                    x: 300,
                     y: 65,
                   
                     textAlign: "center",
                     textBaseline: "middle",
+                    
                     alpha: 0
                 });
                 
@@ -397,10 +403,9 @@ var Game = Game || (function (createjs, $) {
             }
 
 
-
-
-
             function handleStartButtonHover(event) {
+             
+
                 if (event.type == "mouseover") {
                     createjs.Tween.get(event.currentTarget).to({ scaleX: 1.0625, scaleY: 1.0625 }, 100).to({ scaleX: 1.0, scaleY: 1.0 }, 100).to({ scaleX: 1.0625, scaleY: 1.0625 }, 200);
                 }
@@ -1102,11 +1107,12 @@ var Game = Game || (function (createjs, $) {
           }
 
             function handleAnswerPressUp(evt)
-          {
-              if (evt.currentTarget.IsCorrect) {
-                  //alert('You answer is correct');
+            {
 
+              if (evt.currentTarget.IsCorrect) {
+               
                   displayMessage("Good job!");
+
 
                   mainBox.mouseEnabled = true;
                   questionContainer.visible = false;
@@ -1128,12 +1134,38 @@ var Game = Game || (function (createjs, $) {
                       showQuestionContainer(gameData.Questions[currentQuestion]);
                   }
 
-                  var text = new createjs.Text("Your Answer is Wrong!", "bold 43px courier New ", "red");
+                  displayMessage("Your Answer is Wrong!");
+
+                  //Trying to display the correct answer here from the 'Text' field in html.
+                  for (var k = 1; k < gameData.Questions[currentQuestion].length; k++)
+                  {
+                     //-------------------------->
+
+                      if (gameData.Questions[currentQuestion].Answers[k].IsCorrect)
+                      {
+                          var text = new createjs.Text("Correct answer is:" + gameData.Questions[currentQuestion].Answers[k].Text," Yes", "bold 33px courier New ", "Pink");
+
+                          text.set({
+                              x: 200,
+                              y: 230,
+                              textAlign: "center",
+                              textBaseline: "middle",
+                              alpha: 0
+                          });
+
+                          break;
+                      }
+
+                      //--------------------------->
+                  }
+                  
+                  
+                  var text = new createjs.Text("Correct answer is:" , "bold 33px courier New ", "white");
                   text.set({
                       x: 200,
-                      y: 300,
-                      textAlign: "center",
-                      textBaseline: "middle",
+                  y: 230,
+                     textAlign: "center",
+                     textBaseline: "middle",
                       alpha: 0
                   });
 
@@ -1146,6 +1178,7 @@ var Game = Game || (function (createjs, $) {
                       .call(function () {
                           questionContainer.removeChild(text);
                       })
+                   gameData.Questions[currentQuestion].Answer[k].Text
                     
                       
               }
