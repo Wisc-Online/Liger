@@ -450,7 +450,7 @@ var Game = Game || (function (createjs, $) {
 
             function createCircle(color)
             {
-                var circle = new createjs.Shape();
+              //  var circle = new createjs.Shape();
                 
                 var image = queue.getResult(color);
 
@@ -465,9 +465,9 @@ var Game = Game || (function (createjs, $) {
                 //library of terms
                 var container = new createjs.Container();
 
-                var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
-                background.graphics.drawRect(0, 0, maxWidth, 40);
+            //    var background = new createjs.Shape();
+            //    background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
+            //    background.graphics.drawRect(0, 0, maxWidth, 40);
                 container.setBounds(0, 0, maxWidth, 40);
 
                 container.on("pressmove", handleElementDrag);
@@ -475,7 +475,7 @@ var Game = Game || (function (createjs, $) {
 
                 var mouseDragPosition = null;
 
-                container.addChild(background);
+             //   container.addChild(background);
                 
                 var colors = ["orange", "red", "purple", "yellow", "green", "blue"];
                 var colorIndex = Math.floor(Math.random() * colors.length);
@@ -722,7 +722,7 @@ var Game = Game || (function (createjs, $) {
                 for (var i = 0; i < maxI; i++) {
                     var yCord = boardStartY;
                     gameData[i] = [];
-                    for (var j = 0; j < 10; j++) {
+                    for (var j = 0; j < maxJ; j++) {
                         gameData[i][j] = createElement(i, j, xCord, yCord);
                         
                         yCord += 40;
@@ -1137,7 +1137,7 @@ var Game = Game || (function (createjs, $) {
                   displayMessage("Your Answer is Wrong!");
 
                   //Trying to display the correct answer here from the 'Text' field in html.
-                  for (var k = 1; k < gameData.Questions[currentQuestion].length; k++)
+                  for (var k = 0; k < gameData.Questions[currentQuestion].length; k++)
                   {
                      //-------------------------->
 
@@ -1545,7 +1545,7 @@ var Game = Game || (function (createjs, $) {
                         type: "POST",
                         data: data,
                         success: function (x) {
-
+                            alert('Your score is submitted');
                         },
                         error: function (x, y, z) {
 
