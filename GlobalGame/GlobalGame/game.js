@@ -1402,7 +1402,7 @@ var Game = Game || (function (createjs, $) {
                 titleText.y = 50;
 
                 var startOverButton = new createjs.Container();
-                startOverButtonBackground = new createjs.Bitmap(queue.getResult("rf_redRoundBalloon"));
+                startOverButtonBackground = new createjs.Bitmap(queue.getResult("blue"));
                 startOverButtonBackground.scaleX = 2;
                 startOverButtonBackground.scaleY = 2;
 
