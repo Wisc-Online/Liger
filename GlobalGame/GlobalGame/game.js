@@ -45,7 +45,8 @@ var Game = Game || (function (createjs, $) {
             { id: "rf_game_cursor", src: assetsPath + "rf_game_cursor.png" },
             { id: "pop", src: assetsPath + "rf_balloon_pop.mp3" },
              { id: "deflate", src: assetsPath + "deflate.mp3" },
-            { id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
+             { id: "buttonClick", src: assetsPath + "WelcomeSong.mp3" },
+            //{ id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
             { id: "rf_POP", src: assetsPath + "rf_POP.png" },
             { id: "musicOn", src: assetsPath + "musicOn.png" },
             { id: "orange", src: assetsPath + "orange.png" },
@@ -1114,7 +1115,7 @@ var Game = Game || (function (createjs, $) {
                        
                         var answerText = new createjs.Text("", "16px Verdana", "");
                         answerText.color = "green";
-                        answerText.text = "The correct answer is " + gameData.Questions[currentQuestion].Answers[k].Text + " : \n\n ";  + gameData.Questions[currentQuestion].Answers[k].Details;
+                        answerText.text = "The correct answer is " + gameData.Questions[currentQuestion].Answers[k].Text + " : \n\n "  + gameData.Questions[currentQuestion].Answers[k].Details;
                         answerText.x = 0;
                         answerText.y = 150;
                         answerText.lineWidth = 300;
