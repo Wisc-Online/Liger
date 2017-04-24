@@ -1096,11 +1096,7 @@ var Game = Game || (function (createjs, $) {
 
                   ac.text = question.Answers[i].Text;
                   ac.IsCorrect = question.Answers[i].IsCorrect;
-                
-
                   container.addChild(ac);
-
-
               }
               if (mainBox)
                 stage.setChildIndex(container, mainBox.getNumChildren() - 1);
@@ -1117,11 +1113,10 @@ var Game = Game || (function (createjs, $) {
                         var ad = new createjs.Container();
                        
                         var answerText = new createjs.Text("", "16px Verdana", "");
-                        answerText.color = "black";
-                        answerText.text = "The correct answer is " + gameData.Questions[currentQuestion].Answers[k].Text + " : \n\n"  + gameData.Questions[currentQuestion].Answers[k].Details;
+                        answerText.color = "green";
+                        answerText.text = "The correct answer is " + gameData.Questions[currentQuestion].Answers[k].Text + " : \n\n ";  + gameData.Questions[currentQuestion].Answers[k].Details;
                         answerText.x = 0;
                         answerText.y = 150;
-    
                         answerText.lineWidth = 300;
                         answerText.name = "detailsText";
                         ad.name = "details";
