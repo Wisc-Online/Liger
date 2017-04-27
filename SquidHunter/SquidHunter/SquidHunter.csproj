@@ -66,12 +66,16 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\answerHolder.png" />
     <Content Include="Assets\background.jpg" />
     <Content Include="Assets\beam.png" />
     <Content Include="Assets\crate.png" />
     <Content Include="Assets\enemy.png" />
     <Content Include="Assets\greenchk.png" />
+    <Content Include="Assets\ink.png" />
     <Content Include="Assets\laser.png" />
+    <Content Include="Assets\net.png" />
+    <Content Include="Assets\pirate.png" />
     <Content Include="Assets\redx.png" />
     <Content Include="Assets\SmallPanel2.png" />
     <Content Include="packages.config" />

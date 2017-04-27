@@ -45,7 +45,8 @@ var Game = Game || (function (createjs, $) {
             { id: "rf_game_cursor", src: assetsPath + "rf_game_cursor.png" },
             { id: "pop", src: assetsPath + "rf_balloon_pop.mp3" },
              { id: "deflate", src: assetsPath + "deflate.mp3" },
-            { id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
+             { id: "buttonClick", src: assetsPath + "WelcomeSong.mp3" },
+            //{ id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
             { id: "rf_POP", src: assetsPath + "rf_POP.png" },
             { id: "musicOn", src: assetsPath + "musicOn.png" },
             { id: "orange", src: assetsPath + "orange.png" },
@@ -130,7 +131,6 @@ var Game = Game || (function (createjs, $) {
             self.gameData = gameData;
             var gameState = {
                 score: 0,
-                //level: 0,
                 name: gameData.UserName || "",
                 color: "#008080",
                 questionsMissed: 0,
@@ -430,10 +430,6 @@ var Game = Game || (function (createjs, $) {
                 userScoreContainer.y = 350;
                 container.addChild(userScoreContainer);
 
-               /* userLevelContainer = createLevelContainer();
-                userLevelContainer.x = containerAtX;
-                userLevelContainer.y = 50;
-                container.addChild(userLevelContainer);*/
                 //
                 movesLeftContainer = createMovesLeftContainer();
                 movesLeftContainer.x = containerAtX;
@@ -1084,13 +1080,13 @@ var Game = Game || (function (createjs, $) {
                   answerText.x = 10;
                   answerText.y = 10;
                   answerText.lineWidth = 380;
-                  //answerText.maxWidth = 380;
+                  answerText.name = "answerText";
                   ac.name = "answer";
 
                   var answer = new createjs.Shape();
                   answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
                   answer.graphics.drawRect(0, 0, 370, 40);
-                
+                  answer.name = "answerShape";
                   ac.x = 10;
                   ac.y = startY + i * 50;
 
@@ -1099,6 +1095,7 @@ var Game = Game || (function (createjs, $) {
 
                   ac.on("pressup", handleAnswerPressUp);
 
+                  ac.text = question.Answers[i].Text;
                   ac.IsCorrect = question.Answers[i].IsCorrect;
                   container.addChild(ac);
               }
@@ -1107,7 +1104,44 @@ var Game = Game || (function (createjs, $) {
           }
             function handleAnswerPressUp(evt)
             {
+              for (var k = 0; k < gameData.Questions[currentQuestion].Answers.length; k++) {
+                    //-------------------------->
+                  var container = questionContainer;
+                  container.visible = true;
+                  container.getChildByName('question').text = gameData.Questions[currentQuestion].Text;
+                    if (gameData.Questions[currentQuestion].Answers[k].IsCorrect && gameData.Questions[currentQuestion].Answers[k].Details != "")
+                    {
+                        var ad = new createjs.Container();
+                       
+                        var answerText = new createjs.Text("", "16px Verdana", "");
+                        answerText.color = "green";
+                        answerText.text = "The correct answer is " + gameData.Questions[currentQuestion].Answers[k].Text + " : \n\n "  + gameData.Questions[currentQuestion].Answers[k].Details;
+                        answerText.x = 0;
+                        answerText.y = 150;
+                        answerText.lineWidth = 300;
+                        answerText.name = "detailsText";
+                        ad.name = "details";
 
+                        var answer = new createjs.Shape();
+                        answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
+                        answer.graphics.drawRect(-30, 150, 375, 150);
+                        answer.name = "detailsShape";
+                        ad.x = 40;
+                        ad.y = 80;
+
+                        ad.addChild(answer);
+                        ad.addChild(answerText);
+
+                        ad.on("pressup", handleAnswerPressUp);
+
+                        ad.text = gameData.Questions[currentQuestion].Answers[k].Details;
+                        ad.IsCorrect = gameData.Questions[currentQuestion].Answers[k].IsCorrect;
+                        container.addChild(ad);
+
+                        //alert(gameData.Questions[currentQuestion].Answers[k].Details);
+                        break;
+                    }
+                }
               if (evt.currentTarget.IsCorrect) {
                
                   displayMessage("Good job!");
@@ -1132,16 +1166,27 @@ var Game = Game || (function (createjs, $) {
                       showQuestionContainer(gameData.Questions[currentQuestion]);
                   }
 
-                  displayMessage("Your Answer is Wrong!");
-
+                  //displayMessage("Your Answer is Wrong!");
+                 // alert(gameData.Questions[currentQuestion].length);
                   //Trying to display the correct answer here from the 'Text' field in html.
-                /*  for (var k = 1; k < gameData.Questions[currentQuestion].length; k++)
+                  for (var k = 0; k < questionContainer.children.length; k++)
                   {
                      //-------------------------->
-
-                      if (gameData.Questions[currentQuestion].Answers[k].IsCorrect)
+            
+                      if (questionContainer.children[k].name=="answer" &&  questionContainer.children[k].IsCorrect)
                       {
-                          var text = new createjs.Text("Correct answer is:" + gameData.Questions[currentQuestion].Answers[k].Text," Yes", "bold 33px courier New ", "Pink");
+                          
+                          var correctButton = questionContainer.children[k];
+                          // alert(correctButton.text);
+                          correctButton.getChildByName("answerText").color = "green";
+                          createjs.Tween.get(correctButton.getChildByName("answerShape"))
+                                    .to({ scaleX: 0.5, scaleY: 0.7 }, 1000)
+                                    .to({ scaleX: 1, scaleY: 1 }, 1000)
+                                    .to({ scaleX: 1, scaleY: 1 }, 1000);
+
+                          
+
+                         /* var text = new createjs.Text("Correct answer is:" + gameData.Questions[currentQuestion].Answers[k].Text," Yes", "bold 33px courier New ", "Pink");
 
                           text.set({
                               x: 200,
@@ -1150,13 +1195,13 @@ var Game = Game || (function (createjs, $) {
                               textBaseline: "middle",
                               alpha: 0
                           });
-
+                          questionContainer.addChild(text);*/
                           break;
                       }
 
                       //--------------------------->
                   }
-                  
+                  /*
                   
                   var text = new createjs.Text("Correct answer is:" , "bold 33px courier New ", "white");
                   text.set({
@@ -1197,6 +1242,7 @@ var Game = Game || (function (createjs, $) {
                 container.addChild(background);
 
                 var questionText = new createjs.Text("", "20px Verdana", "");
+                //change green color
                 questionText.color = "green";
                 questionText.text = "";
                 questionText.x = 10;
@@ -1205,7 +1251,10 @@ var Game = Game || (function (createjs, $) {
                 questionText.name = "question";
                 container.addChild(questionText);
                 
-
+                //
+                //add next button
+                //
+                //
                 return container;
             }
 
@@ -1331,35 +1380,7 @@ var Game = Game || (function (createjs, $) {
                 container.addChild(movesLeftText);
                 return container;
             }
-        /*    function createLevelContainer() {
-                //user score container
-                var container = new createjs.Container();
-
-                //user score background
-                var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("white").beginFill("orange");
-                background.graphics.drawRect(0, 0, 100, 50);
-                container.addChild(background);
-
-                /*
-                //user score title
-                var levelLabel = new createjs.Text("", "15px Verdana", "");
-                levelLabel.color = "yellow";
-                levelLabel.text = "Level:";
-                levelLabel.x = 35;
-                levelLabel.y = 2;
-                container.addChild(levelLabel);
-
-                //user score score
-                var levelText = new createjs.Text("", "20px Verdana", "");
-                levelText.color = "white";
-                levelText.text = "0"; //this will need to change later to be a var to hold user score. 
-                levelText.x = 30;
-                levelText.y = 20;
-                levelText.name = "level";
-                container.addChild(levelText);
-                return container;
-            }*/
+        
             function createWinnerView() {
 
                 var view = new createjs.Container();
