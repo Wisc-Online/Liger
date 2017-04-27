@@ -61,7 +61,7 @@ var Game = Game || (function (createjs) {
                 { id: "playbutton", src: assetsPath + "SequencePlayButton.png" },
                 { id: "pirate", src: assetsPath + "pirate.png" },
                 { id: "enemy", src: assetsPath + "enemy.png" },
-                { id: "beam", src: assetsPath + "net.png" },
+                { id: "net", src: assetsPath + "net.png" },
                 { id: "ink", src: assetsPath + "ink.png" },
                 { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
                 { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
@@ -130,16 +130,17 @@ var Game = Game || (function (createjs) {
                     self.stage.removeChild(instructionsScreen);
 
                     StartInteraction();
+
                 };
 
             }
 
             //declare vars for start of game
-            var beamContainer;
-            var beam;
+            var netContainer;
+            var net;
             var inkContainer;
             var ink;
-            var beamdelay = 0;
+            var netdelay = 0;
             var inkdelay = 0;
 
             var enemyContainer;
@@ -147,7 +148,7 @@ var Game = Game || (function (createjs) {
             var widthOfSquid = 50;
             var maxEnemyCount = 5;
             var isEnemySpawnedEnabled = true;
-            var beamCount = 10;
+            var netCount = 10;
 
             var canEnemyFire = true;
 
@@ -162,13 +163,23 @@ var Game = Game || (function (createjs) {
             var Score = 0; //not used yet
             var scoreLabel;
 
+            var playerMovement = 0.75; //player speed
+            var playerMaximumVelocity = 2;
+            var playerVelocityX = 0;
+            var playerVelocityY = 0;
+            var playerMovementFriction = .98;
+
+            var playerContainer;
+
+            var currentQuestion = 0;
+
 
             function StartInteraction() {
 
                 // load player
-                var playerContainer = new createjs.Container();
+                playerContainer = new createjs.Container();
                 var player = new createjs.Bitmap(queue.getResult("pirate"))
-                var playerMovement = 10
+
 
                 playerContainer.addChild(player)
 
@@ -218,7 +229,7 @@ var Game = Game || (function (createjs) {
 
                         if (!isQuestionDisplayed) {
                             canEnemyFire = false;
-                            deliverQuestion();
+                            deliverQuestion(gameData.Questions[currentQuestion]);
                             Score = Score - 20;
                             printScore();
                             //deliver answers?
@@ -235,13 +246,13 @@ var Game = Game || (function (createjs) {
                 }
 
 
-                //blow up the squid when the beam hits the squid
-                function onBeamContainerTweenChange(evt) {
+                //blow up the squid when the net hits the squid
+                function onNetContainerTweenChange(evt) {
                     var theTween = evt.target;
-                    var theBeamContainer = theTween.target;
+                    var theNetContainer = theTween.target;
                     for (var i = 0; i < enemies.length; ++i) {
 
-                        var pt = enemies[i].globalToLocal(theBeamContainer.x, theBeamContainer.y);
+                        var pt = enemies[i].globalToLocal(theNetContainer.x, theNetContainer.y);
 
                         if (enemies[i].hitTest(pt.x, pt.y)) {
 
@@ -328,17 +339,17 @@ var Game = Game || (function (createjs) {
                             moveDown();
                             event.preventDefault();
                             break;
-                            //map beam to spacebar
+                            //map net to spacebar
                         case KEYCODE_SPACEBAR:
-                            if (beamdelay <= 0) {
-                                beamdelay = 30
+                            if (netdelay <= 0) {
+                                netdelay = 30
 
-                                if (beamCount > 0) {
-                                    makeBeam();
-                                    beamCount--
+                                if (netCount > 0) {
+                                    makeNet();
+                                    netCount--
                                 }
-                                if (beamCount == 0 && !isQuestionDisplayed) {
-                                    deliverQuestion();
+                                if (netCount == 0 && !isQuestionDisplayed) {
+                                    deliverQuestion(gameData.Questions[currentQuestion]);
                                 }
 
                                 event.preventDefault();
@@ -346,51 +357,39 @@ var Game = Game || (function (createjs) {
                             }
 
                             function moveRight() {
-                                playerContainer.x += playerMovement;
-                                if (playerContainer.x > 730) {
-                                    playerContainer.x = 730
-                                }
+                                playerVelocityX += playerMovement;
                             }
 
                             function moveLeft() {
-                                playerContainer.x -= playerMovement;
-                                if (playerContainer.x < 20) {
-                                    playerContainer.x = 20
-                                }
+                                playerVelocityX -= playerMovement;
                             }
 
                             function moveUp() {
-                                playerContainer.y -= playerMovement;
-                                if (playerContainer.y < 400) {
-                                    playerContainer.y = 400
-                                }
+                                playerVelocityY -= playerMovement;
                             }
                             function moveDown() {
-                                playerContainer.y += playerMovement;
-                                if (playerContainer.y > 550) {
-                                    playerContainer.y = 550
-                                }
+                                playerVelocityY += playerMovement;
                             }
 
 
 
-                            //only called when enough beams available
-                            function makeBeam() {
+                            //only called when enough net available
+                            function makeNet() {
 
-                                console.log("making beam")
-                                beamContainer = new createjs.Container();
-                                beam = new createjs.Bitmap(queue.getResult("beam"));
-                                beamContainer.addChild(beam);
+                                console.log("making net")
+                                netContainer = new createjs.Container();
+                                net = new createjs.Bitmap(queue.getResult("net"));
+                                netContainer.addChild(net);
 
 
-                                self.stage.addChild(beamContainer);
+                                self.stage.addChild(netContainer);
 
-                                beamContainer.x = playerContainer.x + 9;
-                                beamContainer.y = playerContainer.y + 9;
+                                netContainer.x = playerContainer.x + 9;
+                                netContainer.y = playerContainer.y + 9;
 
-                                //when beam hits the squid
-                                createjs.Tween.get(beamContainer, {
-                                    onChange: onBeamContainerTweenChange
+                                //when net hits the squid
+                                createjs.Tween.get(netContainer, {
+                                    onChange: onNetContainerTweenChange
                                 })
                                     .to({ y: -200 }, 500)
                                     .call(function (evt) {
@@ -399,7 +398,6 @@ var Game = Game || (function (createjs) {
                                     });
 
                             }
-
 
                     }
                 }
@@ -465,7 +463,7 @@ var Game = Game || (function (createjs) {
             var questionContainer
 
             //deliver questions when player is by ink
-            function deliverQuestion() {
+            function deliverQuestion(question) {
                 
                 isEnemySpawnedEnabled = false;
                 canEnemyFire = false;
@@ -478,52 +476,28 @@ var Game = Game || (function (createjs) {
                 questionPanel.x = 50;
                 questionPanel.y = 50;
 
-                var questionsText = new createjs.Text("Question:" + " " + gameData.Questions[0].Text, "20px Alegreya", "#FFFFFF");
+                var questionsText = new createjs.Text("Question:" + " " + question.Text, "20px Alegreya", "#FFFFFF");
                 questionsText.x = questionPanel.x + 50;
                 questionsText.y = questionPanel.y + 35;
 
-                //var redx = new createjs.Bitmap(queue.getResult("redx"))
-                //redx.x = questionPanel.x + 580;
-                //redx.y = questionPanel.y + 300;
-
-                //var greenchk = new createjs.Bitmap(queue.getResult("greenchk"))
-                //greenchk.x = questionPanel.x + 500;
-                //greenchk.y = questionPanel.y + 300;
-
-                //redx.addEventListener("click", handleClick);
-                //function handleClick(event) {
-
-                //    self.stage.removeChild(questionContainer);
-                //    canEnemyFire = true;
-                //    isQuestionDisplayed = false;
-                //}
-
-                //greenchk.addEventListener("click", handleClick2);
-                //function handleClick2(event) {
-                ////self.stage.removeChild(questionContainer);
-                   
-                //    canEnemyFire = true;
-                   
-                //    isQuestionDisplayed = false;
-                //}
-
+                questionContainer.name = "question";
                 questionContainer.addChild(questionPanel, questionsText)
 
                 self.stage.addChild(questionContainer);
-                deliverAnswers();
+                deliverAnswers(question);
 
                 return questionContainer;
 
             }
 
-            function deliverAnswers() {
+            function deliverAnswers(question) {
                 var stackIncrement = 50;
                 var answerContainersParent = new createjs.Container();
-        
+                answerContainersParent.name = "parent";
 
                 for (var j = 0 ; j < gameData.Questions[0].Answers.length; j++) {
                     console.log("answers")
-                    var answersText = new createjs.Text("Answer:" + " " + gameData.Questions[0].Answers[j].Text, "16px Alegreya", "#000000");
+                    var answersText = new createjs.Text("Answer:" + " " + question.Answers[j].Text, "16px Alegreya", "#000000");
                     var answerContainer = new createjs.Container();
 
                     var answerHolder = new createjs.Bitmap(queue.getResult("answerHolder"))
@@ -532,24 +506,37 @@ var Game = Game || (function (createjs) {
 
                     answerHolder.scaleX = 2;
 
-                    answerHolder.x = answersText.x
-                    answerHolder.y = answersText.y
-                  
+                    answerHolder.x = answersText.x;
+                    answerHolder.y = answersText.y;
+                    
+                    answerContainer.name = "child";
+                    answerContainer.IsCorrect = question.Answers[j].IsCorrect;
+                    answerContainer.Idx = j;
 
-                    answerContainer.addChild(answerHolder, answersText )
-                    answerContainersParent.addChild(answerContainer)
+                    answerContainer.addChild(answerHolder, answersText);
+                    
                     stackIncrement += 50;
 
-                    answerContainer.addEventListener("click", function (evt) {
+                    answerContainer.addEventListener("pressup", function (evt) {
+                     //   alert(evt.target);
                         console.log("clicked that thing")
+                        
+                        if (evt.currentTarget.IsCorrect) {
+                            alert("correct")
+                        }
+                        else
+                            alert("incorrect" + evt.currentTarget.IsCorrect);
 
-
-                        deliverFeedback();
-                        self.stage.removeChild(questionContainer);
-                        self.stage.removeChild(answerContainersParent);
-
+                       // deliverFeedback();
+                        event.stopPropagation();
+                      //  self.stage.removeChild(questionContainer);
+                      //  self.stage.removeChild(answerContainersParent);
+                        
+                        //check if this is the last question, if yes- exit the game
+                        // if not increment current question index
+                        currentQuestion++;
                     });
-
+                    answerContainersParent.addChild(answerContainer);
                 }
 
                 self.stage.addChild(answerContainersParent);
@@ -564,9 +551,11 @@ var Game = Game || (function (createjs) {
                 feedbackPanel.y = 400;
 
 
-                //add beam count
+                //add net count
                 //this will be the correct answer
-                var feedbackText = new createjs.Text("Answer:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
+             var feedbackText = new createjs.Text("Correct:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
+
+
                 feedbackText.x = feedbackPanel.x + 50
                 feedbackText.y = feedbackPanel.y + 35
 
@@ -577,7 +566,7 @@ var Game = Game || (function (createjs) {
                 redx.addEventListener("click", handleClick);
                 function handleClick(event) {
                     self.stage.removeChild(feedbackContainer);
-                    beamCount = 10;
+                    netCount = 10;
                     canEnemyFire = true;
                     isQuestionDisplayed = false;
                     isEnemySpawnedEnabled = true;
@@ -617,10 +606,32 @@ var Game = Game || (function (createjs) {
             createjs.Ticker.setFPS(fps);
 
             function handleTick(event) {
-                if (beamdelay > 0)
-                    beamdelay--
-                self.stage.update();
+                if (netdelay > 0)
+                    netdelay--
 
+                playerVelocityX = playerVelocityX * playerMovementFriction;
+                playerVelocityY = playerVelocityY * playerMovementFriction;
+
+                movePlayerContainer();
+
+                self.stage.update();
+            }
+
+            function movePlayerContainer() {
+                if (playerContainer) {
+                    playerContainer.x += playerVelocityX;
+                    playerContainer.y += playerVelocityY;
+
+                    if (playerContainer.x < 20)
+                        playerContainer.x = 20;
+                    else if (playerContainer.x > 730)
+                        playerContainer.x = 730;
+
+                    if (playerContainer.y < 400)
+                        playerContainer.y = 400;
+                    else if (playerContainer.y > 550)
+                        playerContainer.y = 550;
+                }
             }
 
         }
