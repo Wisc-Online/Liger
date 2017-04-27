@@ -43,10 +43,9 @@ var Game = Game || (function (createjs, $) {
             { id: "rf_yellowRoundBalloon", src: assetsPath + "rf_yellowRoundBalloon.png" },
             { id: "rf_whiteCrosshair", src: assetsPath + "rf_whiteCrosshair.png" },
             { id: "rf_game_cursor", src: assetsPath + "rf_game_cursor.png" },
-            { id: "pop", src: assetsPath + "rf_balloon_pop.mp3" },
              { id: "deflate", src: assetsPath + "deflate.mp3" },
-             { id: "buttonClick", src: assetsPath + "WelcomeSong.mp3" },
-            //{ id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
+          //   { id: "buttonClick", src: assetsPath + "WelcomeSong.mp3" },
+            { id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
             { id: "rf_POP", src: assetsPath + "rf_POP.png" },
             { id: "musicOn", src: assetsPath + "musicOn.png" },
             { id: "orange", src: assetsPath + "orange.png" },
@@ -55,7 +54,12 @@ var Game = Game || (function (createjs, $) {
             { id: "yellow", src: assetsPath + "yellow.png" },
             { id: "green", src: assetsPath + "green.png" },
             { id: "blue", src: assetsPath + "blue.png" },
-            { id: "musicOff", src: assetsPath + "musicOff.png" }
+            { id: "musicOff", src: assetsPath + "musicOff.png" },
+            { id: "chakalaka1", src: assetsPath + "Game-chakalaka_01.mp3" },
+            { id: "chakalaka2", src: assetsPath + "Game-chakalaka_02.mp3" },
+            { id: "gameshort", src: assetsPath + "Game-short_01.mp3" },
+            { id: "aaeesshh1", src: assetsPath + "Game_Aaeesshh_01.mp3" },
+            { id: "aaeesshh2", src: assetsPath + "game_aaeesshh_02.mp3" }
         ];
         var queue = new createjs.LoadQueue(false);
         var mainView = null;
@@ -86,11 +90,7 @@ var Game = Game || (function (createjs, $) {
                 window.location = "http://www.wisc-online.com";
             }
         }
-        var musicOn = true;
-        var pop = createjs.Sound.createInstance("pop", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-        var deflate = createjs.Sound.createInstance("deflate", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-        var buttonClick = createjs.Sound.createInstance("ButtonClickDry", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-        buttonClick.volume = buttonClick.volume * 0.75;
+        
 
         ////////////////////////////////////////
         var gameData = gameData || {};
@@ -98,19 +98,22 @@ var Game = Game || (function (createjs, $) {
         var mouseBp;
         var stage = new createjs.Stage(canvasId);
         var gameCounter = 0;
-        var maxWidth = 40;
+        
         var tableCompactTimeout = null;
         var maxMoveNbr = 5;
         var movesLeft = 0;
         var currentQuestion = 0;
-        var boardStartX = 100;
-        var boardStartY = 100;
+        var boardStartX = 40;
+        var boardStartY = 40;
+        var boardWidth= 400;
+        var boardHeight = 400;
         var currentBestMatch = null;
         var containerAtX = 580;
         var maxI = 10;
         var maxJ = 10;
 
-
+        var maxWidth = Math.round(boardWidth / maxI);
+        var maxHeight = Math.round(boardWidth / maxJ);
         stage.enableMouseOver(10);
         // stage.mouseMoveOutside = true;
 
@@ -128,6 +131,17 @@ var Game = Game || (function (createjs, $) {
         createjs.Ticker.on("tick", handleTick);
 
         function initialize() {
+            var musicOn = true;
+            var chakalaka2 = createjs.Sound.createInstance("chakalaka2", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+            createjs.Sound.play("chakalaka2");
+            var aaeesshh1 = createjs.Sound.createInstance("aaeesshh1", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+
+            var gameshort = createjs.Sound.createInstance("gameshort", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+            var buttonClick = createjs.Sound.createInstance("ButtonClickDry", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+            buttonClick.volume = buttonClick.volume * 0.75;
+
+
+
             self.gameData = gameData;
             var gameState = {
                 score: 0,
@@ -420,7 +434,7 @@ var Game = Game || (function (createjs, $) {
 
                 var background = new createjs.Shape();
                 background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("aqua");
-                background.graphics.drawRect(boardStartX, boardStartY, 400, 400);
+                background.graphics.drawRect(boardStartX, boardStartY, boardWidth, boardHeight);
 
                 container.addChild(background);
 
@@ -463,8 +477,8 @@ var Game = Game || (function (createjs, $) {
 
                 var background = new createjs.Shape();
                 background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
-                background.graphics.drawRect(0, 0, maxWidth, 40);
-                container.setBounds(0, 0, maxWidth, 40);
+                background.graphics.drawRect(0, 0, maxWidth, maxHeight);
+                container.setBounds(0, 0, maxWidth, maxHeight);
 
                 container.on("pressmove", handleElementDrag);
                 container.on("pressup", handleElementPressUp);
@@ -718,12 +732,12 @@ var Game = Game || (function (createjs, $) {
                 for (var i = 0; i < maxI; i++) {
                     var yCord = boardStartY;
                     gameData[i] = [];
-                    for (var j = 0; j < 10; j++) {
+                    for (var j = 0; j < maxJ; j++) {
                         gameData[i][j] = createElement(i, j, xCord, yCord);
                         
-                        yCord += 40;
+                        yCord += maxHeight;
                     }
-                    xCord += 40;
+                    xCord += maxWidth;
                 }
 
             }
@@ -1150,12 +1164,13 @@ var Game = Game || (function (createjs, $) {
                   questionContainer.visible = false;
                   movesLeft += maxMoveNbr;
                   movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
+                  createjs.Sound.play("gameshort");
                   //currentQuestion++;
               }
               else
               {
                   //alert('Your answer is WRONG');
-
+                  createjs.Sound.play("aaeesshh1");
                   maxMoveNbr;
                   //currentQuestion++;
                   if (currentQuestion >= gameData.Questions.length) {
@@ -1237,7 +1252,7 @@ var Game = Game || (function (createjs, $) {
         
                 var background = new createjs.Shape();
                 background.graphics.setStrokeStyle(1).beginStroke("yellow").beginFill("brown");
-                background.graphics.drawRect(0, 0, 400, 400);
+                background.graphics.drawRect(0, 0, boardWidth, boardHeight);
                 background.alpha = 0.95;
                 container.addChild(background);
 
@@ -1387,6 +1402,7 @@ var Game = Game || (function (createjs, $) {
                 view.addChild(new createjs.Bitmap(queue.getResult("rf_skyBackground")))
                 if (gameState.score > 0) {
                     var titleText = new createjs.Text("BOOM CHAKALAKA You won " + gameState.score + " points!", "20pt Arial bold", "white");
+                    createjs.Sound.play("chakalaka2");
                 } else {
 
                     var titleText = new createjs.Text("Sorry, you didn't win any points!", "40pt Arial bold", "white");
