@@ -475,9 +475,9 @@ var Game = Game || (function (createjs, $) {
                 //library of terms
                 var container = new createjs.Container();
 
-                var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
-                background.graphics.drawRect(0, 0, maxWidth, maxHeight);
+               // var background = new createjs.Shape();
+               // background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
+               // background.graphics.drawRect(0, 0, maxWidth, maxHeight);
                 container.setBounds(0, 0, maxWidth, maxHeight);
 
                 container.on("pressmove", handleElementDrag);
@@ -485,7 +485,7 @@ var Game = Game || (function (createjs, $) {
 
                 var mouseDragPosition = null;
 
-                container.addChild(background);
+               // container.addChild(background);
                 
                 var colors = ["orange", "red", "purple", "yellow", "green", "blue"];
                 var colorIndex = Math.floor(Math.random() * colors.length);
