@@ -51,7 +51,12 @@
     <Content Include="createjs.min.js" />
     <Content Include="deflate.mp3" />
     <Content Include="game - Copy.js" />
+    <Content Include="Game-chakalaka_01.mp3" />
+    <Content Include="Game-chakalaka_02.mp3" />
+    <Content Include="Game-short_01.mp3" />
     <Content Include="gameRapidFire.js" />
+    <Content Include="Game_Aaeesshh_01.mp3" />
+    <Content Include="game_aaeesshh_02.mp3" />
     <Content Include="game_old.js" />
     <Content Include="game.js" />
     <Content Include="game1 - .js" />
@@ -61,6 +66,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StyleSheet1.css" />
+    <Content Include="WelcomeSong.mp3" />
     <Content Include="yellow.png" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

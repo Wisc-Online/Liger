@@ -43,8 +43,8 @@ var Game = Game || (function (createjs, $) {
             { id: "rf_yellowRoundBalloon", src: assetsPath + "rf_yellowRoundBalloon.png" },
             { id: "rf_whiteCrosshair", src: assetsPath + "rf_whiteCrosshair.png" },
             { id: "rf_game_cursor", src: assetsPath + "rf_game_cursor.png" },
-            { id: "pop", src: assetsPath + "rf_balloon_pop.mp3" },
              { id: "deflate", src: assetsPath + "deflate.mp3" },
+          //   { id: "buttonClick", src: assetsPath + "WelcomeSong.mp3" },
             { id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
             { id: "rf_POP", src: assetsPath + "rf_POP.png" },
             { id: "musicOn", src: assetsPath + "musicOn.png" },
@@ -54,7 +54,12 @@ var Game = Game || (function (createjs, $) {
             { id: "yellow", src: assetsPath + "yellow.png" },
             { id: "green", src: assetsPath + "green.png" },
             { id: "blue", src: assetsPath + "blue.png" },
-            { id: "musicOff", src: assetsPath + "musicOff.png" }
+            { id: "musicOff", src: assetsPath + "musicOff.png" },
+            { id: "chakalaka1", src: assetsPath + "Game-chakalaka_01.mp3" },
+            { id: "chakalaka2", src: assetsPath + "Game-chakalaka_02.mp3" },
+            { id: "gameshort", src: assetsPath + "Game-short_01.mp3" },
+            { id: "aaeesshh1", src: assetsPath + "Game_Aaeesshh_01.mp3" },
+            { id: "aaeesshh2", src: assetsPath + "game_aaeesshh_02.mp3" }
         ];
         var queue = new createjs.LoadQueue(false);
         var mainView = null;
@@ -85,11 +90,7 @@ var Game = Game || (function (createjs, $) {
                 window.location = "http://www.wisc-online.com";
             }
         }
-        var musicOn = true;
-        var pop = createjs.Sound.createInstance("pop", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-        var deflate = createjs.Sound.createInstance("deflate", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-        var buttonClick = createjs.Sound.createInstance("ButtonClickDry", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-        buttonClick.volume = buttonClick.volume * 0.75;
+        
 
         ////////////////////////////////////////
         var gameData = gameData || {};
@@ -97,19 +98,22 @@ var Game = Game || (function (createjs, $) {
         var mouseBp;
         var stage = new createjs.Stage(canvasId);
         var gameCounter = 0;
-        var maxWidth = 40;
+        
         var tableCompactTimeout = null;
         var maxMoveNbr = 5;
         var movesLeft = 0;
         var currentQuestion = 0;
-        var boardStartX = 100;
-        var boardStartY = 100;
+        var boardStartX = 40;
+        var boardStartY = 40;
+        var boardWidth= 400;
+        var boardHeight = 400;
         var currentBestMatch = null;
         var containerAtX = 580;
         var maxI = 10;
         var maxJ = 10;
 
-
+        var maxWidth = Math.round(boardWidth / maxI);
+        var maxHeight = Math.round(boardWidth / maxJ);
         stage.enableMouseOver(10);
         // stage.mouseMoveOutside = true;
 
@@ -127,10 +131,20 @@ var Game = Game || (function (createjs, $) {
         createjs.Ticker.on("tick", handleTick);
 
         function initialize() {
+            var musicOn = true;
+            var chakalaka2 = createjs.Sound.createInstance("chakalaka2", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+            createjs.Sound.play("chakalaka2");
+            var aaeesshh1 = createjs.Sound.createInstance("aaeesshh1", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+
+            var gameshort = createjs.Sound.createInstance("gameshort", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+            var buttonClick = createjs.Sound.createInstance("ButtonClickDry", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+            buttonClick.volume = buttonClick.volume * 0.75;
+
+
+
             self.gameData = gameData;
             var gameState = {
                 score: 0,
-                //level: 0,
                 name: gameData.UserName || "",
                 color: "#008080",
                 questionsMissed: 0,
@@ -420,7 +434,7 @@ var Game = Game || (function (createjs, $) {
 
                 var background = new createjs.Shape();
                 background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("aqua");
-                background.graphics.drawRect(boardStartX, boardStartY, 400, 400);
+                background.graphics.drawRect(boardStartX, boardStartY, boardWidth, boardHeight);
 
                 container.addChild(background);
 
@@ -430,10 +444,6 @@ var Game = Game || (function (createjs, $) {
                 userScoreContainer.y = 350;
                 container.addChild(userScoreContainer);
 
-               /* userLevelContainer = createLevelContainer();
-                userLevelContainer.x = containerAtX;
-                userLevelContainer.y = 50;
-                container.addChild(userLevelContainer);*/
                 //
                 movesLeftContainer = createMovesLeftContainer();
                 movesLeftContainer.x = containerAtX;
@@ -467,8 +477,8 @@ var Game = Game || (function (createjs, $) {
 
                 var background = new createjs.Shape();
                 background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
-                background.graphics.drawRect(0, 0, maxWidth, 40);
-                container.setBounds(0, 0, maxWidth, 40);
+                background.graphics.drawRect(0, 0, maxWidth, maxHeight);
+                container.setBounds(0, 0, maxWidth, maxHeight);
 
                 container.on("pressmove", handleElementDrag);
                 container.on("pressup", handleElementPressUp);
@@ -722,12 +732,12 @@ var Game = Game || (function (createjs, $) {
                 for (var i = 0; i < maxI; i++) {
                     var yCord = boardStartY;
                     gameData[i] = [];
-                    for (var j = 0; j < 10; j++) {
+                    for (var j = 0; j < maxJ; j++) {
                         gameData[i][j] = createElement(i, j, xCord, yCord);
                         
-                        yCord += 40;
+                        yCord += maxHeight;
                     }
-                    xCord += 40;
+                    xCord += maxWidth;
                 }
 
             }
@@ -1110,10 +1120,39 @@ var Game = Game || (function (createjs, $) {
             {
               for (var k = 0; k < gameData.Questions[currentQuestion].Answers.length; k++) {
                     //-------------------------->
-
+                  var container = questionContainer;
+                  container.visible = true;
+                  container.getChildByName('question').text = gameData.Questions[currentQuestion].Text;
                     if (gameData.Questions[currentQuestion].Answers[k].IsCorrect && gameData.Questions[currentQuestion].Answers[k].Details != "")
                     {
-                        alert(gameData.Questions[currentQuestion].Answers[k].Details);
+                        var ad = new createjs.Container();
+                       
+                        var answerText = new createjs.Text("", "16px Verdana", "");
+                        answerText.color = "green";
+                        answerText.text = "The correct answer is " + gameData.Questions[currentQuestion].Answers[k].Text + " : \n\n "  + gameData.Questions[currentQuestion].Answers[k].Details;
+                        answerText.x = 0;
+                        answerText.y = 150;
+                        answerText.lineWidth = 300;
+                        answerText.name = "detailsText";
+                        ad.name = "details";
+
+                        var answer = new createjs.Shape();
+                        answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
+                        answer.graphics.drawRect(-30, 150, 375, 150);
+                        answer.name = "detailsShape";
+                        ad.x = 40;
+                        ad.y = 80;
+
+                        ad.addChild(answer);
+                        ad.addChild(answerText);
+
+                        ad.on("pressup", handleAnswerPressUp);
+
+                        ad.text = gameData.Questions[currentQuestion].Answers[k].Details;
+                        ad.IsCorrect = gameData.Questions[currentQuestion].Answers[k].IsCorrect;
+                        container.addChild(ad);
+
+                        //alert(gameData.Questions[currentQuestion].Answers[k].Details);
                         break;
                     }
                 }
@@ -1125,12 +1164,13 @@ var Game = Game || (function (createjs, $) {
                   questionContainer.visible = false;
                   movesLeft += maxMoveNbr;
                   movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
+                  createjs.Sound.play("gameshort");
                   //currentQuestion++;
               }
               else
               {
                   //alert('Your answer is WRONG');
-
+                  createjs.Sound.play("aaeesshh1");
                   maxMoveNbr;
                   //currentQuestion++;
                   if (currentQuestion >= gameData.Questions.length) {
@@ -1155,9 +1195,9 @@ var Game = Game || (function (createjs, $) {
                           // alert(correctButton.text);
                           correctButton.getChildByName("answerText").color = "green";
                           createjs.Tween.get(correctButton.getChildByName("answerShape"))
-                                    .to({ scaleX: 2, scaleY: 2 }, 1000)
+                                    .to({ scaleX: 0.5, scaleY: 0.7 }, 1000)
                                     .to({ scaleX: 1, scaleY: 1 }, 1000)
-                                    .to({ scaleX: 2, scaleY: 2 }, 1000);
+                                    .to({ scaleX: 1, scaleY: 1 }, 1000);
 
                           
 
@@ -1212,7 +1252,7 @@ var Game = Game || (function (createjs, $) {
         
                 var background = new createjs.Shape();
                 background.graphics.setStrokeStyle(1).beginStroke("yellow").beginFill("brown");
-                background.graphics.drawRect(0, 0, 400, 400);
+                background.graphics.drawRect(0, 0, boardWidth, boardHeight);
                 background.alpha = 0.95;
                 container.addChild(background);
 
@@ -1355,41 +1395,14 @@ var Game = Game || (function (createjs, $) {
                 container.addChild(movesLeftText);
                 return container;
             }
-        /*    function createLevelContainer() {
-                //user score container
-                var container = new createjs.Container();
-
-                //user score background
-                var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("white").beginFill("orange");
-                background.graphics.drawRect(0, 0, 100, 50);
-                container.addChild(background);
-
-                /*
-                //user score title
-                var levelLabel = new createjs.Text("", "15px Verdana", "");
-                levelLabel.color = "yellow";
-                levelLabel.text = "Level:";
-                levelLabel.x = 35;
-                levelLabel.y = 2;
-                container.addChild(levelLabel);
-
-                //user score score
-                var levelText = new createjs.Text("", "20px Verdana", "");
-                levelText.color = "white";
-                levelText.text = "0"; //this will need to change later to be a var to hold user score. 
-                levelText.x = 30;
-                levelText.y = 20;
-                levelText.name = "level";
-                container.addChild(levelText);
-                return container;
-            }*/
+        
             function createWinnerView() {
 
                 var view = new createjs.Container();
                 view.addChild(new createjs.Bitmap(queue.getResult("rf_skyBackground")))
                 if (gameState.score > 0) {
                     var titleText = new createjs.Text("BOOM CHAKALAKA You won " + gameState.score + " points!", "20pt Arial bold", "white");
+                    createjs.Sound.play("chakalaka2");
                 } else {
 
                     var titleText = new createjs.Text("Sorry, you didn't win any points!", "40pt Arial bold", "white");
