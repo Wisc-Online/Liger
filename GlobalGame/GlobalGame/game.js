@@ -170,7 +170,7 @@ var Game = Game || (function (createjs, $) {
                
 
 
-                var text = new createjs.Text(message, "bold 40px Monotype Corsiva", "blue");
+                var text = new createjs.Text(message, "bold 55px Cooper Black", "white");
                
 
 
@@ -178,12 +178,11 @@ var Game = Game || (function (createjs, $) {
                 text.set({
                     //x: stage.canvas.width / 2,
                     //y: stage.canvas.height / 2,
-                    x: 300,
-                    y: 65,
+                    x: 310,
+                    y: 25,
                   
                     textAlign: "center",
                     textBaseline: "middle",
-                    
                     alpha: 0
                 });
                 
@@ -191,9 +190,9 @@ var Game = Game || (function (createjs, $) {
 
              
                 createjs.Tween.get(text)    
-                    .to({ alpha: 100 }, 1000)
-                    .wait(1000)
-                    .to({ alpha: 0 }, 500)
+                    .to({ alpha: 100 }, 900)
+                    .wait(900)
+                    .to({ alpha: 0 }, 400)
                     .call(function () {
                         stage.removeChild(text);
                     })
@@ -290,13 +289,14 @@ var Game = Game || (function (createjs, $) {
 
             function createQuestionView() {
                 //add question container
+                
                 questionContainer = createQuestionContainer();
                 questionContainer.x = boardStartX;
                 questionContainer.y = boardStartY;
                 showQuestionContainer(gameData.Questions[currentQuestion]);
                 return questionContainer;
             }
-
+      
         
 
             function createInstructionContainer()
@@ -1118,14 +1118,14 @@ var Game = Game || (function (createjs, $) {
                         answerText.color = "green";
                         answerText.text = "The correct answer is " + gameData.Questions[currentQuestion].Answers[k].Text + " : \n\n "  + gameData.Questions[currentQuestion].Answers[k].Details;
                         answerText.x = 0;
-                        answerText.y = 150;
+                        answerText.y = 208;
                         answerText.lineWidth = 300;
                         answerText.name = "detailsText";
                         ad.name = "details";
 
                         var answer = new createjs.Shape();
-                        answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
-                        answer.graphics.drawRect(-30, 150, 375, 150);
+                        answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("#ffd5c0");
+                        answer.graphics.drawRect(-30, 200, 575, 200);
                         answer.name = "detailsShape";
                         ad.x = 40;
                         ad.y = 80;
@@ -1292,10 +1292,11 @@ var Game = Game || (function (createjs, $) {
                 var container = new createjs.Container();
 
                 //user score background
-                var background = new createjs.Shape();
+               /* var background = new createjs.Shape();
                 background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("orange");
                 background.graphics.drawRect(0, 0, 100, 50);
                 container.addChild(background);
+                */
 
                 //user score title
                 var scoreLabel = new createjs.Text("", "15px Verdana", "");
@@ -1363,10 +1364,11 @@ var Game = Game || (function (createjs, $) {
                 var container = new createjs.Container();
 
                 //user score background
-                var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("white").beginFill("orange");
+                /*var background = new createjs.Shape();
+                background.graphics.setStrokeStyle(1).beginStroke("white").beginFill("purple");
                 background.graphics.drawRect(0, 0, 100, 50);
                 container.addChild(background);
+                */
 
                 //user score title
                 var movesLeftLabel = new createjs.Text("", "15px Verdana", "");
