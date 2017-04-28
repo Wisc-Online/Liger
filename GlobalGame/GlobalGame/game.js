@@ -170,7 +170,7 @@ var Game = Game || (function (createjs, $) {
                
 
 
-                var text = new createjs.Text(message, "bold 40px Monotype Corsiva", "blue");
+                var text = new createjs.Text(message, "bold 48px Monotype Corsiva", "white");
                
 
 
@@ -182,6 +182,7 @@ var Game = Game || (function (createjs, $) {
                     y: 65,
                   
                     textAlign: "center",
+                    
                     textBaseline: "middle",
                     
                     alpha: 0
