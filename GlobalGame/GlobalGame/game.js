@@ -1,7 +1,7 @@
 ﻿/// <reference path="C:\SoftwareDev\GIT\Liger\GlobalGame\GlobalGame\createjs.min.js" />
 var Game = Game || (function (createjs, $) {
     function Game(canvasId, gameData) {
-        var helpers = {
+       /* var helpers = {
             createButton: function (buttonText) {
                 var button = new createjs.Container();
                 var background = new createjs.Shape();
@@ -16,7 +16,7 @@ var Game = Game || (function (createjs, $) {
 
                 return button;
             }
-        };
+        };*/
         var assetsPath = gameData.assetsPath || "";
 
         var timeLimit = 240;
@@ -25,26 +25,12 @@ var Game = Game || (function (createjs, $) {
             { id: "instructions_question", src: assetsPath + "instructions_question.png" },
             { id: "instructions", src: assetsPath + "instructions_question.png" },
             { id: "title_background", src: assetsPath + "title_background.jpg" },
-            { id: "plain_background", src: assetsPath + "plain_background.jpg" },
             { id: "start_button", src: assetsPath + "start_button.png" },
             { id: "rf_instructions", src: assetsPath + "RapidFireInstructions.png" },
             { id: "rf_skyBackground", src: assetsPath + "rf_skyBackground.jpg" },
             { id: "rf_skyFinalBackground", src: assetsPath + "rf_skyFinalBackground.png" },
-             { id: "chakalaka", src: assetsPath + "chakalaka.png" },
-              { id: "chakalaka1", src: assetsPath + "chakalaka1.jpg" },
-            { id: "rf_spaceBackground", src: assetsPath + "rf_spaceBackground.jpg" },
-            { id: "rf_blueLongBalloon", src: assetsPath + "rf_blueLongBalloon.png" },
-            { id: "rf_blueRoundBalloon", src: assetsPath + "rf_blueRoundBalloon.png" },
-            { id: "rf_greenLongBalloon", src: assetsPath + "rf_greenLongBalloon.png" },
-            { id: "rf_greenRoundBalloon", src: assetsPath + "rf_greenRoundBalloon.png" },
-            { id: "rf_redLongBalloon", src: assetsPath + "rf_redLongBalloon.png" },
-            { id: "rf_redRoundBalloon", src: assetsPath + "rf_redRoundBalloon.png" },
-            { id: "rf_yellowLongBalloon", src: assetsPath + "rf_yellowLongBalloon.png" },
-            { id: "rf_yellowRoundBalloon", src: assetsPath + "rf_yellowRoundBalloon.png" },
-            { id: "rf_whiteCrosshair", src: assetsPath + "rf_whiteCrosshair.png" },
-            { id: "rf_game_cursor", src: assetsPath + "rf_game_cursor.png" },
-             { id: "deflate", src: assetsPath + "deflate.mp3" },
-          //   { id: "buttonClick", src: assetsPath + "WelcomeSong.mp3" },
+            { id: "chakalaka", src: assetsPath + "chakalaka.png" },
+            { id: "chakalaka1", src: assetsPath + "chakalaka1.jpg" },
             { id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
             { id: "rf_POP", src: assetsPath + "rf_POP.png" },
             { id: "musicOn", src: assetsPath + "musicOn.png" },
@@ -62,13 +48,16 @@ var Game = Game || (function (createjs, $) {
             { id: "aaeesshh2", src: assetsPath + "game_aaeesshh_02.mp3" }
         ];
         var queue = new createjs.LoadQueue(false);
-        var mainView = null;
+        
+
         queue.installPlugin(createjs.Sound);
+
         queue.addEventListener("complete", function (event) {
             initialize();
         });
         queue.loadManifest(assets);
 
+        var mainView = null;
         var isLmsConnected = false;
         var currentLmsInteraction = null;
 
@@ -101,19 +90,29 @@ var Game = Game || (function (createjs, $) {
         
         var tableCompactTimeout = null;
         var maxMoveNbr = 5;
-        var movesLeft = 0;
-        var currentQuestion = 0;
+        
         var boardStartX = 40;
-        var boardStartY = 40;
-        var boardWidth= 400;
-        var boardHeight = 400;
-        var currentBestMatch = null;
-        var containerAtX = 580;
-        var maxI = 10;
-        var maxJ = 10;
+        var boardStartY = 50;
+        var boardWidth= 600;
+        var boardHeight = 500;
+        
+        var containerAtX = boardStartX + boardWidth + 30;
+        var hintContainerAtY = 150;
+        var movesContainerAtY = 250;
+        var scoreContainerAtY = 350;
+
+        var maxI = 12; //number of element in a row
+        var maxJ = 10; //number of element in a column
 
         var maxWidth = Math.round(boardWidth / maxI);
-        var maxHeight = Math.round(boardWidth / maxJ);
+        var maxHeight = Math.round(boardHeight / maxJ);
+
+        
+
+        var movesLeft = 0;
+        var currentQuestion = 0;
+        var currentBestMatch = null;
+
         stage.enableMouseOver(10);
         // stage.mouseMoveOutside = true;
 
@@ -294,7 +293,7 @@ var Game = Game || (function (createjs, $) {
                 questionContainer = createQuestionContainer();
                 questionContainer.x = boardStartX;
                 questionContainer.y = boardStartY;
-                showQuestionContainer(gameData.Questions[0]);
+                showQuestionContainer(gameData.Questions[currentQuestion]);
                 return questionContainer;
             }
 
@@ -433,7 +432,7 @@ var Game = Game || (function (createjs, $) {
                 var container = new createjs.Container();
 
                 var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("aqua");
+               // background.graphics.setStrokeStyle(1).beginStroke("white");
                 background.graphics.drawRect(boardStartX, boardStartY, boardWidth, boardHeight);
 
                 container.addChild(background);
@@ -441,30 +440,32 @@ var Game = Game || (function (createjs, $) {
                 //add user score container
                 userScoreContainer = createUserScoreContainer();
                 userScoreContainer.x = containerAtX;
-                userScoreContainer.y = 350;
+                userScoreContainer.y = scoreContainerAtY;
                 container.addChild(userScoreContainer);
 
                 //
                 movesLeftContainer = createMovesLeftContainer();
                 movesLeftContainer.x = containerAtX;
-                movesLeftContainer.y = 250;
+                movesLeftContainer.y = movesContainerAtY;
                 container.addChild(movesLeftContainer);
                 
 
                 var hintButtonContainer = createHintButton();
                 hintButtonContainer.x = containerAtX;
-                hintButtonContainer.y = 150;
+                hintButtonContainer.y = hintContainerAtY;
                 container.addChild(hintButtonContainer);
                 return container;
             }
 
             function createCircle(color)
             {
-                var circle = new createjs.Shape();
+                //var circle = new createjs.Shape();
                 
                 var image = queue.getResult(color);
 
                 var bitmap = new createjs.Bitmap(image);
+                bitmap.scaleX = maxWidth / image.width;
+                bitmap.scaleY = maxHeight / image.height;
 
                 bitmap.name = "circle";
                 return bitmap;
@@ -493,14 +494,14 @@ var Game = Game || (function (createjs, $) {
                 container.color = colors[colorIndex];
                 container.addChild(createCircle(container.color));
                 
-                var label = new createjs.Text("", "10px Verdana", "");
+                /*var label = new createjs.Text("", "10px Verdana", "");
                 label.color = "white";
                 label.text = "";
                 label.x = 8;
                 label.y = 2;
                 label.name = "label";
 
-                container.addChild(label);
+                container.addChild(label);*/
 
                 container.isEmpty = false;
 
@@ -530,7 +531,7 @@ var Game = Game || (function (createjs, $) {
                             else
                                 deltaX = 0;
                             
-                            if (deltaX > dragThreshold && iIndex < 9) {
+                            if (deltaX > dragThreshold && iIndex < (maxI - 1)) {
                                 // move right
 
 
@@ -591,7 +592,7 @@ var Game = Game || (function (createjs, $) {
                                 
 
                             }
-                            else if (deltaY > dragThreshold && jIndex < 9) {
+                            else if (deltaY > dragThreshold && jIndex < (maxJ -1)) {
                                 // move down
 
                                 var yy = evt.currentTarget.original_y + deltaY;
@@ -632,17 +633,7 @@ var Game = Game || (function (createjs, $) {
                        var targetCircle = evt.currentTarget.targetNeighbour;
 
                        createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 100);
-                     /*  var curi = evt.currentTarget.i;
-                       var curj = evt.currentTarget.j;
 
-                       evt.currentTarget.i = targetCircle.i;
-                       evt.currentTarget.j = targetCircle.j;
-
-                       targetCircle.i = curi;
-                       targetCircle.j = curj;
-
-                       gameData[evt.currentTarget.i][evt.currentTarget.j] = evt.currentTarget;
-                       gameData[targetCircle.i][targetCircle.j] = targetCircle;*/
 
                        if (evt.currentTarget.allowSwap===true) {
 
@@ -688,18 +679,14 @@ var Game = Game || (function (createjs, $) {
                                {
                                    showQuestionContainer(gameData.Questions[currentQuestion]);
                                }
-                        }
+                            }
 
                            movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
                        }
                        else {
                            mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
                            createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 250);
-                           /*curi = evt.currentTarget.i; var curj = evt.currentTarget.j;
-                           evt.currentTarget.i = targetCircle.i; evt.currentTarget.j = targetCircle.j;
-                           targetCircle.i = curi; targetCircle.j = curj;
-                           gameData[evt.currentTarget.i][evt.currentTarget.j] = evt.currentTarget;
-                           gameData[targetCircle.i][targetCircle.j] = targetCircle;*/
+
 
                        }
                        targetCircle.targetNeighbour = null;
@@ -722,7 +709,7 @@ var Game = Game || (function (createjs, $) {
 
                 element.i = i;
                 element.j = j;
-                element.getChildByName('label').text = element.x + ",\n" + element.y;
+                //element.getChildByName('label').text = element.x + ",\n" + element.y;
                 mainBox.addChild(element);
                 return element;
             }
@@ -757,11 +744,11 @@ var Game = Game || (function (createjs, $) {
 
                         if (i == 0) gameData[i][j].left = 0;
 
-                        if (i == 9) gameData[i][j].right = 0;
+                        if (i == (maxI -1)) gameData[i][j].right = 0;
   
                         if (j == 0) gameData[i][j].top = 0;
 
-                        if (j == 9) gameData[i][j].bottom = 0;
+                        if (j == (maxJ - 1)) gameData[i][j].bottom = 0;
 
 
 
@@ -822,7 +809,7 @@ var Game = Game || (function (createjs, $) {
                             swapColors(gameData[i][j+1],gameData[i][j]);   
                         }
 
-                        gameData[i][j].getChildByName('label').text = gameData[i][j].left + ", " + gameData[i][j].top + "\n" + gameData[i][j].right + ", " + gameData[i][j].bottom;
+                        //gameData[i][j].getChildByName('label').text = gameData[i][j].left + ", " + gameData[i][j].top + "\n" + gameData[i][j].right + ", " + gameData[i][j].bottom;
                     }
 
                 }
@@ -929,7 +916,7 @@ var Game = Game || (function (createjs, $) {
 
                       if (matches.horMatchArr.length > 2) {
                           for (var x = 0; x < matches.horMatchArr.length; x++) {
-                              matches.horMatchArr[x].getChildByName("label").text = 'X';
+                            //  matches.horMatchArr[x].getChildByName("label").text = 'X';
                               matches.horMatchArr[x].isEmpty = true;
 
                           }
@@ -937,7 +924,7 @@ var Game = Game || (function (createjs, $) {
                       }
                       if (matches.verMatchArr.length > 2) {
                           for (var x = 0; x < matches.verMatchArr.length; x++) {
-                              matches.verMatchArr[x].getChildByName("label").text = 'X';
+                            //  matches.verMatchArr[x].getChildByName("label").text = 'X';
                               matches.verMatchArr[x].isEmpty = true;
 
                           }
@@ -995,7 +982,7 @@ var Game = Game || (function (createjs, $) {
 
 
                               gameData[i][k] = createElement(i, k, xx, yy1);
-                              gameData[i][k].getChildByName('label').text = 'F';
+                              //gameData[i][k].getChildByName('label').text = 'F';
                               gameData[i][k].isEmpty = true;
 
                               mainBox.addChild(gameData[i][k]);
@@ -1088,18 +1075,18 @@ var Game = Game || (function (createjs, $) {
               {
                   var ac = new createjs.Container();
 
-                  var answerText = new createjs.Text("", "16px Verdana", "");
+                  var answerText = new createjs.Text("", "18px Arial", "");
                   answerText.color = "black";
                   answerText.text = question.Answers[i].Text;
                   answerText.x = 10;
                   answerText.y = 10;
-                  answerText.lineWidth = 380;
+                  answerText.lineWidth = boardWidth - 20;
                   answerText.name = "answerText";
                   ac.name = "answer";
 
                   var answer = new createjs.Shape();
-                  answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
-                  answer.graphics.drawRect(0, 0, 370, 40);
+                  answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("#ffd5c0");
+                  answer.graphics.drawRect(0, 0, boardWidth - 20, 40);
                   answer.name = "answerShape";
                   ac.x = 10;
                   ac.y = startY + i * 50;
@@ -1256,13 +1243,13 @@ var Game = Game || (function (createjs, $) {
                 background.alpha = 0.95;
                 container.addChild(background);
 
-                var questionText = new createjs.Text("", "20px Verdana", "");
+                var questionText = new createjs.Text("", "bold 24px Arial", "");
                 //change green color
-                questionText.color = "green";
+                questionText.color = "yellow";
                 questionText.text = "";
                 questionText.x = 10;
                 questionText.y = 20;
-                questionText.lineWidth = 380;
+                questionText.lineWidth = boardWidth - 20;
                 questionText.name = "question";
                 container.addChild(questionText);
                 
@@ -1270,6 +1257,10 @@ var Game = Game || (function (createjs, $) {
                 //add next button
                 //
                 //
+
+
+
+
                 return container;
             }
 
