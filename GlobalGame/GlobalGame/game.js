@@ -1024,9 +1024,7 @@ var Game = Game || (function (createjs, $) {
 
 
                               userScoreContainer.getChildByName('score').text = gameState.score;
-
-                           
-                              
+    
                               
                           }
 
@@ -1130,15 +1128,15 @@ var Game = Game || (function (createjs, $) {
                   var descriptionText = new createjs.Text("", "16px Verdana", "");
                   descriptionText.color = "green";
                   descriptionText.text = correctAnswerDescription;
-                  descriptionText.x = 0;
-                  descriptionText.y = 0;
+                  descriptionText.x = 5;
+                  descriptionText.y = 90;
                   descriptionText.lineWidth = 300;
                   descriptionText.name = "detailsText";
                   
 
                   var descriptionShape = new createjs.Shape();
                   descriptionShape.graphics.setStrokeStyle(1).beginStroke("black").beginFill("#ffd5c0");
-                  descriptionShape.graphics.drawRect(0, 0, 575, 200);
+                  descriptionShape.graphics.drawRect(0, 80, 575, 200);
                   descriptionShape.name = "detailsShape";
 
 
@@ -1165,7 +1163,7 @@ var Game = Game || (function (createjs, $) {
               
               if (questionContainer.getChildByName("description")) 
               {
-                  alert(questionContainer.getChildByName("description").getChildByName("detailsText").text);
+                  //alert(questionContainer.getChildByName("description").getChildByName("detailsText").text);
                   
                   questionContainer.getChildByName("description").alpha = 1;
 
