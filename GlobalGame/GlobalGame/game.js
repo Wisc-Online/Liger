@@ -1147,7 +1147,7 @@ var Game = Game || (function (createjs, $) {
 
                   description.x = 10;
                   description.y = startY;
-                  //description.alpha = 0;
+                  description.alpha = 0;
                   container.addChild(description);
                  
               }
@@ -1167,7 +1167,7 @@ var Game = Game || (function (createjs, $) {
               {
                   alert(questionContainer.getChildByName("description").getChildByName("detailsText").text);
                   
-                //  questionContainer.getChildByName("description").detailsShape.beginFill("white");
+                  questionContainer.getChildByName("description").alpha = 1;
 
               }
 
@@ -1197,7 +1197,7 @@ var Game = Game || (function (createjs, $) {
                       stage.addChild(currentArea);
                   }
                   else {
-                      showQuestionContainer(gameData.Questions[currentQuestion]);
+                     // showQuestionContainer(gameData.Questions[currentQuestion]);
                   }
 
                   //displayMessage("Your Answer is Wrong!");
