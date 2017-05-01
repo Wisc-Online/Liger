@@ -168,8 +168,13 @@ var Game = Game || (function (createjs, $) {
 
             function displayMessage(message) {
                
+
+
                 var text = new createjs.Text(message, "bold 55px Cooper Black", "white");
                
+
+
+
                 text.set({
                     //x: stage.canvas.width / 2,
                     //y: stage.canvas.height / 2,
@@ -183,6 +188,7 @@ var Game = Game || (function (createjs, $) {
                 
                 stage.addChild(text);
 
+             
                 createjs.Tween.get(text)    
                     .to({ alpha: 100 }, 900)
                     .wait(900)
@@ -192,34 +198,6 @@ var Game = Game || (function (createjs, $) {
                     })
 
             }
-
-            function displayErrorMessage(message) {
-
-                var text = new createjs.Text(message, "Bold 20px Arial", "red");
-
-                text.set({
-                    //x: stage.canvas.width / 2,
-                    //y: stage.canvas.height / 2,
-                    x: 650,
-                    y: 35,
-
-                    textAlign: "right",
-                    textBaseline: "middle",
-                    alpha: 0
-                });
-
-                stage.addChild(text);
-
-                createjs.Tween.get(text)
-                    .to({ alpha: 100 }, 900)
-                    .wait(900)
-                    .to({ alpha: 0 }, 400)
-                    .call(function () {
-                        stage.removeChild(text);
-                    })
-
-            }
-
 
             //checks for matches and eliminates all matches when the game loads
             var showView = function (view) {
@@ -1046,9 +1024,7 @@ var Game = Game || (function (createjs, $) {
 
 
                               userScoreContainer.getChildByName('score').text = gameState.score;
-
-                           
-                              
+    
                               
                           }
 
@@ -1152,15 +1128,15 @@ var Game = Game || (function (createjs, $) {
                   var descriptionText = new createjs.Text("", "16px Verdana", "");
                   descriptionText.color = "green";
                   descriptionText.text = correctAnswerDescription;
-                  descriptionText.x = 0;
-                  descriptionText.y = 0;
+                  descriptionText.x = 5;
+                  descriptionText.y = 90;
                   descriptionText.lineWidth = 300;
                   descriptionText.name = "detailsText";
                   
 
                   var descriptionShape = new createjs.Shape();
                   descriptionShape.graphics.setStrokeStyle(1).beginStroke("black").beginFill("#ffd5c0");
-                  descriptionShape.graphics.drawRect(0, 0, 575, 200);
+                  descriptionShape.graphics.drawRect(0, 80, 575, 200);
                   descriptionShape.name = "detailsShape";
 
 
@@ -1187,7 +1163,7 @@ var Game = Game || (function (createjs, $) {
               
               if (questionContainer.getChildByName("description")) 
               {
-                 // alert(questionContainer.getChildByName("description").getChildByName("detailsText").text);
+                  //alert(questionContainer.getChildByName("description").getChildByName("detailsText").text);
                   
                   questionContainer.getChildByName("description").alpha = 1;
 
@@ -1211,13 +1187,8 @@ var Game = Game || (function (createjs, $) {
               else
               {
                   //alert('Your answer is WRONG');
-                 
                   createjs.Sound.play("aaeesshh1");
                   maxMoveNbr;
-
-                  displayErrorMessage("Incorrect (-5 points) ");
-                  gameState.score = gameState.score - 5;
-               
                   //currentQuestion++;
                   if (currentQuestion >= gameData.Questions.length) {
                       currentArea = createWinnerView();
