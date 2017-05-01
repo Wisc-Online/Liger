@@ -168,13 +168,8 @@ var Game = Game || (function (createjs, $) {
 
             function displayMessage(message) {
                
-
-
                 var text = new createjs.Text(message, "bold 55px Cooper Black", "white");
                
-
-
-
                 text.set({
                     //x: stage.canvas.width / 2,
                     //y: stage.canvas.height / 2,
@@ -188,7 +183,6 @@ var Game = Game || (function (createjs, $) {
                 
                 stage.addChild(text);
 
-             
                 createjs.Tween.get(text)    
                     .to({ alpha: 100 }, 900)
                     .wait(900)
@@ -198,6 +192,34 @@ var Game = Game || (function (createjs, $) {
                     })
 
             }
+
+            function displayErrorMessage(message) {
+
+                var text = new createjs.Text(message, "Bold 20px Arial", "red");
+
+                text.set({
+                    //x: stage.canvas.width / 2,
+                    //y: stage.canvas.height / 2,
+                    x: 650,
+                    y: 35,
+
+                    textAlign: "right",
+                    textBaseline: "middle",
+                    alpha: 0
+                });
+
+                stage.addChild(text);
+
+                createjs.Tween.get(text)
+                    .to({ alpha: 100 }, 900)
+                    .wait(900)
+                    .to({ alpha: 0 }, 400)
+                    .call(function () {
+                        stage.removeChild(text);
+                    })
+
+            }
+
 
             //checks for matches and eliminates all matches when the game loads
             var showView = function (view) {
@@ -1165,7 +1187,7 @@ var Game = Game || (function (createjs, $) {
               
               if (questionContainer.getChildByName("description")) 
               {
-                  alert(questionContainer.getChildByName("description").getChildByName("detailsText").text);
+                 // alert(questionContainer.getChildByName("description").getChildByName("detailsText").text);
                   
                   questionContainer.getChildByName("description").alpha = 1;
 
@@ -1189,8 +1211,13 @@ var Game = Game || (function (createjs, $) {
               else
               {
                   //alert('Your answer is WRONG');
+                 
                   createjs.Sound.play("aaeesshh1");
                   maxMoveNbr;
+
+                  displayErrorMessage("Incorrect (-5 points) ");
+                  gameState.score = gameState.score - 5;
+               
                   //currentQuestion++;
                   if (currentQuestion >= gameData.Questions.length) {
                       currentArea = createWinnerView();
