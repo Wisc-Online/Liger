@@ -156,7 +156,7 @@ var Game = Game || (function (createjs, $) {
             }
 
             //create game objects
-            var mainBox, questionContainer, userScoreContainer, layer, rectangle, movesLeftContainer, instructionsContainer;
+            var mainBox, questionContainer, userScoreContainer, layer, rectangle, movesLeftContainer, instructionsContainer, hintButtonContainer;
             var button1, button2;
             var soundContainer = createSoundContainer();
             var instructionsView = null;
@@ -441,18 +441,21 @@ var Game = Game || (function (createjs, $) {
                 userScoreContainer = createUserScoreContainer();
                 userScoreContainer.x = containerAtX;
                 userScoreContainer.y = scoreContainerAtY;
+                userScoreContainer.visible = false;
                 container.addChild(userScoreContainer);
 
                 //
                 movesLeftContainer = createMovesLeftContainer();
                 movesLeftContainer.x = containerAtX;
                 movesLeftContainer.y = movesContainerAtY;
+                movesLeftContainer.visible = false;
                 container.addChild(movesLeftContainer);
                 
 
-                var hintButtonContainer = createHintButton();
+                hintButtonContainer = createHintButton();
                 hintButtonContainer.x = containerAtX;
                 hintButtonContainer.y = hintContainerAtY;
+                
                 container.addChild(hintButtonContainer);
                 return container;
             }
@@ -1057,7 +1060,7 @@ var Game = Game || (function (createjs, $) {
 
               if (mainBox)
                 mainBox.mouseEnabled = false;
-              
+              hintButtonContainer.visible = false;
               var container = questionContainer;
               container.visible = true;
               container.getChildByName('question').text = question.Text;
@@ -1070,7 +1073,17 @@ var Game = Game || (function (createjs, $) {
                   container.removeChild(answer);
                   answer=container.getChildByName('answer');
               }
+              var desc = container.getChildByName('description');
+              if (desc) {
+                  desc.removeAllEventListeners();
+                  desc.removeAllChildren();
+                  container.removeChild(desc);
+              }
+
+              
+
               var startY = container.getChildByName('question').getBounds().height+30;
+              var correctAnswerDescription="";
               for (var i = 0; i < question.Answers.length; i++)
               {
                   var ac = new createjs.Container();
@@ -1098,57 +1111,76 @@ var Game = Game || (function (createjs, $) {
 
                   ac.text = question.Answers[i].Text;
                   ac.IsCorrect = question.Answers[i].IsCorrect;
+                  
+                  if (question.Answers[i].IsCorrect && question.Answers[i].Details)
+                  {
+                      correctAnswerDescription = question.Answers[i].Details;
+      
+                  }
+                  
                   container.addChild(ac);
               }
+  
+              if (correctAnswerDescription != "")
+              {
+                  startY = startY + i * 50;
+                  var description = new createjs.Container();
+                    ///////////////////////
+                  description.name = "description";
+                  var descriptionText = new createjs.Text("", "16px Verdana", "");
+                  descriptionText.color = "green";
+                  descriptionText.text = correctAnswerDescription;
+                  descriptionText.x = 0;
+                  descriptionText.y = 0;
+                  descriptionText.lineWidth = 300;
+                  descriptionText.name = "detailsText";
+                  
+
+                  var descriptionShape = new createjs.Shape();
+                  descriptionShape.graphics.setStrokeStyle(1).beginStroke("black").beginFill("#ffd5c0");
+                  descriptionShape.graphics.drawRect(0, 0, 575, 200);
+                  descriptionShape.name = "detailsShape";
+
+
+                  description.addChild(descriptionShape);
+                  description.addChild(descriptionText);
+
+                  description.x = 10;
+                  description.y = startY;
+                  //description.alpha = 0;
+                  container.addChild(description);
+                 
+              }
+              
+
+
+                /////////////////////
+
+
               if (mainBox)
                 stage.setChildIndex(container, mainBox.getNumChildren() - 1);
           }
             function handleAnswerPressUp(evt)
             {
-              for (var k = 0; k < gameData.Questions[currentQuestion].Answers.length; k++) {
-                    //-------------------------->
-                  var container = questionContainer;
-                  container.visible = true;
-                  container.getChildByName('question').text = gameData.Questions[currentQuestion].Text;
-                    if (gameData.Questions[currentQuestion].Answers[k].IsCorrect && gameData.Questions[currentQuestion].Answers[k].Details != "")
-                    {
-                        var ad = new createjs.Container();
-                       
-                        var answerText = new createjs.Text("", "16px Verdana", "");
-                        answerText.color = "green";
-                        answerText.text = "The correct answer is " + gameData.Questions[currentQuestion].Answers[k].Text + " : \n\n "  + gameData.Questions[currentQuestion].Answers[k].Details;
-                        answerText.x = 0;
-                        answerText.y = 208;
-                        answerText.lineWidth = 300;
-                        answerText.name = "detailsText";
-                        ad.name = "details";
+              
+              if (questionContainer.getChildByName("description")) 
+              {
+                  alert(questionContainer.getChildByName("description").getChildByName("detailsText").text);
+                  
+                //  questionContainer.getChildByName("description").detailsShape.beginFill("white");
 
-                        var answer = new createjs.Shape();
-                        answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("#ffd5c0");
-                        answer.graphics.drawRect(-30, 200, 575, 200);
-                        answer.name = "detailsShape";
-                        ad.x = 40;
-                        ad.y = 80;
+              }
 
-                        ad.addChild(answer);
-                        ad.addChild(answerText);
-
-                        ad.on("pressup", handleAnswerPressUp);
-
-                        ad.text = gameData.Questions[currentQuestion].Answers[k].Details;
-                        ad.IsCorrect = gameData.Questions[currentQuestion].Answers[k].IsCorrect;
-                        container.addChild(ad);
-
-                        //alert(gameData.Questions[currentQuestion].Answers[k].Details);
-                        break;
-                    }
-                }
               if (evt.currentTarget.IsCorrect) {
                
                   displayMessage("Good job!");
 
                   mainBox.mouseEnabled = true;
                   questionContainer.visible = false;
+                  hintButtonContainer.visible = true;
+                  userScoreContainer.visible = true;
+                  movesLeftContainer.visible = true;
+
                   movesLeft += maxMoveNbr;
                   movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
                   createjs.Sound.play("gameshort");
