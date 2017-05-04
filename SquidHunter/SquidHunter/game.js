@@ -519,19 +519,21 @@ var Game = Game || (function (createjs) {
                     answerContainer.addEventListener("pressup", function (evt) {
                         //   alert(evt.target);
                         console.log("clicked that thing")
+                        if (isFeedbackDisplayed != true) {
+                            if (evt.currentTarget.IsCorrect) {
+                                // alert("correct")
 
-                        if (evt.currentTarget.IsCorrect) {
-                            // alert("correct")
+                                //this is where code goes to change color of holder container and display the answer
+                                deliverFeedback("correct");
+                            }
+                            else {
+                                //    alert("incorrect" + evt.currentTarget.IsCorrect);
+                                deliverFeedback("incorrect");
+                            }
 
-                            //this is where code goes to change color of holder container and display the answer
-                            deliverFeedback("correct");
+
                         }
-                        else
-                            //    alert("incorrect" + evt.currentTarget.IsCorrect);
-                            deliverFeedback("incorrect");
-                        //    event.stopPropagation();
-               
-
+                    
                         //check if this is the last question, if yes- exit the game
                         // if not increment current question index
                        
@@ -587,6 +589,7 @@ var Game = Game || (function (createjs) {
                     netCount = 10;
                     canEnemyFire = true;
                     isQuestionDisplayed = false;
+                    isFeedbackDisplayed = false;
                     isEnemySpawnedEnabled = true;
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
@@ -595,6 +598,13 @@ var Game = Game || (function (createjs) {
 
                     
                 }
+
+                //turn off feedback panel if it is true
+                //if (isFeedbackDisplayed == true) {
+                 
+
+
+                //}
 
                 feedbackContainer.addChild(feedbackPanel, feedbackText, redx)
                 self.stage.addChild(feedbackContainer);
