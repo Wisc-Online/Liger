@@ -68,7 +68,7 @@ var Game = Game || (function (createjs) {
                 { id: "redx", src: assetsPath + "redx.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" }
 
-             
+
 
             ];
 
@@ -163,7 +163,7 @@ var Game = Game || (function (createjs) {
             var Score = 0; //not used yet
             var scoreLabel;
 
-            var playerMovement = 0.75; //player speed
+            var playerMovement = 0.60; //player speed
             var playerMaximumVelocity = 2;
             var playerVelocityX = 0;
             var playerVelocityY = 0;
@@ -171,7 +171,7 @@ var Game = Game || (function (createjs) {
 
             var playerContainer;
 
-            var currentQuestion = 0;
+            var currentQuestionNumber = 0;
 
 
             function StartInteraction() {
@@ -229,7 +229,7 @@ var Game = Game || (function (createjs) {
 
                         if (!isQuestionDisplayed) {
                             canEnemyFire = false;
-                            deliverQuestion(gameData.Questions[currentQuestion]);
+                            deliverQuestion(gameData.Questions[currentQuestionNumber]);
                             Score = Score - 20;
                             printScore();
                             //deliver answers?
@@ -296,7 +296,7 @@ var Game = Game || (function (createjs) {
                         onChange: onInkContainerTweenChange
                     })
                         //add a .to for the y  //// self.stage.canvas.height
-                        .to({ y: playerContainer.y + (Math.random() * 200 - 100) , x: playerContainer.x + (Math.random() * 200) - 100 }, 4000)
+                        .to({ y: playerContainer.y + (Math.random() * 200 - 100), x: playerContainer.x + (Math.random() * 200) }, 8000)
                         .call(function (evt) {
                             var theThingBeingTweened = evt.target;
                             self.stage.removeChild(theThingBeingTweened);
@@ -309,7 +309,6 @@ var Game = Game || (function (createjs) {
                     if (enemies.length > 0) {
                         var enemyindex = Math.floor(Math.random() * enemies.length)
                         var theenemy = enemies[enemyindex];
-
 
                         if (canEnemyFire && theenemy) {
                             makeInk(theenemy);
@@ -349,7 +348,7 @@ var Game = Game || (function (createjs) {
                                     netCount--
                                 }
                                 if (netCount == 0 && !isQuestionDisplayed) {
-                                    deliverQuestion(gameData.Questions[currentQuestion]);
+                                    deliverQuestion(gameData.Questions[currentQuestionNumber]);
                                 }
 
                                 event.preventDefault();
@@ -370,7 +369,6 @@ var Game = Game || (function (createjs) {
                             function moveDown() {
                                 playerVelocityY += playerMovement;
                             }
-
 
 
                             //only called when enough net available
@@ -464,7 +462,7 @@ var Game = Game || (function (createjs) {
 
             //deliver questions when player is by ink
             function deliverQuestion(question) {
-                
+
                 isEnemySpawnedEnabled = false;
                 canEnemyFire = false;
 
@@ -489,10 +487,11 @@ var Game = Game || (function (createjs) {
                 return questionContainer;
 
             }
+            answerContainersParent = new createjs.Container();
 
             function deliverAnswers(question) {
                 var stackIncrement = 50;
-                var answerContainersParent = new createjs.Container();
+                answerContainersParent = new createjs.Container();
                 answerContainersParent.name = "parent";
 
                 for (var j = 0 ; j < gameData.Questions[0].Answers.length; j++) {
@@ -508,33 +507,34 @@ var Game = Game || (function (createjs) {
 
                     answerHolder.x = answersText.x;
                     answerHolder.y = answersText.y;
-                    
+
                     answerContainer.name = "child";
                     answerContainer.IsCorrect = question.Answers[j].IsCorrect;
                     answerContainer.Idx = j;
 
                     answerContainer.addChild(answerHolder, answersText);
-                    
+
                     stackIncrement += 50;
 
                     answerContainer.addEventListener("pressup", function (evt) {
-                     //   alert(evt.target);
+                        //   alert(evt.target);
                         console.log("clicked that thing")
-                        
+
                         if (evt.currentTarget.IsCorrect) {
-                            alert("correct")
+                            // alert("correct")
+
+                            //this is where code goes to change color of holder container and display the answer
+                            deliverFeedback("correct");
                         }
                         else
-                            alert("incorrect" + evt.currentTarget.IsCorrect);
+                            //    alert("incorrect" + evt.currentTarget.IsCorrect);
+                            deliverFeedback("incorrect");
+                        //    event.stopPropagation();
+               
 
-                       // deliverFeedback();
-                        event.stopPropagation();
-                      //  self.stage.removeChild(questionContainer);
-                      //  self.stage.removeChild(answerContainersParent);
-                        
                         //check if this is the last question, if yes- exit the game
                         // if not increment current question index
-                        currentQuestion++;
+                       
                     });
                     answerContainersParent.addChild(answerContainer);
                 }
@@ -542,35 +542,58 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(answerContainersParent);
 
             }
-            function deliverFeedback() {
+            function deliverFeedback(answerstatus) {
                 var feedbackContainer = new createjs.Container();
                 var feedbackPanel = new createjs.Bitmap(queue.getResult("feedbackPanel"));
+                var feedbackText;
                 isFeedbackDisplayed = true;
                 feedbackPanel.scaleX = 2;
                 feedbackPanel.x = 50;
                 feedbackPanel.y = 400;
 
-
                 //add net count
                 //this will be the correct answer
-             var feedbackText = new createjs.Text("Correct:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
+                if (answerstatus == "correct") {
+                    feedbackText = new createjs.Text("Correct. Click the what ever to continue", "20px Alegreya", "#FFFFFF");
+                  
+
+                } else {
+
+                    for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++)
+                    {
+                        if (gameData.Questions[currentQuestionNumber].Answers[i].IsCorrect == true)
+                        {
+                            feedbackText = new createjs.Text("I'm sorry the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#FFFFFF')
+                        }
+                    }
+
+                  //  feedbackText = new createjs.Text("InCorrect:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
+                }
 
 
-                feedbackText.x = feedbackPanel.x + 50
-                feedbackText.y = feedbackPanel.y + 35
+                feedbackText.x = feedbackPanel.x + 100
+                feedbackText.y = feedbackPanel.y + 80
+
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
                 redx.x = feedbackPanel.x + 580;
                 redx.y = feedbackPanel.y + 130;
 
                 redx.addEventListener("click", handleClick);
+
                 function handleClick(event) {
+                    currentQuestionNumber++;
                     self.stage.removeChild(feedbackContainer);
                     netCount = 10;
                     canEnemyFire = true;
                     isQuestionDisplayed = false;
                     isEnemySpawnedEnabled = true;
+                    self.stage.removeChild(questionContainer);
+                    self.stage.removeChild(answerContainersParent);
+                                           
+                    //self.stage.removeChild(answerContainer);
 
+                    
                 }
 
                 feedbackContainer.addChild(feedbackPanel, feedbackText, redx)
