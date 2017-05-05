@@ -168,13 +168,8 @@ var Game = Game || (function (createjs, $) {
 
             function displayMessage(message) {
                
-
-
                 var text = new createjs.Text(message, "bold 55px Cooper Black", "white");
                
-
-
-
                 text.set({
                     //x: stage.canvas.width / 2,
                     //y: stage.canvas.height / 2,
@@ -198,6 +193,33 @@ var Game = Game || (function (createjs, $) {
                     })
 
             }
+
+            function WrongAnswer(message) {
+
+                var text = new createjs.Text(message, "bold 20px Cooper Blackl", "red");
+
+                text.set({
+                    x: 330,
+                    y: 20,
+
+                    textAlign: "center",
+                    textBaseline: "middle",
+                    alpha: 0
+                });
+
+                stage.addChild(text);
+
+
+                createjs.Tween.get(text)
+                    .to({ alpha: 100 }, 900)
+                    .wait(500)
+                    .to({ alpha: 0 }, 400)
+                    .call(function () {
+                        stage.removeChild(text);
+                    })
+
+            }
+
 
             //checks for matches and eliminates all matches when the game loads
             var showView = function (view) {
@@ -1186,7 +1208,11 @@ var Game = Game || (function (createjs, $) {
               }
               else
               {
-                  //alert('Your answer is WRONG');
+                  gameState.score = gameState.score - 5;
+                  WrongAnswer("Wrong Answer: -5 Points (Score: " + gameState.score + ")");
+
+
+                // alert('Your answer is WRONG 5 points were deducted -  your new score is ', gameState.score );
                   createjs.Sound.play("aaeesshh1");
                   maxMoveNbr;
                   //currentQuestion++;
