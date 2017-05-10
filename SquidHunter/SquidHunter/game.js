@@ -163,6 +163,8 @@ var Game = Game || (function (createjs) {
             var Score = 0; //not used yet
             var scoreLabel;
 
+            var submittedScoreAlready = false;
+
             var playerMovement = 0.60; //player speed
             var playerMaximumVelocity = 2;
             var playerVelocityX = 0;
@@ -193,10 +195,10 @@ var Game = Game || (function (createjs) {
 
                 spawnEnemy();
 
-                scoreLabel = new createjs.Text("Score: " + Score, "bold 16px Alegreya", "#000000");
+                scoreLabel = new createjs.Text("Score: " + Score, "Bold 20px Alegreya", "#FFFFFF");
                 scoreLabel.textAlign = "center";
                 scoreLabel.lineWidth = 270;
-                scoreLabel.color = "black";
+                scoreLabel.color = "white";
                 scoreLabel.y = 30;
                 scoreLabel.x = 740;
 
@@ -296,6 +298,8 @@ var Game = Game || (function (createjs) {
                         onChange: onInkContainerTweenChange
                     })
                         //add a .to for the y  //// self.stage.canvas.height
+
+                        ////add new tween for ink here //http://andysaia.com/blog/tweenjs/
                         .to({ y: playerContainer.y + (Math.random() * 200 - 100), x: playerContainer.x + (Math.random() * 200) }, 8000)
                         .call(function (evt) {
                             var theThingBeingTweened = evt.target;
@@ -379,7 +383,6 @@ var Game = Game || (function (createjs) {
                                 net = new createjs.Bitmap(queue.getResult("net"));
                                 netContainer.addChild(net);
 
-
                                 self.stage.addChild(netContainer);
 
                                 netContainer.x = playerContainer.x + 9;
@@ -460,6 +463,35 @@ var Game = Game || (function (createjs) {
             var questionPanel;
             var questionContainer
 
+            function submitScore(score) {
+                // alert("test");
+                if (submittedScoreAlready == true)
+                    return false;
+                if (points == 0)
+                    return false;
+
+                var url = gameData.leaderboardUrl;
+
+                if (url) {
+                    var data = {
+                        gameId: gameData.id,
+                        score: score
+                    };
+                    $.ajax(url, {
+                        type: "POST",
+                        data: data,
+                        success: function (x) {
+                        },
+                        error: function (x, y, z) {
+                        }
+                    });
+
+                }
+                submittedScoreAlready = true;
+            }
+
+
+
             //deliver questions when player is by ink
             function deliverQuestion(question) {
 
@@ -500,13 +532,15 @@ var Game = Game || (function (createjs) {
                     var answerContainer = new createjs.Container();
 
                     var answerHolder = new createjs.Bitmap(queue.getResult("answerHolder"))
-                    answersText.x = questionPanel.x + 50;
-                    answersText.y = questionPanel.y + 50 + stackIncrement;
+                    answersText.x = questionPanel.x + 55;
+                    answersText.y = questionPanel.y + 65 + stackIncrement;
+
 
                     answerHolder.scaleX = 2;
 
-                    answerHolder.x = answersText.x;
-                    answerHolder.y = answersText.y;
+                    answerHolder.x = answersText.x -15;
+                    answerHolder.y = answersText.y -10;
+
 
                     answerContainer.name = "child";
                     answerContainer.IsCorrect = question.Answers[j].IsCorrect;
@@ -522,7 +556,6 @@ var Game = Game || (function (createjs) {
                         if (isFeedbackDisplayed != true) {
                             if (evt.currentTarget.IsCorrect) {
                                 // alert("correct")
-
                                 //this is where code goes to change color of holder container and display the answer
                                 deliverFeedback("correct");
                             }
@@ -530,8 +563,6 @@ var Game = Game || (function (createjs) {
                                 //    alert("incorrect" + evt.currentTarget.IsCorrect);
                                 deliverFeedback("incorrect");
                             }
-
-
                         }
                     
                         //check if this is the last question, if yes- exit the game
@@ -557,8 +588,6 @@ var Game = Game || (function (createjs) {
                 //this will be the correct answer
                 if (answerstatus == "correct") {
                     feedbackText = new createjs.Text("Correct. Click the what ever to continue", "20px Alegreya", "#FFFFFF");
-                  
-
                 } else {
 
                     for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++)
@@ -593,7 +622,7 @@ var Game = Game || (function (createjs) {
                     isEnemySpawnedEnabled = true;
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
-                                           
+                                          
                     //self.stage.removeChild(answerContainer);
 
                     
@@ -655,15 +684,15 @@ var Game = Game || (function (createjs) {
                     playerContainer.x += playerVelocityX;
                     playerContainer.y += playerVelocityY;
 
-                    if (playerContainer.x < 20)
-                        playerContainer.x = 20;
+                    if (playerContainer.x < 40)
+                        playerContainer.x = 40;
                     else if (playerContainer.x > 730)
                         playerContainer.x = 730;
 
-                    if (playerContainer.y < 400)
-                        playerContainer.y = 400;
-                    else if (playerContainer.y > 550)
-                        playerContainer.y = 550;
+                    if (playerContainer.y < 300)
+                        playerContainer.y = 300;
+                    else if (playerContainer.y > 500)
+                        playerContainer.y = 500;
                 }
             }
 
