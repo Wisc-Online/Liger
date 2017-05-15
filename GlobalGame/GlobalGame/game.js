@@ -1,33 +1,22 @@
 ﻿/// <reference path="C:\SoftwareDev\GIT\Liger\GlobalGame\GlobalGame\createjs.min.js" />
 var Game = Game || (function (createjs, $) {
     function Game(canvasId, gameData) {
-       /* var helpers = {
-            createButton: function (buttonText) {
-                var button = new createjs.Container();
-                var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("dark gray").beginFill("#7CC447").drawRoundRect(0, 0, 100, 25, 5).endStroke().endFill();
-                var text = new createjs.Text(buttonText, "12pt Arial Black", "White");
-                text.x = 50;
-                text.y = 12.5;
-                text.textAlign = "center";
-                text.textBaseline = "middle";
 
-                button.addChild(background, text);
-
-                return button;
-            }
-        };*/
         var assetsPath = gameData.assetsPath || "";
 
         var timeLimit = 240;
         var assets = [
+            { id: "aesh_header", src: assetsPath + "aeesh.png" },
+            { id: "crabbyStressedOnion", src: assetsPath + "crabbyStressedOnion.png" },
+            { id: "tomato", src: assetsPath + "tomato.png" },
+            { id: "winner_header", src: assetsPath + "BoomChakalaka.png" },
             { id: "instructions_background", src: assetsPath + "instructions_background.png" },
             { id: "instructions_question", src: assetsPath + "instructions_question.png" },
             { id: "instructions", src: assetsPath + "instructions_question.png" },
             { id: "title_background", src: assetsPath + "title_background.jpg" },
             { id: "start_button", src: assetsPath + "start_button.png" },
             { id: "rf_instructions", src: assetsPath + "RapidFireInstructions.png" },
-            { id: "rf_skyBackground", src: assetsPath + "rf_skyBackground.jpg" },
+            { id: "chakalaka_bowl", src: assetsPath + "chakalaka_bowl.png" },
             { id: "rf_skyFinalBackground", src: assetsPath + "rf_skyFinalBackground.png" },
             { id: "chakalaka", src: assetsPath + "chakalaka.png" },
             { id: "chakalaka1", src: assetsPath + "chakalaka1.jpg" },
@@ -36,16 +25,17 @@ var Game = Game || (function (createjs, $) {
             { id: "musicOn", src: assetsPath + "musicOn.png" },
             { id: "orange", src: assetsPath + "orange.png" },
             { id: "red", src: assetsPath + "red.png" },
-            { id: "purple", src: assetsPath + "purple.png" },
-            { id: "yellow", src: assetsPath + "yellow.png" },
+            { id: "brown", src: assetsPath + "brown.png" },
             { id: "green", src: assetsPath + "green.png" },
+            { id: "white", src: assetsPath + "white.png" },
             { id: "blue", src: assetsPath + "blue.png" },
             { id: "musicOff", src: assetsPath + "musicOff.png" },
             { id: "chakalaka1", src: assetsPath + "Game-chakalaka_01.mp3" },
             { id: "chakalaka2", src: assetsPath + "Game-chakalaka_02.mp3" },
             { id: "gameshort", src: assetsPath + "Game-short_01.mp3" },
             { id: "aaeesshh1", src: assetsPath + "Game_Aaeesshh_01.mp3" },
-            { id: "aaeesshh2", src: assetsPath + "game_aaeesshh_02.mp3" }
+            { id: "aaeesshh2", src: assetsPath + "game_aaeesshh_02.mp3" },
+            { id: "hint", src: assetsPath + "question_mark.png" }
         ];
         var queue = new createjs.LoadQueue(false);
         
@@ -89,9 +79,9 @@ var Game = Game || (function (createjs, $) {
         var gameCounter = 0;
         
         var tableCompactTimeout = null;
-        var maxMoveNbr = 5;
+        var maxMoveNbr = 1;
         
-        var boardStartX = 40;
+        var boardStartX = 50;
         var boardStartY = 50;
         var boardWidth= 600;
         var boardHeight = 500;
@@ -107,7 +97,7 @@ var Game = Game || (function (createjs, $) {
         var maxWidth = Math.round(boardWidth / maxI);
         var maxHeight = Math.round(boardHeight / maxJ);
 
-        
+        var penalty = 5;
 
         var movesLeft = 0;
         var currentQuestion = 0;
@@ -120,6 +110,7 @@ var Game = Game || (function (createjs, $) {
         var tickCount = 0;
         var currentArea = null;
 
+        var DragThreshold = 30;
         //set ticker 
         createjs.Ticker.setFPS(60);
 
@@ -129,7 +120,12 @@ var Game = Game || (function (createjs, $) {
 
         createjs.Ticker.on("tick", handleTick);
 
+
+
+        
+
         function initialize() {
+            
             var musicOn = true;
             var chakalaka2 = createjs.Sound.createInstance("chakalaka2", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
             createjs.Sound.play("chakalaka2");
@@ -138,7 +134,6 @@ var Game = Game || (function (createjs, $) {
             var gameshort = createjs.Sound.createInstance("gameshort", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
             var buttonClick = createjs.Sound.createInstance("ButtonClickDry", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
             buttonClick.volume = buttonClick.volume * 0.75;
-
 
 
             self.gameData = gameData;
@@ -211,9 +206,9 @@ var Game = Game || (function (createjs, $) {
 
 
                 createjs.Tween.get(text)
-                    .to({ alpha: 100 }, 900)
-                    .wait(500)
-                    .to({ alpha: 0 }, 400)
+                    .to({ alpha: 100 }, 1000)
+                    .wait(1000)
+                    .to({ alpha: 0 }, 1000)
                     .call(function () {
                         stage.removeChild(text);
                     })
@@ -316,6 +311,9 @@ var Game = Game || (function (createjs, $) {
                 questionContainer.x = boardStartX;
                 questionContainer.y = boardStartY;
                 showQuestionContainer(gameData.Questions[currentQuestion]);
+
+
+                
                 return questionContainer;
             }
       
@@ -338,6 +336,8 @@ var Game = Game || (function (createjs, $) {
                     showView(getInstructionsView());
                 });
 
+                instructionsContainer.on("mouseover", handleButtonHover);
+                instructionsContainer.on("mouseout", handleButtonHover);
                 return instructionsContainer;
             }
 
@@ -390,6 +390,9 @@ var Game = Game || (function (createjs, $) {
 
                     }
                 });
+
+                soundContainer.on("mouseover", handleButtonHover);
+                soundContainer.on("mouseout", handleButtonHover);
                 return soundContainer;
             }
 
@@ -426,26 +429,29 @@ var Game = Game || (function (createjs, $) {
                     gameState.score = 0;
                     gameState.questionsMissed = 0;
                     gameState.initialize = true;
-                    maxMoveNbr=5;
+
                     showView(createQuestionView());
                 });
 
-                startButton.on("mouseover", handleStartButtonHover);
-                startButton.on("mouseout", handleStartButtonHover);
+                startButton.on("mouseover", handleButtonHover);
+                startButton.on("mouseout", handleButtonHover);
 
                 
                 return view;
             }
 
 
-            function handleStartButtonHover(event) {
+            function handleButtonHover(event) {
              
-
+                var initScareX=event.currentTarget.scaleX;
+                var initScareY = event.currentTarget.scaleY;
                 if (event.type == "mouseover") {
-                    createjs.Tween.get(event.currentTarget).to({ scaleX: 1.0625, scaleY: 1.0625 }, 100).to({ scaleX: 1.0, scaleY: 1.0 }, 100).to({ scaleX: 1.0625, scaleY: 1.0625 }, 200);
+                    createjs.Tween.get(event.currentTarget).to({ scaleX: initScareX * 1.0625, scaleY: initScareY * 1.0625 }, 100)
+                                                            .to({ scaleX: initScareX, scaleY: initScareY }, 100)
+                                                            .to({ scaleX: initScareX * 1.0625, scaleY: initScareY * 1.0625 }, 100);
                 }
                 else {
-                    createjs.Tween.get(event.currentTarget).to({ scaleX: 1.0, scaleY: 1.0 }, 100);
+                    createjs.Tween.get(event.currentTarget).to({ scaleX: initScareX, scaleY: initScareY }, 100);
                 }
             }
            
@@ -475,7 +481,7 @@ var Game = Game || (function (createjs, $) {
                 
 
                 hintButtonContainer = createHintButton();
-                hintButtonContainer.x = containerAtX;
+                hintButtonContainer.x = containerAtX+20;
                 hintButtonContainer.y = hintContainerAtY;
                 
                 container.addChild(hintButtonContainer);
@@ -498,12 +504,9 @@ var Game = Game || (function (createjs, $) {
 
             function createCircleDraggableContainer() {
 
-                //library of terms
+           
                 var container = new createjs.Container();
 
-               // var background = new createjs.Shape();
-               // background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
-               // background.graphics.drawRect(0, 0, maxWidth, maxHeight);
                 container.setBounds(0, 0, maxWidth, maxHeight);
 
                 container.on("pressmove", handleElementDrag);
@@ -511,22 +514,13 @@ var Game = Game || (function (createjs, $) {
 
                 var mouseDragPosition = null;
 
-               // container.addChild(background);
                 
-                var colors = ["orange", "red", "purple", "yellow", "green", "blue"];
+                var colors = ["orange", "red","brown", "green", "blue", "white"];
                 var colorIndex = Math.floor(Math.random() * colors.length);
 
                 container.color = colors[colorIndex];
                 container.addChild(createCircle(container.color));
                 
-                /*var label = new createjs.Text("", "10px Verdana", "");
-                label.color = "white";
-                label.text = "";
-                label.x = 8;
-                label.y = 2;
-                label.name = "label";
-
-                container.addChild(label);*/
 
                 container.isEmpty = false;
 
@@ -542,7 +536,7 @@ var Game = Game || (function (createjs, $) {
 
                         var targetNeighbour=null;
 
-                        var dragThreshold = 30;
+                        var dragThreshold = DragThreshold;
       
                         //we don't want a circle to move diagonally, so we are eliminating one of the axis 
                         
@@ -654,13 +648,14 @@ var Game = Game || (function (createjs, $) {
 
                 //determine if term is outside mainbox and return to terms library container
                 function handleElementPressUp(evt) {
+                   gameState.initialize = false;
                    if (evt.currentTarget.targetNeighbour != null) {
                        var targetCircle = evt.currentTarget.targetNeighbour;
 
                        createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 100);
 
 
-                       if (evt.currentTarget.allowSwap===true) {
+                       if (evt.currentTarget.allowSwap===true) {/////////////////////////////////////////////////////////////////////
 
                            var curi = evt.currentTarget.i;
                            var curj = evt.currentTarget.j;
@@ -685,28 +680,12 @@ var Game = Game || (function (createjs, $) {
                            targetCircle.original_x = curx;
                            targetCircle.original_y = cury;
                             
-                           ///////////////////////////
-
-                           gameState.initialize= false;
-                           tableCompactTimeout = setTimeout(scanAndCompactTable, 102);
-
-                           ///////////////////////////
                            movesLeft--;
-                           if(movesLeft<=0)
-                           {
-                               currentQuestion++;
-                               if (currentQuestion >= gameData.Questions.length)
-                               {
-                                   currentArea = createWinnerView();
-                                   stage.addChild(currentArea);
-                               }
-                               else
-                               {
-                                   showQuestionContainer(gameData.Questions[currentQuestion]);
-                               }
-                            }
-
                            movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
+
+                          
+                           tableCompactTimeout = setTimeout(scanAndCompactTable, 150);
+                           
                        }
                        else {
                            mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
@@ -734,7 +713,7 @@ var Game = Game || (function (createjs, $) {
 
                 element.i = i;
                 element.j = j;
-                //element.getChildByName('label').text = element.x + ",\n" + element.y;
+           
                 mainBox.addChild(element);
                 return element;
             }
@@ -966,7 +945,15 @@ var Game = Game || (function (createjs, $) {
             function scanAndCompactTable() {
               currentBestMatch = findPotentialElementMatchesReturnBest();
               if (swapMatchesFound())
-                    compactTable();
+                  compactTable();
+              else
+              {
+
+                  if (!gameState.initialize && movesLeft <= 0) {
+                      moveToNextQuestion();
+                  }
+
+              }
             }
          //this function removes matches and generates new circles
             function compactTable() {
@@ -1063,6 +1050,13 @@ var Game = Game || (function (createjs, $) {
                   tableCompactTimeout = setTimeout(scanAndCompactTable, 1000);
               }
                   
+              else
+              {
+                  alert('HELLO');
+                  if (movesLeft <= 0) {
+                      moveToNextQuestion();
+                  }
+              }
              
           }
          
@@ -1102,13 +1096,15 @@ var Game = Game || (function (createjs, $) {
 
               
 
-              var startY = container.getChildByName('question').getBounds().height+30;
-              var correctAnswerDescription="";
+              var startY = container.getChildByName('question').getBounds().height + 30;
+              
+              var correctAnswerDescription = "";
+              var descriptionContainerY = startY;
               for (var i = 0; i < question.Answers.length; i++)
               {
                   var ac = new createjs.Container();
 
-                  var answerText = new createjs.Text("", "18px Arial", "");
+                  var answerText = new createjs.Text("", "20px Arial", "");
                   answerText.color = "black";
                   answerText.text = question.Answers[i].Text;
                   answerText.x = 10;
@@ -1116,13 +1112,14 @@ var Game = Game || (function (createjs, $) {
                   answerText.lineWidth = boardWidth - 20;
                   answerText.name = "answerText";
                   ac.name = "answer";
-
+                  ac.cursor = "pointer";
                   var answer = new createjs.Shape();
                   answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("#ffd5c0");
                   answer.graphics.drawRect(0, 0, boardWidth - 20, 40);
                   answer.name = "answerShape";
                   ac.x = 10;
                   ac.y = startY + i * 50;
+                  descriptionContainerY = ac.y;
 
                   ac.addChild(answer);
                   ac.addChild(answerText);
@@ -1143,22 +1140,22 @@ var Game = Game || (function (createjs, $) {
   
               if (correctAnswerDescription != "")
               {
-                  startY = startY + i * 50;
+
                   var description = new createjs.Container();
                     ///////////////////////
                   description.name = "description";
-                  var descriptionText = new createjs.Text("", "16px Verdana", "");
+                  var descriptionText = new createjs.Text("", "18px Verdana", "");
                   descriptionText.color = "green";
                   descriptionText.text = correctAnswerDescription;
                   descriptionText.x = 5;
                   descriptionText.y = 90;
-                  descriptionText.lineWidth = 300;
+                  descriptionText.lineWidth = boardWidth - 25;
                   descriptionText.name = "detailsText";
                   
 
                   var descriptionShape = new createjs.Shape();
                   descriptionShape.graphics.setStrokeStyle(1).beginStroke("black").beginFill("#ffd5c0");
-                  descriptionShape.graphics.drawRect(0, 80, 575, 200);
+                  descriptionShape.graphics.drawRect(0, 80, boardWidth - 25, 150);
                   descriptionShape.name = "detailsShape";
 
 
@@ -1166,124 +1163,85 @@ var Game = Game || (function (createjs, $) {
                   description.addChild(descriptionText);
 
                   description.x = 10;
-                  description.y = startY;
+                  description.y = descriptionContainerY;
                   description.alpha = 0;
                   container.addChild(description);
-                 
-              }
+               }
               
-
+              
 
                 /////////////////////
 
-
+              container.getChildByName('nextButton').alpha = 0;
+              container.getChildByName('nextButton').mouseEnabled = false;
               if (mainBox)
                 stage.setChildIndex(container, mainBox.getNumChildren() - 1);
-          }
+            }
+
+
+
+
+
             function handleAnswerPressUp(evt)
             {
               
+              for (var k = 0; k < questionContainer.children.length; k++) {
+                    //-------------------------->
+
+                    if (questionContainer.children[k].name == "answer") {
+                        if (questionContainer.children[k].IsCorrect) {
+                            var correctButton = questionContainer.children[k];
+                            // alert(correctButton.text);
+                            correctButton.getChildByName("answerText").color = "green";
+                            createjs.Tween.get(correctButton.getChildByName("answerShape"))
+                                      .to({ scaleX: 0.5, scaleY: 0.7 }, 1000)
+                                      .to({ scaleX: 1, scaleY: 1 }, 1000)
+                                      .to({ scaleX: 0.5, scaleY: 0.7 }, 1000)
+                                      .to({ scaleX: 1, scaleY: 1 }, 1000);
+                        }
+                        else {
+                            questionContainer.children[k].alpha = 0.3;
+                        }
+
+                        questionContainer.children[k].mouseEnabled = false;
+                    }
+
+                    //--------------------------->
+                }
+
               if (questionContainer.getChildByName("description")) 
               {
-                  //alert(questionContainer.getChildByName("description").getChildByName("detailsText").text);
-                  
+                 
                   questionContainer.getChildByName("description").alpha = 1;
-
+                  
               }
 
               if (evt.currentTarget.IsCorrect) {
                
-                  displayMessage("Good job!");
-
-                  mainBox.mouseEnabled = true;
-                  questionContainer.visible = false;
-                  hintButtonContainer.visible = true;
-                  userScoreContainer.visible = true;
-                  movesLeftContainer.visible = true;
-
-                  movesLeft += maxMoveNbr;
-                  movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
+                  displayMessage("Good Job!");
                   createjs.Sound.play("gameshort");
-                  //currentQuestion++;
+                  questionContainer.getChildByName('nextButton').success = true;
+
+                 
               }
               else
               {
-                  gameState.score = gameState.score - 5;
-                  WrongAnswer("Wrong Answer: -5 Points (Score: " + gameState.score + ")");
-
-
-                // alert('Your answer is WRONG 5 points were deducted -  your new score is ', gameState.score );
-                  createjs.Sound.play("aaeesshh1");
-                  maxMoveNbr;
-                  //currentQuestion++;
-                  if (currentQuestion >= gameData.Questions.length) {
-                      currentArea = createWinnerView();
-                      stage.addChild(currentArea);
-                  }
-                  else {
-                     // showQuestionContainer(gameData.Questions[currentQuestion]);
-                  }
-
-                  //displayMessage("Your Answer is Wrong!");
-                 // alert(gameData.Questions[currentQuestion].length);
-                  //Trying to display the correct answer here from the 'Text' field in html.
-                  for (var k = 0; k < questionContainer.children.length; k++)
+                  var pointsPenalty = penalty;
+                  if (gameState.score < pointsPenalty)
                   {
-                     //-------------------------->
-            
-                      if (questionContainer.children[k].name=="answer" &&  questionContainer.children[k].IsCorrect)
-                      {
-                          
-                          var correctButton = questionContainer.children[k];
-                          // alert(correctButton.text);
-                          correctButton.getChildByName("answerText").color = "green";
-                          createjs.Tween.get(correctButton.getChildByName("answerShape"))
-                                    .to({ scaleX: 0.5, scaleY: 0.7 }, 1000)
-                                    .to({ scaleX: 1, scaleY: 1 }, 1000)
-                                    .to({ scaleX: 1, scaleY: 1 }, 1000);
-
-                          
-
-                         /* var text = new createjs.Text("Correct answer is:" + gameData.Questions[currentQuestion].Answers[k].Text," Yes", "bold 33px courier New ", "Pink");
-
-                          text.set({
-                              x: 200,
-                              y: 230,
-                              textAlign: "center",
-                              textBaseline: "middle",
-                              alpha: 0
-                          });
-                          questionContainer.addChild(text);*/
-                          break;
-                      }
-
-                      //--------------------------->
+                      pointsPenalty = gameState.score;
                   }
-                  /*
+                  gameState.score = gameState.score - pointsPenalty;
+                  WrongAnswer("Wrong Answer: -" + pointsPenalty + " Points (Score: " + gameState.score + ")");
+                  createjs.Sound.play("aaeesshh1");
+
+                  questionContainer.getChildByName('nextButton').success = false;
+
                   
-                  var text = new createjs.Text("Correct answer is:" , "bold 33px courier New ", "white");
-                  text.set({
-                      x: 200,
-                  y: 230,
-                     textAlign: "center",
-                     textBaseline: "middle",
-                      alpha: 0
-                  });
-
-                  questionContainer.addChild(text);
-
-                  createjs.Tween.get(text)
-                      .to({ alpha: 1 }, 1000)
-                      .wait(1000)
-                      .to({ alpha: 0 }, 500)
-                      .call(function () {
-                          questionContainer.removeChild(text);
-                      })
-                   gameData.Questions[currentQuestion].Answer[k].Text
-                    
-                      */
+                  gameState.questionsMissed++;
               }
-
+              questionContainer.getChildByName('nextButton').alpha = 1;
+              questionContainer.getChildByName('nextButton').mouseEnabled = true;
             }
           
             function createQuestionContainer() {
@@ -1312,6 +1270,29 @@ var Game = Game || (function (createjs, $) {
                 //
                 //add next button
                 //
+                var image = queue.getResult("start_button");
+
+                var nextButton = new createjs.Bitmap(image);
+
+                nextButton.scaleX = maxWidth / image.width;
+                nextButton.scaleY = maxHeight / image.height;
+
+
+                nextButton.shadow = new createjs.Shadow("gray", 3, 3, 3);
+                nextButton.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#f00").drawCircle(maxWidth, maxWidth, maxWidth));
+                nextButton.cursor = 'pointer';
+                nextButton.regX = maxWidth;
+                nextButton.regY = maxWidth;
+                nextButton.x = boardWidth - maxWidth;
+                nextButton.y = boardHeight - maxWidth;
+
+                nextButton.name = "nextButton";
+
+                nextButton.addEventListener("pressup", handleNextButtonPressUp);
+
+                nextButton.on("mouseover", handleButtonHover);
+                nextButton.on("mouseout", handleButtonHover);
+                container.addChild(nextButton);
                 //
 
 
@@ -1320,39 +1301,46 @@ var Game = Game || (function (createjs, $) {
                 return container;
             }
 
-            function createGameOverContainer() {
+            function handleNextButtonPressUp()
+            {
+                createjs.Sound.play("buttonClick");
+                
 
-              //library container
-              var container = new createjs.Container();
+                if (questionContainer.getChildByName('nextButton').success)
+                {
+                        mainBox.mouseEnabled = true;
+                        questionContainer.visible = false;
+                        hintButtonContainer.visible = true;
+                        userScoreContainer.visible = true;
+                        movesLeftContainer.visible = true;
 
-              //library background
-              var background = new createjs.Shape();
-              background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("aqua");
-              background.graphics.drawRect(0, 0, 400, 400);
-              background.alpha = 0.95;
-              container.addChild(background);
+                        movesLeft += maxMoveNbr;
+                        movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
 
-              var text = new createjs.Text("", "20px Verdana", "");
-              text.color = "black";
-              text.text = "GAME OVER!!!!!!!!!!!!!!!";
-              text.x = 10;
-              text.y = 20;
-              text.lineWidth = 380;
-              container.addChild(text);
-
-              container.visible = false;
-              return container;
+                }
+                else
+                {
+                    moveToNextQuestion();
+                }
             }
+
+            function moveToNextQuestion()
+            {
+                currentQuestion++;
+                if (currentQuestion >= gameData.Questions.length) {
+                    currentArea = createWinnerView();
+                    stage.addChild(currentArea);
+                }
+                else {
+                    showQuestionContainer(gameData.Questions[currentQuestion]);
+                }
+            }
+
+           
             function createUserScoreContainer() {
                 //user score container
                 var container = new createjs.Container();
 
-                //user score background
-               /* var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("orange");
-                background.graphics.drawRect(0, 0, 100, 50);
-                container.addChild(background);
-                */
 
                 //user score title
                 var scoreLabel = new createjs.Text("", "15px Verdana", "");
@@ -1365,7 +1353,7 @@ var Game = Game || (function (createjs, $) {
                 //user score score
                 var scoreText = new createjs.Text("", "20px Verdana", "");
                 scoreText.color = "white";
-                scoreText.text = 900; //this will need to change later to be a var to hold user score. 
+                scoreText.text = gameState.score; 
                 scoreText.x = 30;
                 scoreText.y = 20;
                 scoreText.name="score";
@@ -1376,20 +1364,19 @@ var Game = Game || (function (createjs, $) {
             function createHintButton() {
     
               var container = new createjs.Container();
+              var image = queue.getResult("hint");
 
-              var background = new createjs.Shape();
-              background.graphics.setStrokeStyle(1).beginStroke("black").beginFill("orange");
-              background.graphics.drawRect(0, 0, 100, 50);
-              container.addChild(background);
+              var bitmap = new createjs.Bitmap(image);
+              bitmap.scaleX = maxWidth / image.width;
+              bitmap.scaleY = maxHeight / image.height;
 
+              container.addChild(bitmap);
+              container.cursor = 'pointer';
+              
 
-              var buttonLabel = new createjs.Text("", "15px Verdana", "");
-              buttonLabel.color = "yellow";
-              buttonLabel.text = "HINT";
-              buttonLabel.x = 25;
-              buttonLabel.y = 2;
-              container.addChild(buttonLabel);
               container.on("pressup", handleButtonPressUp);
+              container.on("mouseover", handleButtonHover);
+              container.on("mouseout", handleButtonHover);
 
               function handleButtonPressUp(evt) {
                   
@@ -1419,12 +1406,6 @@ var Game = Game || (function (createjs, $) {
                 //user score container
                 var container = new createjs.Container();
 
-                //user score background
-                /*var background = new createjs.Shape();
-                background.graphics.setStrokeStyle(1).beginStroke("white").beginFill("purple");
-                background.graphics.drawRect(0, 0, 100, 50);
-                container.addChild(background);
-                */
 
                 //user score title
                 var movesLeftLabel = new createjs.Text("", "15px Verdana", "");
@@ -1447,21 +1428,55 @@ var Game = Game || (function (createjs, $) {
         
             function createWinnerView() {
 
+                mainBox.removeAllEventListeners();
+                mainBox.removeAllChildren();
+                stage.removeChild(mainBox);
+                questionContainer.removeAllEventListeners();
+                questionContainer.removeAllChildren();
+                stage.removeChild(questionContainer);
+
                 var view = new createjs.Container();
-                view.addChild(new createjs.Bitmap(queue.getResult("rf_skyBackground")))
+
+
+                
+                
+
+                var winner_header = new createjs.Bitmap(queue.getResult("winner_header"));
+                winner_header.x = 100;
+                winner_header.y = 10;
+                view.addChild(winner_header);
+                
+
+                //var image = queue.getResult("chakalaka_bowl");
+                var image = queue.getResult("crabbyStressedOnion");
+
+                
+
+
+                var bitmap = new createjs.Bitmap(image);
+                bitmap.scaleX = boardWidth / image.width;
+                bitmap.scaleY = boardHeight / image.height;
+
+                bitmap.x = 100;
+                bitmap.y = 100;
+                view.addChild(bitmap);
                 if (gameState.score > 0) {
-                    var titleText = new createjs.Text("BOOM CHAKALAKA You won " + gameState.score + " points!", "20pt Arial bold", "white");
+                    var titleText = new createjs.Text("You won " + gameState.score + " points!", "32pt Arial bold", "white");
                     createjs.Sound.play("chakalaka2");
                 } else {
 
                     var titleText = new createjs.Text("Sorry, you didn't win any points!", "40pt Arial bold", "white");
                 }
+
+
+
+
+
                 titleText.shadow = new createjs.Shadow("gray", 1, 1, 3);
-                titleText.lineWidth = 600;
-                titleText.maxWidth = 600;
+
                 titleText.regX = titleText.getBounds().width / 2;
                 titleText.x = 400;
-                titleText.y = 50;
+                titleText.y = 70;
 
                 var startOverButton = new createjs.Container();
                 startOverButtonBackground = new createjs.Bitmap(queue.getResult("blue"));
@@ -1499,8 +1514,9 @@ var Game = Game || (function (createjs, $) {
                         questionIndex = 0;
                         //gameState.score = 0;
                         createjs.Sound.play("buttonClick");
-                        view.removeAllChildren();
-                        showView(createTitleView());
+                        reset();
+                       // view.removeAllChildren();
+                       // showView(createTitleView());
 
                     });
 
@@ -1645,6 +1661,10 @@ var Game = Game || (function (createjs, $) {
         function reset() {
 
             stage.removeAllChildren();
+
+
+
+
             initialize();
         }
 
