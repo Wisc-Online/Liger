@@ -45,33 +45,40 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="aeesh.png" />
+    <Content Include="blue1.png" />
     <Content Include="BoomChakalaka.png" />
     <Content Include="brown.png" />
+    <Content Include="brown1.png" />
     <Content Include="ButtonClickDry.mp3" />
     <Content Include="chakalaka.png" />
     <Content Include="chakalaka1.jpg" />
+    <Content Include="chakalaka_bowl.png" />
+    <Content Include="crabbyStressedOnion.png" />
     <Content Include="createjs.min.js" />
     <Content Include="deflate.mp3" />
-    <Content Include="game - Copy.js" />
     <Content Include="Game-chakalaka_01.mp3" />
     <Content Include="Game-chakalaka_02.mp3" />
     <Content Include="Game-short_01.mp3" />
-    <Content Include="gameRapidFire.js" />
     <Content Include="Game_Aaeesshh_01.mp3" />
     <Content Include="game_aaeesshh_02.mp3" />
-    <Content Include="game_old.js" />
     <Content Include="game.js" />
-    <Content Include="game1 - .js" />
+    <Content Include="green1.png" />
+    <Content Include="hint1.png" />
+    <Content Include="next.png" />
+    <Content Include="orange1.png" />
+    <Content Include="quit.png" />
+    <Content Include="red1.png" />
+    <Content Include="smashed_tomato.png" />
+    <Content Include="start_over.png" />
     <Content Include="tomato.png" />
     <Content Include="white.png" />
-    <Content Include="index1.html" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="question_mark.png" />
     <Content Include="StyleSheet1.css" />
-    <Content Include="WelcomeSong.mp3" />
     <Content Include="blue.png" />
+    <Content Include="white1.png" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -87,15 +94,12 @@
     <Content Include="orange.png" />
     <Content Include="plain_background.jpg" />
     <Content Include="green.png" />
-    <Content Include="RapidFireInstructions.png" />
+    <Content Include="ChakalakaInstructions.png" />
     <Content Include="red.png" />
     <Content Include="rf_Balloon_Pop.mp3" />
     <Content Include="rf_game_cursor.png" />
     <Content Include="rf_plainBackground.jpg" />
     <Content Include="rf_POP.png" />
-    <Content Include="rf_skyBackground.jpg" />
-    <Content Include="rf_skyFinalBackground.png" />
-    <Content Include="rf_spaceBackground.jpg" />
     <Content Include="rf_titleStartBtn.png" />
     <Content Include="rf_whiteCrosshair.png" />
     <Content Include="start_button.png" />

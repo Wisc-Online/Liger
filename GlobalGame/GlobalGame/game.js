@@ -6,8 +6,11 @@ var Game = Game || (function (createjs, $) {
 
         var timeLimit = 240;
         var assets = [
+            { id: "next", src: assetsPath + "next.png" },
+            { id: "quit", src: assetsPath + "quit.png" },
+            { id: "start_over", src: assetsPath + "start_over.png" },
             { id: "aesh_header", src: assetsPath + "aeesh.png" },
-            { id: "crabbyStressedOnion", src: assetsPath + "crabbyStressedOnion.png" },
+            { id: "smashed_tomato", src: assetsPath + "smashed_tomato.png" },
             { id: "tomato", src: assetsPath + "tomato.png" },
             { id: "winner_header", src: assetsPath + "BoomChakalaka.png" },
             { id: "instructions_background", src: assetsPath + "instructions_background.png" },
@@ -15,9 +18,8 @@ var Game = Game || (function (createjs, $) {
             { id: "instructions", src: assetsPath + "instructions_question.png" },
             { id: "title_background", src: assetsPath + "title_background.jpg" },
             { id: "start_button", src: assetsPath + "start_button.png" },
-            { id: "rf_instructions", src: assetsPath + "RapidFireInstructions.png" },
+            { id: "instructions", src: assetsPath + "ChakalakaInstructions.png" },
             { id: "chakalaka_bowl", src: assetsPath + "chakalaka_bowl.png" },
-            { id: "rf_skyFinalBackground", src: assetsPath + "rf_skyFinalBackground.png" },
             { id: "chakalaka", src: assetsPath + "chakalaka.png" },
             { id: "chakalaka1", src: assetsPath + "chakalaka1.jpg" },
             { id: "buttonClick", src: assetsPath + "ButtonClickDry.mp3" },
@@ -76,20 +78,20 @@ var Game = Game || (function (createjs, $) {
         var self = this;
         var mouseBp;
         var stage = new createjs.Stage(canvasId);
-        var gameCounter = 0;
+
         
-        var tableCompactTimeout = null;
-        var maxMoveNbr = 1;
+        
+        var maxMoveNbr = 5;
         
         var boardStartX = 50;
-        var boardStartY = 50;
+        var boardStartY = 60;
         var boardWidth= 600;
         var boardHeight = 500;
         
-        var containerAtX = boardStartX + boardWidth + 30;
+        var containerAtX = boardStartX + boardWidth + 20;
         var hintContainerAtY = 150;
         var movesContainerAtY = 250;
-        var scoreContainerAtY = 350;
+        var scoreContainerAtY = 400;
 
         var maxI = 12; //number of element in a row
         var maxJ = 10; //number of element in a column
@@ -97,18 +99,15 @@ var Game = Game || (function (createjs, $) {
         var maxWidth = Math.round(boardWidth / maxI);
         var maxHeight = Math.round(boardHeight / maxJ);
 
-        var penalty = 5;
-
-        var movesLeft = 0;
-        var currentQuestion = 0;
-        var currentBestMatch = null;
+        
+        
 
         stage.enableMouseOver(10);
         // stage.mouseMoveOutside = true;
 
         var fps = 60;
         var tickCount = 0;
-        var currentArea = null;
+        
 
         var DragThreshold = 30;
         //set ticker 
@@ -125,10 +124,16 @@ var Game = Game || (function (createjs, $) {
         
 
         function initialize() {
-            
+            var tableCompactTimeout = null;
+            var currentQuestion = 0;
+            var currentBestMatch = null;
+            var penalty = 5;
+            var movesLeft = 0;
+            var currentArea = null;
+
             var musicOn = true;
             var chakalaka2 = createjs.Sound.createInstance("chakalaka2", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-            createjs.Sound.play("chakalaka2");
+           // createjs.Sound.play("chakalaka2");
             var aaeesshh1 = createjs.Sound.createInstance("aaeesshh1", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
 
             var gameshort = createjs.Sound.createInstance("gameshort", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
@@ -162,13 +167,11 @@ var Game = Game || (function (createjs, $) {
 
 
             function displayMessage(message) {
-               
-                var text = new createjs.Text(message, "bold 55px Cooper Black", "white");
+                
+                var text = new createjs.Text(message, "bold 50px Cooper Black", "#ffd5c0");
                
                 text.set({
-                    //x: stage.canvas.width / 2,
-                    //y: stage.canvas.height / 2,
-                    x: 310,
+                    x: 380,
                     y: 25,
                   
                     textAlign: "center",
@@ -189,12 +192,12 @@ var Game = Game || (function (createjs, $) {
 
             }
 
-            function WrongAnswer(message) {
-
-                var text = new createjs.Text(message, "bold 20px Cooper Blackl", "red");
+            function wrongAnswer(message) {
+     
+                var text = new createjs.Text(message, "bold 30px Cooper Black", "brown");
 
                 text.set({
-                    x: 330,
+                    x: 400,
                     y: 20,
 
                     textAlign: "center",
@@ -277,7 +280,7 @@ var Game = Game || (function (createjs, $) {
 
             function createInstructionsView() {
                 var view = new createjs.Container();
-                var image = new createjs.Bitmap(queue.getResult("rf_instructions"));
+                var image = new createjs.Bitmap(queue.getResult("instructions"));
 
                 var hit = new createjs.Shape();
                 var exitContainer = new createjs.Container();
@@ -443,16 +446,17 @@ var Game = Game || (function (createjs, $) {
 
             function handleButtonHover(event) {
              
-                var initScareX=event.currentTarget.scaleX;
-                var initScareY = event.currentTarget.scaleY;
+                var initScareX=1;
+                var initScareY = 1;
                 if (event.type == "mouseover") {
                     createjs.Tween.get(event.currentTarget).to({ scaleX: initScareX * 1.0625, scaleY: initScareY * 1.0625 }, 100)
                                                             .to({ scaleX: initScareX, scaleY: initScareY }, 100)
                                                             .to({ scaleX: initScareX * 1.0625, scaleY: initScareY * 1.0625 }, 100);
                 }
-                else {
-                    createjs.Tween.get(event.currentTarget).to({ scaleX: initScareX, scaleY: initScareY }, 100);
+                if (event.type == "mouseout") {
+                    createjs.Tween.get(event.currentTarget).to({ scaleX: initScareX, scaleY: initScareY}, 100);
                 }
+
             }
            
             function createMainContainer() {
@@ -580,7 +584,7 @@ var Game = Game || (function (createjs, $) {
                                 if (xx < targetNeighbour.original_x - dragThreshold)
                                 xx = targetNeighbour.original_x;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: xx }, 100);
+                                createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: xx }, 50);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
@@ -648,7 +652,7 @@ var Game = Game || (function (createjs, $) {
 
                 //determine if term is outside mainbox and return to terms library container
                 function handleElementPressUp(evt) {
-                   gameState.initialize = false;
+                   
                    if (evt.currentTarget.targetNeighbour != null) {
                        var targetCircle = evt.currentTarget.targetNeighbour;
 
@@ -671,7 +675,9 @@ var Game = Game || (function (createjs, $) {
                            gameData[targetCircle.i][targetCircle.j] = targetCircle;
 
                            mainBox.setChildIndex(targetCircle, mainBox.getNumChildren() - 1);
-                           createjs.Tween.get(targetCircle, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 100);
+                           createjs.Tween.get(targetCircle, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 100)
+                                                                               .wait(150)
+                                                                               .call(scanAndCompactTable);
 
                            var curx = evt.currentTarget.original_x; var cury = evt.currentTarget.original_y;
                            evt.currentTarget.original_x = targetCircle.original_x;
@@ -684,7 +690,7 @@ var Game = Game || (function (createjs, $) {
                            movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
 
                           
-                           tableCompactTimeout = setTimeout(scanAndCompactTable, 150);
+                          // tableCompactTimeout = setTimeout(scanAndCompactTable, 150);
                            
                        }
                        else {
@@ -994,7 +1000,7 @@ var Game = Game || (function (createjs, $) {
 
 
                               gameData[i][k] = createElement(i, k, xx, yy1);
-                              //gameData[i][k].getChildByName('label').text = 'F';
+                              
                               gameData[i][k].isEmpty = true;
 
                               mainBox.addChild(gameData[i][k]);
@@ -1004,17 +1010,20 @@ var Game = Game || (function (createjs, $) {
 
                               mainBox.addChild(gameData[i][j]);
 
-                              if (!gameState.initialize)
-                              {
-                                  gameState.score++;
-                              }
                               
-                              if (gameState.score == 100)
-                              {
+    
+                              
+                          }
+                          //increment the score
+                          if (!gameState.initialize)//don't increment before the first question was answered
+                          {
+                              gameState.score ++;
+
+                              if (gameState.score == 100) {
 
                                   displayMessage("10 eXtra points");
-                                  
-                 
+
+
                                   gameState.score += 10
 
                               } else if (gameState.score == 200) {
@@ -1024,18 +1033,24 @@ var Game = Game || (function (createjs, $) {
                                   gameState.score += 15
                               }
 
-                           else if (gameState.score == 300) {
-                              displayMessage("25 eXtra points");
+                              else if (gameState.score == 300) {
+                                  displayMessage("25 eXtra points");
 
 
-                              gameState.score += 25
-                          }
+                                  gameState.score += 25
+                              }
 
 
                               userScoreContainer.getChildByName('score').text = gameState.score;
-    
-                              
+
+
                           }
+
+                          
+
+
+
+
 
                       }
                      
@@ -1050,13 +1065,7 @@ var Game = Game || (function (createjs, $) {
                   tableCompactTimeout = setTimeout(scanAndCompactTable, 1000);
               }
                   
-              else
-              {
-                  alert('HELLO');
-                  if (movesLeft <= 0) {
-                      moveToNextQuestion();
-                  }
-              }
+              
              
           }
          
@@ -1108,24 +1117,33 @@ var Game = Game || (function (createjs, $) {
                   answerText.color = "black";
                   answerText.text = question.Answers[i].Text;
                   answerText.x = 10;
-                  answerText.y = 10;
+                  answerText.y = 5;
                   answerText.lineWidth = boardWidth - 20;
                   answerText.name = "answerText";
                   ac.name = "answer";
                   ac.cursor = "pointer";
                   var answer = new createjs.Shape();
-                  answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("#ffd5c0");
+                  answer.graphics.setStrokeStyle(1).beginStroke("black").beginFill("white");
                   answer.graphics.drawRect(0, 0, boardWidth - 20, 40);
-                  answer.name = "answerShape";
+                  answer.name = "answerShapeHighlighted";
+                  answer.alpha = 0;
+
+                  var answer1 = new createjs.Shape();
+                  answer1.graphics.setStrokeStyle(1).beginStroke("black").beginFill("#ffd5c0");
+                  answer1.graphics.drawRect(0, 0, boardWidth - 20, 40);
+                  answer1.name = "answerShape";
+
+
                   ac.x = 10;
                   ac.y = startY + i * 50;
                   descriptionContainerY = ac.y;
-
                   ac.addChild(answer);
+                  ac.addChild(answer1);
                   ac.addChild(answerText);
 
                   ac.on("pressup", handleAnswerPressUp);
-
+                  ac.on("mouseover", handleAnswerHover);
+                  ac.on("mouseout", handleAnswerHover);
                   ac.text = question.Answers[i].Text;
                   ac.IsCorrect = question.Answers[i].IsCorrect;
                   
@@ -1178,13 +1196,30 @@ var Game = Game || (function (createjs, $) {
                 stage.setChildIndex(container, mainBox.getNumChildren() - 1);
             }
 
+            function handleAnswerHover(event) {
 
+
+                if (event.type == "mouseover") {
+                    event.currentTarget.getChildByName("answerText").color = "brown";
+                    event.currentTarget.getChildByName("answerText").font = "bold 24px Arial";
+                    event.currentTarget.getChildByName("answerShape").alpha = 0;
+                    event.currentTarget.getChildByName("answerShapeHighlighted").alpha = 1;
+                }
+                else {
+                    event.currentTarget.getChildByName("answerText").color = "black";
+                 
+                    event.currentTarget.getChildByName("answerText").font = "20px Arial";
+                    event.currentTarget.getChildByName("answerShape").alpha = 1;
+                    event.currentTarget.getChildByName("answerShapeHighlighted").alpha = 0;
+                }
+
+            }
 
 
 
             function handleAnswerPressUp(evt)
             {
-              
+              gameState.initialize = false;
               for (var k = 0; k < questionContainer.children.length; k++) {
                     //-------------------------->
 
@@ -1226,13 +1261,23 @@ var Game = Game || (function (createjs, $) {
               }
               else
               {
-                  var pointsPenalty = penalty;
+                  var message;
+                /*  var pointsPenalty = penalty;
                   if (gameState.score < pointsPenalty)
                   {
                       pointsPenalty = gameState.score;
                   }
                   gameState.score = gameState.score - pointsPenalty;
-                  WrongAnswer("Wrong Answer: -" + pointsPenalty + " Points (Score: " + gameState.score + ")");
+
+                  
+                  if (pointsPenalty>0)
+                  {
+                      message = "Wrong Answer: -" + pointsPenalty + " Points (Score: " + gameState.score + ")";
+                  }
+                  else
+                      message = "Wrong Answer!";*/
+                  message = "Wrong Answer!";
+                  wrongAnswer(message);
                   createjs.Sound.play("aaeesshh1");
 
                   questionContainer.getChildByName('nextButton').success = false;
@@ -1270,28 +1315,27 @@ var Game = Game || (function (createjs, $) {
                 //
                 //add next button
                 //
-                var image = queue.getResult("start_button");
+                var img = queue.getResult("next");
+                var nextButton = new createjs.Bitmap(img);
+              //  img.width = 50;
+               // img.height = 50;
 
-                var nextButton = new createjs.Bitmap(image);
+                nextButton.shadow = new createjs.Shadow("gray", 1, 1, 1);
+                nextButton.regX = nextButton.getBounds().width / 2;
 
-                nextButton.scaleX = maxWidth / image.width;
-                nextButton.scaleY = maxHeight / image.height;
+                nextButton.cursor = "pointer";
+                nextButton.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#f00").drawCircle(50, 50, 50));
 
-
-                nextButton.shadow = new createjs.Shadow("gray", 3, 3, 3);
-                nextButton.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#f00").drawCircle(maxWidth, maxWidth, maxWidth));
-                nextButton.cursor = 'pointer';
-                nextButton.regX = maxWidth;
-                nextButton.regY = maxWidth;
-                nextButton.x = boardWidth - maxWidth;
-                nextButton.y = boardHeight - maxWidth;
-
-                nextButton.name = "nextButton";
-
-                nextButton.addEventListener("pressup", handleNextButtonPressUp);
+                nextButton.addEventListener("pressup",handleNextButtonPressUp);
 
                 nextButton.on("mouseover", handleButtonHover);
                 nextButton.on("mouseout", handleButtonHover);
+
+
+                nextButton.name = "nextButton";
+                nextButton.x=boardWidth-60;
+                nextButton.y = boardHeight-60;
+
                 container.addChild(nextButton);
                 //
 
@@ -1343,19 +1387,19 @@ var Game = Game || (function (createjs, $) {
 
 
                 //user score title
-                var scoreLabel = new createjs.Text("", "15px Verdana", "");
+                var scoreLabel = new createjs.Text("", "24px Verdana", "");
                 scoreLabel.color = "yellow";
                 scoreLabel.text = "Score:";
-                scoreLabel.x = 25;
+                scoreLabel.x = 5;
                 scoreLabel.y = 2;
                 container.addChild(scoreLabel);
 
                 //user score score
-                var scoreText = new createjs.Text("", "20px Verdana", "");
+                var scoreText = new createjs.Text("", "32px Verdana bold", "");
                 scoreText.color = "white";
                 scoreText.text = gameState.score; 
                 scoreText.x = 30;
-                scoreText.y = 20;
+                scoreText.y = 40;
                 scoreText.name="score";
                 container.addChild(scoreText);
                 return container;
@@ -1408,19 +1452,19 @@ var Game = Game || (function (createjs, $) {
 
 
                 //user score title
-                var movesLeftLabel = new createjs.Text("", "15px Verdana", "");
+                var movesLeftLabel = new createjs.Text("", "24px Verdana", "");
                 movesLeftLabel.color = "yellow";
-                movesLeftLabel.text = "Moves Left:";
+                movesLeftLabel.text = "Moves\n Left:";
                 movesLeftLabel.x = 5;
                 movesLeftLabel.y = 2;
                 container.addChild(movesLeftLabel);
 
                 //user score score
-                var movesLeftText = new createjs.Text("", "20px Verdana", "");
+                var movesLeftText = new createjs.Text("", "32px Verdana", "");
                 movesLeftText.color = "white";
                 movesLeftText.text = movesLeft; //this will need to change later to be a var to hold user score. 
                 movesLeftText.x = 30;
-                movesLeftText.y = 20;
+                movesLeftText.y = 60;
                 movesLeftText.name = "movesLeft";
                 container.addChild(movesLeftText);
                 return container;
@@ -1441,34 +1485,41 @@ var Game = Game || (function (createjs, $) {
                 
                 
 
-                var winner_header = new createjs.Bitmap(queue.getResult("winner_header"));
-                winner_header.x = 100;
+           
+                
+                
+                var image;
+                var winner_header;
+                var titleText
+                if (gameState.score>0)
+                {
+                    image = queue.getResult("chakalaka_bowl");
+                    winner_header = new createjs.Bitmap(queue.getResult("winner_header"));
+                    titleText = new createjs.Text("You won " + gameState.score + " points!", "32pt Arial bold", "white");
+                    createjs.Sound.play("chakalaka2");
+                }
+                else
+                {
+                    image = queue.getResult("smashed_tomato");
+                    winner_header = new createjs.Bitmap(queue.getResult("aesh_header"));
+                    titleText = new createjs.Text("Sorry, you didn't win any points!", "24pt Arial bold", "white");
+                    createjs.Sound.play("aaeesshh1");
+                }
+                    
+
+                winner_header.x = 120;
                 winner_header.y = 10;
                 view.addChild(winner_header);
-                
-
-                //var image = queue.getResult("chakalaka_bowl");
-                var image = queue.getResult("crabbyStressedOnion");
-
-                
 
 
                 var bitmap = new createjs.Bitmap(image);
-                bitmap.scaleX = boardWidth / image.width;
-                bitmap.scaleY = boardHeight / image.height;
+                bitmap.scaleX = (boardWidth - 200) / image.width;
+                bitmap.scaleY = (boardHeight - 200) / image.height;
 
-                bitmap.x = 100;
-                bitmap.y = 100;
+               // bitmap.regX = image.width / 2;
+                bitmap.x = 200  ;
+                bitmap.y = 250;
                 view.addChild(bitmap);
-                if (gameState.score > 0) {
-                    var titleText = new createjs.Text("You won " + gameState.score + " points!", "32pt Arial bold", "white");
-                    createjs.Sound.play("chakalaka2");
-                } else {
-
-                    var titleText = new createjs.Text("Sorry, you didn't win any points!", "40pt Arial bold", "white");
-                }
-
-
 
 
 
@@ -1476,101 +1527,63 @@ var Game = Game || (function (createjs, $) {
 
                 titleText.regX = titleText.getBounds().width / 2;
                 titleText.x = 400;
-                titleText.y = 70;
+                titleText.y = 75;
+                
+                view.addChild(titleText);
+                view.name = "WinnerView";
 
-                var startOverButton = new createjs.Container();
-                startOverButtonBackground = new createjs.Bitmap(queue.getResult("blue"));
-                startOverButtonBackground.scaleX = 2;
-                startOverButtonBackground.scaleY = 2;
-
-                var startingStartPositionX = getRandomInt(150, 650);
-                var startingStartPositionY = getRandomInt(190, 350);
-                startOverButton.x = startingStartPositionX;
-                startOverButton.y = startingStartPositionY;
-
-                startOverButton.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#f00").drawCircle(80, 80, 80));
-
-                startOverButton.x = 180;
-                startOverButton.y = 300;
-                startOverButton.regX = 100;
-                startOverButton.regY = 35;
-                startOverButton.addChild(startOverButtonBackground);
-
-                var startOverText = new createjs.Text("Start\nOver", "20pt Arial", "white");
-                startOverText.textAlign = "center";
-                startOverText.textBaseline = "middle";
-                startOverText.x = 90;
-                startOverText.y = 75;
-                startOverText.shadow = new createjs.Shadow("gray", 1, 1, 3);
+                if (gameState.score <= 0)
+                {
+                    createjs.Tween.get(winner_header)
+                                  .to({ alpha: 0 }, 5000);
+                    createjs.Tween.get(titleText)
+                                  .to({ alpha: 0 }, 2000);
+                }
+                //createjs.Tween.get(bitmap)
+                //                  .to({ alpha: 0 }, 3000);
+                
+               // createjs.Tween.get(winner_header)
+               //                          .to({ alpha: 0 }, 5000);
+              //  createjs.Tween.get(titleText)
+              //                    .to({ alpha: 0 }, 2000);
                 if (!isLmsConnected) {
 
-                    startOverButton.addChild(startOverText)
 
-                    ////////////////////
-                    startOverButton.addEventListener("click", function (evt) {
 
-                        gameState.initialize = true;
-                        nextStep = "startOver";
-                        questionIndex = 0;
-                        //gameState.score = 0;
+                    var img = queue.getResult("start_over");
+                    var startOverButton = new createjs.Bitmap(img);
+                    img.width=100;
+                    img.height=50;
+                    
+                    startOverButton.shadow = new createjs.Shadow("gray", 1, 1, 1);
+                    startOverButton.regX = startOverButton.getBounds().width / 2;
+                    
+                    startOverButton.cursor = "pointer";
+
+
+                    startOverButton.addEventListener("pressup", function (event) {
                         createjs.Sound.play("buttonClick");
                         reset();
-                       // view.removeAllChildren();
-                       // showView(createTitleView());
-
                     });
 
+                    startOverButton.on("mouseover", handleButtonHover);
+                    startOverButton.on("mouseout", handleButtonHover);
+
+
+                    startOverButton.x = boardWidth/2;
+                    startOverButton.y = 140;
+                    startOverButton.alpha = 0;
+                    view.addChild(startOverButton);
+
+                    
+                    createjs.Tween.get(startOverButton)
+                                  .to({ alpha: 1 }, 3000);
                 }
+                
+
                 submitScore(gameState.score);
 
-                var thePop = function (event, nextStep) {
-                    var target = event.currentTarget;
-                    targetXCoordinate = target.x;
-                    targetYCoordinate = target.y;
-                    currentArea.removeChild(target);
-                    var thePop = new createjs.Bitmap(queue.getResult("rf_POP"));
-                    thePop.x = targetXCoordinate;
-                    thePop.y = targetYCoordinate;
-                    currentArea.addChild(thePop);
-                    createjs.Tween.get(thePop)
-                            .to({ scaleX: 3.5, scaleY: 3.5 }, 100)
-                            .wait(400)
-                            .call(function () {
 
-                                if (nextStep == "startOver") {
-                                    questionIndex = 0;
-                                    gameState = {
-                                        score: 0,
-                                        speed: "slow",
-                                        name: gameData.UserName || "",
-                                        color: "#008080",
-                                        score: 0,
-                                        timerOn: false
-
-                                    }
-                                    showView(createTitleView());
-                                } else if (nextStep == "rematch") {
-                                    questionIndex = 0;
-                                    gameState = {
-                                        score: 0,
-                                        speed: "slow",
-                                        name: gameData.UserName || "",
-                                        color: "#008080",
-                                        score: 0,
-                                        timerOn: false
-
-
-                                    }
-                                    createMainGameView();
-                                } else {
-                                    quit();
-                                }
-
-                            })
-                    ;
-
-
-                };
 
                 if (isLmsConnected || navigator.userAgent.match(/Android/i)
                    || navigator.userAgent.match(/webOS/i)
@@ -1581,55 +1594,46 @@ var Game = Game || (function (createjs, $) {
                    || navigator.userAgent.match(/Windows Phone/i)
                    ) {
 
-                    var quitButton = new createjs.Container();
-                    quitButtonBackground = new createjs.Bitmap(queue.getResult("red"))
-                    quitButtonBackground.scaleX = 2;
-                    quitButtonBackground.scaleY = 2;
-                    quitButton.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#f00").drawCircle(80, 80, 80));
-                    quitButton.x = 730;
-                    quitButton.y = 140;
-                    quitButton.regX = 100;
-                    quitButton.regY = 35;
+                    var img = queue.getResult("quit");
+                    var quitButton = new createjs.Bitmap(img);
 
-                    createjs.Tween.get(quitButton, { loop: true })
-                                                    .to({ x: 730, y: 100 }, 5000)
-                                                    .to({ x: 730, y: 140 }, 5000)
-                                                    .to({ x: 730, y: 100 }, 5000)
-                                                    .to({ x: 730, y: 140 }, 5000)
-                                                    .to({ x: 730, y: 100 }, 5000)
-                    quitButton.cursor = 'pointer';
-                    quitButton.addChild(quitButtonBackground);
-                    quitButton.shadow = new createjs.Shadow("gray", 3, 3, 5);
 
-                    var quitText = new createjs.Text("Quit", "20pt Arial", "white");
-                    quitText.textAlign = "center";
-                    quitText.textBaseline = "middle";
-                    quitText.x = 85;
-                    quitText.y = 75;
-                    quitText.shadow = new createjs.Shadow("gray", 1, 1, 3);
-                    quitButton.addChild(quitText)
+                    quitButton.shadow = new createjs.Shadow("gray", 1, 1, 1);
+                    quitButton.regX = quitButton.getBounds().width / 2;
 
-                    quitButton.addEventListener("click", function (event) {
+                    quitButton.cursor = "pointer";
 
-                        thePop(event, "quit");
 
+                    quitButton.addEventListener("pressup", function (event) {
+                        createjs.Sound.play("buttonClick");
+                        quit();
                     });
+
+                    quitButton.on("mouseover", handleButtonHover);
+                    quitButton.on("mouseout", handleButtonHover);
+
+
+                    quitButton.x = boardWidth / 2 +100;
+                    quitButton.y = 220;
+
+                    quitButton.alpha = 0;
                     view.addChild(quitButton);
 
+                    createjs.Tween.get(quitButton)
+                                  .to({ alpha: 1 }, 3000);
+                    
+
                     if (isLmsConnected) {
-                        ScormHelper.cmi.successStatus(ScormHelper.successStatus.passed);
-                        ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.completed);
+                          ScormHelper.cmi.successStatus(ScormHelper.successStatus.passed);
+                          ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.completed);
 
                         isLmsConnected = false;
                     }
                 }
-                if (!isLmsConnected) {
-                    view.addChild(startOverButton);
-                }
-                view.addChild(titleText);// rematchButton,
-                view.name = "WinnerView";
+                
                 return view;
             }
+
 
             function submitScore(score) {
 
@@ -1661,7 +1665,7 @@ var Game = Game || (function (createjs, $) {
         function reset() {
 
             stage.removeAllChildren();
-
+            stage.removeAllEventListeners();
 
 
 
