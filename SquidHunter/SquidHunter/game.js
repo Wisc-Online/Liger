@@ -66,9 +66,8 @@ var Game = Game || (function (createjs) {
                 { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
                 { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
                 { id: "redx", src: assetsPath + "redx.png" },
-                { id: "answerHolder", src: assetsPath + "answerHolder.png" }
-
-
+                { id: "answerHolder", src: assetsPath + "answerHolder.png" },
+                { id: "logo", src: assetsPath + "Logo.png" }
 
             ];
 
@@ -101,9 +100,9 @@ var Game = Game || (function (createjs) {
                 panelBG.x = 50;
                 panelBG.y = 100;
 
-                titleText = new createjs.Text(gameData.Title, "24px Alegreya", "#FFFFFF");
-                titleText.x = panelBG.x + 45;
-                titleText.y = panelBG.y + 30;
+                titleText = new createjs.Text(gameData.Title, " Bold 24px Alegreya", "#000000");
+                titleText.x = panelBG.x + 75;
+                titleText.y = panelBG.y + 50;
 
                 var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
 
@@ -114,14 +113,24 @@ var Game = Game || (function (createjs) {
                 playButton.scaleX = playButton.scaleY = 0.20;
 
                 var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#000000");
-                descriptionText.x = panelBG.x + 80;
+                descriptionText.x = panelBG.x + 75;
                 descriptionText.y = panelBG.y + 100;
 
                 var directionsText = new createjs.Text("Directions:" + " " + gameData.Directions, "20px Alegreya", "#000000");
-                directionsText.x = panelBG.x + 80;
+                directionsText.x = panelBG.x + 75;
                 directionsText.y = panelBG.y + 200;
 
-                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, playButton);
+                var logo = new createjs.Bitmap(queue.getResult("logo"))
+
+                logo.regX = 200;
+                logo.regY = 50;
+                logo.x = panelBG.x + 250;
+                logo.y = panelBG.y + 250;
+                logo.scaleX = logo.scaleY = 0.25;
+
+
+
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
                 createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000);
                 self.stage.addChild(instructionsScreen);
 
@@ -148,7 +157,7 @@ var Game = Game || (function (createjs) {
             var widthOfSquid = 50;
             var maxEnemyCount = 5;
             var isEnemySpawnedEnabled = true;
-            var netCount = 10;
+
 
             var canEnemyFire = true;
 
@@ -160,8 +169,11 @@ var Game = Game || (function (createjs) {
 
             var pausedGame = false; //not used yet
 
-            var Score = 0; //not used yet
+            var Score = 0; 
             var scoreLabel;
+          
+            var netCount = 10;
+            var netCountLabel;
 
             var submittedScoreAlready = false;
 
@@ -175,6 +187,8 @@ var Game = Game || (function (createjs) {
 
             var currentQuestionNumber = 0;
 
+            ///////////////////////////////////////need netcount to refresh to 10 after qpanel goes away, right now it only happens when spacebar is pressed.
+            //////////////////////////////////////sometimes squids spawn over the panel (depends on the panel inported?) //////////////
 
             function StartInteraction() {
 
@@ -200,9 +214,18 @@ var Game = Game || (function (createjs) {
                 scoreLabel.lineWidth = 270;
                 scoreLabel.color = "white";
                 scoreLabel.y = 30;
-                scoreLabel.x = 740;
+                scoreLabel.x = 720;
 
                 self.stage.addChild(scoreLabel);
+
+                netCountLabel = new createjs.Text("Nets: " + netCount, "Bold 20px Alegreya", "#FFFFFF");
+                netCountLabel.textAlign = "center";
+                netCountLabel.lineWidth = 270;
+                netCountLabel.color = "white";
+                netCountLabel.y = 30;
+                netCountLabel.x = 600;
+
+                self.stage.addChild(netCountLabel);
 
                 setInterval(function () {
                     if (isEnemySpawnedEnabled && enemies.length < maxEnemyCount) {
@@ -211,9 +234,7 @@ var Game = Game || (function (createjs) {
                 }, 2000);
 
                 function delayEnemyShootInk() {
-
                     enemyShootInk();
-
                     setTimeout(delayEnemyShootInk, Math.random() * 500 + 300)
                 }
 
@@ -235,6 +256,7 @@ var Game = Game || (function (createjs) {
                             Score = Score - 20;
                             printScore();
                             //deliver answers?
+                          //  printNetCount();
                         }
                         //  isQuestionDisplayed = false
 
@@ -247,6 +269,10 @@ var Game = Game || (function (createjs) {
 
                 }
 
+                function printNetCount() {
+                    netCountLabel.text = "Nets: " + netCount;
+
+                }
 
                 //blow up the squid when the net hits the squid
                 function onNetContainerTweenChange(evt) {
@@ -349,12 +375,18 @@ var Game = Game || (function (createjs) {
 
                                 if (netCount > 0) {
                                     makeNet();
-                                    netCount--
+                                    netCount--;
+                                    console.log(netCount);
+
+
+                                   printNetCount();
                                 }
                                 if (netCount == 0 && !isQuestionDisplayed) {
+                                   printNetCount();
                                     deliverQuestion(gameData.Questions[currentQuestionNumber]);
                                 }
 
+                             //   printNetCount();
                                 event.preventDefault();
                                 break;
                             }
@@ -506,7 +538,7 @@ var Game = Game || (function (createjs) {
                 questionPanel.x = 50;
                 questionPanel.y = 50;
 
-                var questionsText = new createjs.Text("Question:" + " " + question.Text, "20px Alegreya", "#FFFFFF");
+                var questionsText = new createjs.Text("Question:" + " " + question.Text, "20px Alegreya", "#000000");
                 questionsText.x = questionPanel.x + 50;
                 questionsText.y = questionPanel.y + 35;
 
@@ -605,17 +637,19 @@ var Game = Game || (function (createjs) {
                 feedbackText.x = feedbackPanel.x + 100
                 feedbackText.y = feedbackPanel.y + 80
 
-
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
                 redx.x = feedbackPanel.x + 580;
                 redx.y = feedbackPanel.y + 130;
 
                 redx.addEventListener("click", handleClick);
 
+
                 function handleClick(event) {
                     currentQuestionNumber++;
                     self.stage.removeChild(feedbackContainer);
                     netCount = 10;
+               
+
                     canEnemyFire = true;
                     isQuestionDisplayed = false;
                     isFeedbackDisplayed = false;
@@ -628,9 +662,11 @@ var Game = Game || (function (createjs) {
                     
                 }
 
+
                 //turn off feedback panel if it is true
                 //if (isFeedbackDisplayed == true) {
                  
+
 
 
                 //}
