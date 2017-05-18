@@ -128,8 +128,6 @@ var Game = Game || (function (createjs) {
                 logo.y = panelBG.y + 250;
                 logo.scaleX = logo.scaleY = 0.25;
 
-
-
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
                 createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000);
                 self.stage.addChild(instructionsScreen);
@@ -187,8 +185,17 @@ var Game = Game || (function (createjs) {
 
             var currentQuestionNumber = 0;
 
-            ///////////////////////////////////////need netcount to refresh to 10 after qpanel goes away, right now it only happens when spacebar is pressed.
             //////////////////////////////////////sometimes squids spawn over the panel (depends on the panel inported?) //////////////
+            /////////////////////////////////looking to add spritesheets/////////////////////
+            //////////////////////////looking to finish artwork ///////
+            ////////////////////looking to finish json and keep track of high score//////////
+
+
+            function printNetCount() {
+                netCountLabel.text = "Nets: " + netCount;
+
+            }
+
 
             function StartInteraction() {
 
@@ -269,10 +276,7 @@ var Game = Game || (function (createjs) {
 
                 }
 
-                function printNetCount() {
-                    netCountLabel.text = "Nets: " + netCount;
 
-                }
 
                 //blow up the squid when the net hits the squid
                 function onNetContainerTweenChange(evt) {
@@ -378,7 +382,6 @@ var Game = Game || (function (createjs) {
                                     netCount--;
                                     console.log(netCount);
 
-
                                    printNetCount();
                                 }
                                 if (netCount == 0 && !isQuestionDisplayed) {
@@ -431,7 +434,6 @@ var Game = Game || (function (createjs) {
                                     });
 
                             }
-
                     }
                 }
             }
@@ -538,7 +540,7 @@ var Game = Game || (function (createjs) {
                 questionPanel.x = 50;
                 questionPanel.y = 50;
 
-                var questionsText = new createjs.Text("Question:" + " " + question.Text, "20px Alegreya", "#000000");
+                var questionsText = new createjs.Text("Question:" + " " + question.Text, "Bold 20px Alegreya", "#000000");
                 questionsText.x = questionPanel.x + 50;
                 questionsText.y = questionPanel.y + 35;
 
@@ -564,15 +566,14 @@ var Game = Game || (function (createjs) {
                     var answerContainer = new createjs.Container();
 
                     var answerHolder = new createjs.Bitmap(queue.getResult("answerHolder"))
-                    answersText.x = questionPanel.x + 55;
-                    answersText.y = questionPanel.y + 65 + stackIncrement;
+                    answersText.x = questionPanel.x + 90;
+                    answersText.y = questionPanel.y + 75 + stackIncrement;
 
 
-                    answerHolder.scaleX = 2;
+                    answerHolder.scaleX = 1.8;
 
                     answerHolder.x = answersText.x -15;
                     answerHolder.y = answersText.y -10;
-
 
                     answerContainer.name = "child";
                     answerContainer.IsCorrect = question.Answers[j].IsCorrect;
@@ -580,7 +581,7 @@ var Game = Game || (function (createjs) {
 
                     answerContainer.addChild(answerHolder, answersText);
 
-                    stackIncrement += 50;
+                    stackIncrement += 60;
 
                     answerContainer.addEventListener("pressup", function (evt) {
                         //   alert(evt.target);
@@ -648,15 +649,15 @@ var Game = Game || (function (createjs) {
                     currentQuestionNumber++;
                     self.stage.removeChild(feedbackContainer);
                     netCount = 10;
-               
-
                     canEnemyFire = true;
                     isQuestionDisplayed = false;
                     isFeedbackDisplayed = false;
                     isEnemySpawnedEnabled = true;
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
-                                          
+                    
+                    printNetCount();
+
                     //self.stage.removeChild(answerContainer);
 
                     
