@@ -1,4 +1,4 @@
-﻿/// <reference path="C:\SoftwareDev\GIT\Liger\GlobalGame\GlobalGame\createjs.min.js" />
+/// <reference path="C:\SoftwareDev\GIT\Liger\GlobalGame\GlobalGame\createjs.min.js" />
 var Game = Game || (function (createjs, $) {
     function Game(canvasId, gameData) {
 
@@ -957,13 +957,56 @@ var Game = Game || (function (createjs, $) {
                 }
             }
 
-            function appendMoveDownTween(tween, parent, y) {
-                if (tween == null)
-                {
-                    tween = createjs.Tween.get(parent, { override: true }).to({ y: y }, 500);
-                }
+            function popCircle(tween, parent, circle)
+            {
                 tween.call(function (evt) {
-                    createjs.Tween.get(parent, { override: true }).to({ y: y }, 500).call(function () { var c = mainBox.getChildByName("circle"); if(c) mainBox.removeChild(c); });
+                    createjs.Tween.get(circle, { override: true }).to({ scaleX: 0.1, scaleY: 0.1 }, 100).to({ scaleX: 3, scaleY: 3 }, 100).to({ alpha: 0 }, 100)
+                                                                                                         .wait(300)
+                                                                                                         .call(function () { parent.removeChild(circle); });
+                });
+            }
+            function appendMoveDownTween(tween, parent, y) {
+
+                tween.call(function (evt) {
+                    createjs.Tween.get(parent, { override: true }).to({ y: y }, 100);
+                })
+                ;
+            }
+
+
+            function appendDropNew(tween, element) {
+
+                tween.call(function (evt) {
+                        var newCircle = createCircle();
+
+                        element.addChild(newCircle);
+                        element.color = newCircle.color;
+                        element.y = boardStartY;
+                        element.isEmpty = false;
+
+                
+                });
+            }
+
+
+            function appendDropExisting(tween, element, topElement) {
+
+                tween.call(function (evt) {
+
+
+                    element.isEmpty = topElement.isEmpty;
+
+
+                    topElement.isEmpty = true;
+                    topElement.color = "";
+
+                    var topCircle = topElement.getChildByName("circle");
+                    topElement.removeChild(topCircle);
+
+                    element.addChild(topCircle);
+                    element.color = topCircle.color;
+                    element.y = topElement.y;
+                    
 
                 });
             }
@@ -972,10 +1015,10 @@ var Game = Game || (function (createjs, $) {
             function compactTable() {
                 mainBox.mouseEnabled = false;
                 var changed = false;
-                var circleTween = null;
+                var circleTween = [];
                 for (var i = 0; i < maxI; i++) {
                     for (var j = maxJ - 1; j >= 0; j--) {
-                    
+                        
                     //    var timeline = new createjs.Timeline();
                         if (gameData[i][j].isEmpty) {
                             changed = true;
@@ -991,57 +1034,40 @@ var Game = Game || (function (createjs, $) {
                             }
                             var crcl = gameData[i][j].getChildByName("circle");
 
-                            
+                            circleTween[i] = createjs.Tween.get(gameData[i][j], { override: true });
                             
                             
                             if (crcl) {
-                              
-                                gameData[i][j].removeChild(crcl);
-                                mainBox.addChild(crcl);
-                                crcl.x = gameData[i][j].x;
-                                crcl.y = gameData[i][j].y;
-                                crcl.regX = maxWidth/4 ;
-                                crcl.regY = maxHeight/4 ;
-                                circleTween = createjs.Tween.get(crcl, { override: true });
-                                circleTween.to({ scaleX: 4, scaleY: 4 }, 100).to({ alpha: 0 }, 100);
+
+
+                                
+                               // crcl.alpha = 0;
+    
+                                crcl.regX = maxWidth / 2;
+                                crcl.regY = maxHeight / 2;
+                               // circleTween.to({ scaleX: 0.1, scaleY: 0.1 }, 100).to({ scaleX: 3, scaleY: 3 }, 100).to({ alpha: 0 },100);
+
+                                
+
+                                popCircle(circleTween[i], gameData[i][j], crcl);
+                               // gameData[i][j].removeChild(crcl);
                             }
                             
                             
                             if (k < 0) {
+                                appendDropNew(circleTween[i], gameData[i][j]);
 
-
-                                var newCircle = createCircle();
-
-                                gameData[i][j].addChild(newCircle);
-                                gameData[i][j].color = newCircle.color;
-                                gameData[i][j].y = boardStartY-maxHeight/2;
-                                gameData[i][j].isEmpty = false;
-                                
+                               
                             }
                             else {
-
-                                gameData[i][j].isEmpty = gameData[i][k].isEmpty;
-
-                                
-                                gameData[i][k].isEmpty = true;
-                                gameData[i][k].color = "";
-                                var topCircle = gameData[i][k].getChildByName("circle");
-                                
-                                gameData[i][k].removeChild(topCircle);
-
-
-                                gameData[i][j].addChild(topCircle);
-                     
-                                gameData[i][j].color = topCircle.color;
-                                gameData[i][j].y = gameData[i][k].y;
-
+                                appendDropExisting(circleTween[i], gameData[i][j], gameData[i][k]);
                             
 
                             }
-                            
+     
                             
                           //  if (circleTween != null) {
-                                appendMoveDownTween(circleTween, gameData[i][j], yy);
+                            appendMoveDownTween(circleTween[i], gameData[i][j], yy);
 
                                 
                            // }
@@ -1179,9 +1205,9 @@ var Game = Game || (function (createjs, $) {
                     ac.addChild(answer1);
                     ac.addChild(answerText);
 
-                    ac.on("click", handleAnswerPressUp);
-                    ac.on("mouseover", handleAnswerHover);
-                    ac.on("mouseout", handleAnswerHover);
+                    ac.on("pressup", handleAnswerPressUp);
+                   // ac.on("mouseover", handleAnswerHover);
+                   // ac.on("mouseout", handleAnswerHover);
                     ac.text = question.Answers[i].Text;
                     ac.IsCorrect = question.Answers[i].IsCorrect;
 
