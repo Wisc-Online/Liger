@@ -596,8 +596,17 @@ var Game = Game || (function (createjs, $) {
                 //drag functionality
 
                 function handleElementMouseDown(evt) {
-                    evt.currentTarget.getChildByName("circle").getChildByName("highlight").alpha = 1;
-                    evt.currentTarget.getChildByName("circle").getChildByName("bitmap").alpha = 0;
+                    if (navigator.userAgent.match(/Android/i)
+                   || navigator.userAgent.match(/webOS/i)
+                   || navigator.userAgent.match(/iPhone/i)
+                   || navigator.userAgent.match(/iPad/i)
+                   || navigator.userAgent.match(/iPod/i)
+                   || navigator.userAgent.match(/BlackBerry/i)
+                   || navigator.userAgent.match(/Windows Phone/i)
+                   ) {
+                        evt.currentTarget.getChildByName("circle").getChildByName("highlight").alpha = 1;
+                        evt.currentTarget.getChildByName("circle").getChildByName("bitmap").alpha = 0;
+                    }
                     clearTimeout(tableAnimateTimeout);
                 }
 
@@ -731,8 +740,17 @@ var Game = Game || (function (createjs, $) {
                 //determine if term is outside mainbox and return to terms library container
                 function handleElementPressUp(evt) {
                     evt.nativeEvent.preventDefault();
-                    evt.currentTarget.getChildByName("circle").getChildByName("bitmap").alpha = 1;
-                    evt.currentTarget.getChildByName("circle").getChildByName("highlight").alpha = 0;
+                    if (navigator.userAgent.match(/Android/i)
+                   || navigator.userAgent.match(/webOS/i)
+                   || navigator.userAgent.match(/iPhone/i)
+                   || navigator.userAgent.match(/iPad/i)
+                   || navigator.userAgent.match(/iPod/i)
+                   || navigator.userAgent.match(/BlackBerry/i)
+                   || navigator.userAgent.match(/Windows Phone/i)
+                   ) {
+                        evt.currentTarget.getChildByName("circle").getChildByName("bitmap").alpha = 1;
+                        evt.currentTarget.getChildByName("circle").getChildByName("highlight").alpha = 0;
+                    }
 
 
                     if (evt.currentTarget.targetNeighbour != null) {
