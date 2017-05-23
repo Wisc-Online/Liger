@@ -89,12 +89,28 @@ var Game = Game || (function (createjs, $) {
         var boardHeight = 500;
 
         var containerAtX = boardStartX + boardWidth + 20;
-        var hintContainerAtY = 150;
-        var movesContainerAtY = 250;
-        var scoreContainerAtY = 400;
-
+        var hintContainerAtY = boardStartY;
+        var movesContainerAtY = 340;
+        var scoreContainerAtY = 470;
+        var questionsContainerAtY = 190;
         var maxI = 12; //number of element in a row
         var maxJ = 10; //number of element in a column
+        var DragThreshold = 30;
+        if (navigator.userAgent.match(/Android/i)
+                   || navigator.userAgent.match(/webOS/i)
+                   || navigator.userAgent.match(/iPhone/i)
+                   || navigator.userAgent.match(/iPad/i)
+                   || navigator.userAgent.match(/iPod/i)
+                   || navigator.userAgent.match(/BlackBerry/i)
+                   || navigator.userAgent.match(/Windows Phone/i)
+                   ) {
+
+            maxI = 7;
+            maxJ = 5;
+            DragThreshold = 10;
+        }
+
+
 
         var maxWidth = Math.round(boardWidth / maxI);
         var maxHeight = Math.round(boardHeight / maxJ);
@@ -103,16 +119,16 @@ var Game = Game || (function (createjs, $) {
 
 
         stage.enableMouseOver(10);
-        createjs.Touch.enable(stage);
-        createjs.Touch.enable(stage, false, true);
+
+        createjs.Touch.enable(stage, false, false);
         stage.preventSelection = false;
-        // stage.mouseMoveOutside = true;
+
 
         var fps = 60;
         var tickCount = 0;
 
 
-        var DragThreshold = 30;
+
         //set ticker 
         createjs.Ticker.setFPS(60);
 
@@ -130,10 +146,12 @@ var Game = Game || (function (createjs, $) {
             var tableCompactTimeout = null;
             var tableAnimateTimeout = null;
             var currentQuestion = 0;
-            var currentBestMatch = null;
+
             var penalty = 5;
             var movesLeft = 0;
+            var questionsLeft = gameData.Questions.length;
             var currentArea = null;
+            var currentBestMatch = null;
             var currentArrayOfMatches = null;
             var musicOn = true;
             var chakalaka2 = createjs.Sound.createInstance("chakalaka2", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
@@ -155,7 +173,7 @@ var Game = Game || (function (createjs, $) {
                 initialize: true
             }
 
-   
+
             //add the background
             var canvasBackground = new createjs.Shape();
             canvasBackground.graphics.setStrokeStyle(1).beginStroke("white").beginFill("#421538");
@@ -163,7 +181,9 @@ var Game = Game || (function (createjs, $) {
             stage.addChild(canvasBackground);
 
             //create game objects
-            var mainBox, questionContainer, userScoreContainer, layer, rectangle, movesLeftContainer, instructionsContainer, hintButtonContainer, stageBackground;
+            var mainBox, questionContainer, userScoreContainer, layer,
+                rectangle, movesLeftContainer, instructionsContainer, hintButtonContainer, stageBackground,
+                questionsLeftContainer;
             var button1, button2;
             var soundContainer = createSoundContainer();
             var instructionsView = null;
@@ -299,7 +319,8 @@ var Game = Game || (function (createjs, $) {
                 var exitText = new createjs.Text("BACK", 'bold 18px Arial', "#fff");
                 exitText.x = 8;
                 exitText.y = 8;
-                exitContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#911F94").beginStroke("#000").setStrokeStyle(1).drawRoundRect(0, 0, 70, 37, 5).endFill().endStroke());
+                exitContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#911F94").beginStroke("#000").setStrokeStyle(1)
+                    .drawRoundRect(0, 0, 70, 37, 5).endFill().endStroke());
                 hit.graphics.beginFill("#000").drawRect(0, 0, exitText.getMeasuredWidth(), exitText.getMeasuredHeight());
                 exitBox.graphics.beginFill("#911F94").beginStroke("#000").setStrokeStyle(1).drawRoundRect(0, 0, 70, 37, 5).endFill().endStroke();
                 exitText.hitArea = hit;
@@ -489,8 +510,15 @@ var Game = Game || (function (createjs, $) {
                 container.addChild(movesLeftContainer);
 
 
+                //
+                questionsLeftContainer = createQuestionsLeftContainer();
+                questionsLeftContainer.x = containerAtX;
+                questionsLeftContainer.y = questionsContainerAtY;
+                container.addChild(questionsLeftContainer);
+
+
                 hintButtonContainer = createHintButton();
-                hintButtonContainer.x = containerAtX + 20;
+                hintButtonContainer.x = containerAtX + 10;
                 hintButtonContainer.y = hintContainerAtY;
 
                 container.addChild(hintButtonContainer);
@@ -499,17 +527,38 @@ var Game = Game || (function (createjs, $) {
 
             function createCircle() {
 
+                var container = new createjs.Container();
+
+
+
+
                 var colors = ["orange", "red", "brown", "green", "blue", "white"];
                 var colorIndex = Math.floor(Math.random() * colors.length);
                 var image = queue.getResult(colors[colorIndex]);
 
+
+                var g = new createjs.Bitmap(image);
+                g.scaleX = maxWidth * 3 / image.width;
+                g.scaleY = maxHeight * 3 / image.height;
+                g.x = -1 * maxWidth;
+                g.y = -1 * maxHeight;
+                g.name = "highlight";
+
+
                 var bitmap = new createjs.Bitmap(image);
-                bitmap.scaleX = maxWidth / image.width;
-                bitmap.scaleY = maxHeight / image.height;
-                
-                bitmap.name = "circle";
-                bitmap.color = colors[colorIndex];
-                return bitmap;
+                bitmap.scaleX = bitmap.original_scaleX = maxWidth / image.width;
+                bitmap.scaleY = bitmap.original_scaleY = maxHeight / image.height;
+
+
+
+                bitmap.name = "bitmap";
+                container.name = "circle";
+                container.color = colors[colorIndex];
+                container.addChild(g);
+                container.addChild(bitmap);
+
+                g.alpha = 0;
+                return container;
             }
 
             function createCircleDraggableContainer() {
@@ -519,29 +568,51 @@ var Game = Game || (function (createjs, $) {
 
                 container.setBounds(0, 0, maxWidth, maxHeight);
 
+                container.hitArea = new createjs.Shape();
+                container.hitArea.graphics.beginFill('#000').drawRect(0, 0, maxWidth, maxHeight).endFill();
+
+
+                container.on("mousedown", handleElementMouseDown, false);
                 container.on("pressmove", handleElementDrag, false);
                 container.on("pressup", handleElementPressUp, false);
 
                 var mouseDragPosition = null;
 
+                var crcl = createCircle();
+                container.addChild(crcl);
+                container.color = crcl.color;
 
-            /*    var colors = ["orange", "red", "brown", "green", "blue", "white"];
-                var colorIndex = Math.floor(Math.random() * colors.length);
 
-                container.color = colors[colorIndex];
-                container.addChild(createCircle(container.color));*/
 
 
                 container.isEmpty = false;
 
                 var isDragging = false;
 
+                container.name = "element";
+
+
+
                 //drag functionality
 
-                function handleElementDrag(evt) {
-                    evt.nativeEvent.preventDefault();
+                function handleElementMouseDown(evt) {
+                    evt.currentTarget.getChildByName("circle").getChildByName("highlight").alpha = 1;
+                    evt.currentTarget.getChildByName("circle").getChildByName("bitmap").alpha = 0;
                     clearTimeout(tableAnimateTimeout);
+                }
+
+
+                function handleElementDrag(evt) {
+
+
+
+
+
                     if (mouseDragPosition != null) {
+
+
+
+
                         var deltaX = evt.stageX - mouseDragPosition.x;
                         var deltaY = evt.stageY - mouseDragPosition.y;
 
@@ -660,6 +731,10 @@ var Game = Game || (function (createjs, $) {
                 //determine if term is outside mainbox and return to terms library container
                 function handleElementPressUp(evt) {
                     evt.nativeEvent.preventDefault();
+                    evt.currentTarget.getChildByName("circle").getChildByName("bitmap").alpha = 1;
+                    evt.currentTarget.getChildByName("circle").getChildByName("highlight").alpha = 0;
+
+
                     if (evt.currentTarget.targetNeighbour != null) {
                         var targetCircle = evt.currentTarget.targetNeighbour;
 
@@ -697,7 +772,7 @@ var Game = Game || (function (createjs, $) {
                             movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
 
 
-                            // tableCompactTimeout = setTimeout(scanAndCompactTable, 150);
+                            tableCompactTimeout = setTimeout(scanAndCompactTable, 150);
 
                         }
                         else {
@@ -712,6 +787,8 @@ var Game = Game || (function (createjs, $) {
                     isDragging = false;
                     evt.currentTarget.targetNeighbour = null;
 
+                    clearTimeout(tableAnimateTimeout);
+                    tableAnimateTimeout = setTimeout(animateRandomElement, 5000);
                 }
 
                 return container;
@@ -719,9 +796,7 @@ var Game = Game || (function (createjs, $) {
 
             function createElement(i, j, xCord, yCord) {
                 var element = createCircleDraggableContainer();
-                var crcl=createCircle();
-                element.addChild(crcl);
-                element.color = crcl.color;
+
 
                 element.original_x = element.x = xCord;
                 element.original_y = element.y = yCord;
@@ -729,11 +804,18 @@ var Game = Game || (function (createjs, $) {
                 element.i = i;
                 element.j = j;
 
-                mainBox.addChild(element);
+
                 return element;
             }
 
             function fillBoard() {
+                currentBestMatch = null;
+                currentArrayOfMatches = null;
+                while (cell = mainBox.getChildByName("element")) {
+                    cell.removeAllChildren;
+                    cell.removeAllEventListeners;
+                    mainBox.removeChild(cell);
+                }
                 var xCord = boardStartX;
                 for (var i = 0; i < maxI; i++) {
                     var yCord = boardStartY;
@@ -741,6 +823,8 @@ var Game = Game || (function (createjs, $) {
                     for (var j = 0; j < maxJ; j++) {
                         gameData[i][j] = createElement(i, j, xCord, yCord);
 
+
+                        mainBox.addChild(gameData[i][j]);
                         yCord += maxHeight;
                     }
                     xCord += maxWidth;
@@ -751,7 +835,7 @@ var Game = Game || (function (createjs, $) {
             function findPotentialElementMatchesReturnBest() {
                 var bestMatch = null;
                 currentArrayOfMatches = [];
-                var matchCounter=0;
+                var matchCounter = 0;
                 for (var i = 0; i < maxI; i++) {
 
                     for (var j = 0; j < maxJ; j++) {
@@ -820,17 +904,15 @@ var Game = Game || (function (createjs, $) {
                             swapColors(gameData[i][j + 1], gameData[i][j]);
                         }
 
-         
 
-                        if(bestMatch != null)
-                        {
-                         
-                            if (!matchFoundInArray(bestMatch))
-                            {
+
+                        if (bestMatch != null) {
+
+                            if (!matchFoundInArray(bestMatch)) {
                                 currentArrayOfMatches[matchCounter] = bestMatch;
                                 matchCounter++;
                             }
-                            
+
                         }
 
                     }
@@ -839,12 +921,10 @@ var Game = Game || (function (createjs, $) {
                 return bestMatch;
             }
 
-            function matchFoundInArray(match)
-            {
-                for (var i=0; i< currentArrayOfMatches.length; i++)
-                {
+            function matchFoundInArray(match) {
+                for (var i = 0; i < currentArrayOfMatches.length; i++) {
                     var el = currentArrayOfMatches[i];
-                    if (el.target.id===match.target.id && el.source.id===match.source.id)
+                    if (el.target.id === match.target.id && el.source.id === match.source.id)
                         return true;
                 }
                 return false;
@@ -970,30 +1050,35 @@ var Game = Game || (function (createjs, $) {
             }
 
             function scanAndCompactTable() {
-                currentBestMatch = findPotentialElementMatchesReturnBest();
+
                 clearTimeout(tableAnimateTimeout);
                 if (swapMatchesFound())
                     compactTable();
                 else {
+                    ;
+
+                    while (!(currentBestMatch = findPotentialElementMatchesReturnBest())) //if there aro no moves- redraw the table
+                    {
+                        fillBoard();
+                    }
+
 
                     if (!gameState.initialize && movesLeft <= 0 && !questionContainer.visible) {
                         moveToNextQuestion();
                     }
-                    else
-                    {
-                        clearTimeout(tableAnimateTimeout);
+                    else {
+
                         tableAnimateTimeout = setTimeout(animateRandomElement, 5000);
                     }
                 }
             }
 
             function appendMoveDownTween(tween, parent, y) {
-                if (tween == null)
-                {
-                    tween = createjs.Tween.get(parent, { override: true }).to({ y: y }, 500);
+                if (tween == null) {
+                    tween = createjs.Tween.get(parent).to({ y: y }, 500);
                 }
                 tween.call(function (evt) {
-                    createjs.Tween.get(parent, { override: true }).to({ y: y }, 500).call(function () { var c = mainBox.getChildByName("circle"); if(c) mainBox.removeChild(c); });
+                    createjs.Tween.get(parent).to({ y: y }, 500).call(function () { var c = mainBox.getChildByName("circle"); if (c) mainBox.removeChild(c); });
 
                 });
             }
@@ -1005,15 +1090,15 @@ var Game = Game || (function (createjs, $) {
                 var circleTween = null;
                 for (var i = 0; i < maxI; i++) {
                     for (var j = maxJ - 1; j >= 0; j--) {
-                    
-                    //    var timeline = new createjs.Timeline();
+
+                        //    var timeline = new createjs.Timeline();
                         if (gameData[i][j].isEmpty) {
                             changed = true;
-                          //  var xx = gameData[i][j].original_x;
+                            //  var xx = gameData[i][j].original_x;
                             var yy = gameData[i][j].original_y;
 
 
-                            
+
 
                             var k = j - 1;
                             while (k > -1 && gameData[i][k].isEmpty) {
@@ -1021,22 +1106,22 @@ var Game = Game || (function (createjs, $) {
                             }
                             var crcl = gameData[i][j].getChildByName("circle");
 
-                            
-                            
-                            
+
+
+
                             if (crcl) {
-                              
+                                //we are removing vegetable from its container and adding it directly to the board to create a blow up effect
                                 gameData[i][j].removeChild(crcl);
                                 mainBox.addChild(crcl);
                                 crcl.x = gameData[i][j].x;
                                 crcl.y = gameData[i][j].y;
-                                crcl.regX = maxWidth/4 ;
-                                crcl.regY = maxHeight/4 ;
-                                circleTween = createjs.Tween.get(crcl, { override: true });
+                                crcl.regX = maxWidth / 4;
+                                crcl.regY = maxHeight / 4;
+                                circleTween = createjs.Tween.get(crcl);
                                 circleTween.to({ scaleX: 3, scaleY: 3 }, 100).to({ alpha: 0 }, 50);
                             }
-                            
-                            
+
+
                             if (k < 0) {
 
 
@@ -1044,44 +1129,37 @@ var Game = Game || (function (createjs, $) {
 
                                 gameData[i][j].addChild(newCircle);
                                 gameData[i][j].color = newCircle.color;
-                                gameData[i][j].y = boardStartY-maxHeight/2;
+                                gameData[i][j].y = boardStartY - maxHeight / 2;
                                 gameData[i][j].isEmpty = false;
-                                
+
                             }
                             else {
 
                                 gameData[i][j].isEmpty = gameData[i][k].isEmpty;
 
-                                
+
                                 gameData[i][k].isEmpty = true;
                                 gameData[i][k].color = "";
                                 var topCircle = gameData[i][k].getChildByName("circle");
-                                
+
                                 gameData[i][k].removeChild(topCircle);
 
 
                                 gameData[i][j].addChild(topCircle);
-                     
+
                                 gameData[i][j].color = topCircle.color;
                                 gameData[i][j].y = gameData[i][k].y;
 
-                            
+
 
                             }
-                            
-                            
-                          //  if (circleTween != null) {
-                                appendMoveDownTween(circleTween, gameData[i][j], yy);
 
-                                
-                           // }
-                                
-                          //  else {
-                           //     appendMoveDownTween(circleTween, gameData[i][j], yy);
-                           //     createjs.Tween.get(gameData[i][j], { override: true }).to({ y: yy }, 500);
-                           // }
-                            
-                   
+
+
+                            appendMoveDownTween(circleTween, gameData[i][j], yy);
+
+
+
 
 
                             //increment the score
@@ -1123,7 +1201,7 @@ var Game = Game || (function (createjs, $) {
 
 
                         }
-                     //   timeline.setPaused(false);
+                        //   timeline.setPaused(false);
 
                     }
 
@@ -1139,68 +1217,67 @@ var Game = Game || (function (createjs, $) {
 
             }
 
-            function animateRandomElement()
-            {
+            function animateRandomElement() {
 
-                //var randomElementIdxI = getRandomInt(0, maxI-1);
-                //var randomElementIdxJ = getRandomInt(0, maxJ-1);
 
-                    var randomElementIdx= getRandomInt(0,currentArrayOfMatches.length-1);
-                    var randomFunction = getRandomInt(0, 4);
 
-                    switch(randomFunction) {
-                        case 0:
-                            rotateElement(currentArrayOfMatches[randomElementIdx].source);
-                            break;
-                       
-                        case 1:
-                            explodeElement(currentArrayOfMatches[randomElementIdx].source);
-                            break;
-                        case 2:
-                            rotateElement(currentArrayOfMatches[randomElementIdx].target);
-                            break;
+                var randomElementIdx = getRandomInt(0, currentArrayOfMatches.length - 1);
+                var randomFunction = getRandomInt(0, 4);
 
-                        case 3:
-                            explodeElement(currentArrayOfMatches[randomElementIdx].target);
-                            break;
-                        default:
-                            animateMatch(currentBestMatch);
-                            break;
-                    }
-                    
-
-                    
-
-  
+                /*      switch (randomFunction) {
+                          case 0:
+                              rotateElement(currentArrayOfMatches[randomElementIdx].source);
+                              break;
+      
+                          case 1:
+                              explodeElement(currentArrayOfMatches[randomElementIdx].source);
+                              break;
+                          case 2:
+                              rotateElement(currentArrayOfMatches[randomElementIdx].target);
+                              break;
+      
+                          case 3:
+                              explodeElement(currentArrayOfMatches[randomElementIdx].target);
+                              break;
+                          default:
+                              animateMatch(currentBestMatch);
+                              break;
+                      }
+      
+                      */
+                explodeElement(currentArrayOfMatches[randomElementIdx].source);
+                explodeElement(currentArrayOfMatches[randomElementIdx].target);
+                clearTimeout(tableAnimateTimeout);
+                tableAnimateTimeout = setTimeout(animateRandomElement, 5000);
             }
 
 
             function rotateElement(element) {
- 
-
-                       var x, y, regX, regY;
-                       x = element.getChildByName("circle").x;
-                       y = element.getChildByName("circle").y;
-                       regX = element.getChildByName("circle").regX;
-                       regY = element.getChildByName("circle").regY;
 
 
-                       element.getChildByName("circle").x = maxWidth / 4;
-                       element.getChildByName("circle").y = maxHeight / 4;
-                       element.getChildByName("circle").regX = maxWidth / 4;
-                       element.getChildByName("circle").regY = maxHeight / 4;
+                var x, y, regX, regY;
+                x = element.getChildByName("circle").x;
+                y = element.getChildByName("circle").y;
+                regX = element.getChildByName("circle").regX;
+                regY = element.getChildByName("circle").regY;
 
-                       var tween = createjs.Tween.get(element.getChildByName("circle"))
-                           .to({ rotation: 360 }, 1000)
-                           .call(function () {
-                               element.getChildByName("circle").x = x;
-                               element.getChildByName("circle").y = y;
-                               element.getChildByName("circle").regX = regX;
-                               element.getChildByName("circle").regY = regY;
-                               element.getChildByName("circle").rotation = 0;
-                           }, null, this);
 
-                
+                element.getChildByName("circle").x = maxWidth / 4;
+                element.getChildByName("circle").y = maxHeight / 4;
+                element.getChildByName("circle").regX = maxWidth / 4;
+                element.getChildByName("circle").regY = maxHeight / 4;
+
+                var tween = createjs.Tween.get(element.getChildByName("circle"))
+                    .to({ rotation: 360 }, 1000)
+                    .call(function () {
+                        element.getChildByName("circle").x = x;
+                        element.getChildByName("circle").y = y;
+                        element.getChildByName("circle").regX = regX;
+                        element.getChildByName("circle").regY = regY;
+                        element.getChildByName("circle").rotation = 0;
+                    }, null, this);
+
+
 
             }
 
@@ -1218,26 +1295,14 @@ var Game = Game || (function (createjs, $) {
                 scaleY = circle.scaleY;
 
 
-
-                circle.regX = maxWidth / 4;
-                circle.regY = maxHeight / 4;
-
-                
-
                 var tween = createjs.Tween.get(circle)
-                    .to({ scaleX: 4, scaleY: 4 }, 100)
-                    .to({ x: 0, y: 0, regX: regX, regY: regY, scaleX: scaleX, scaleY: scaleY }, 100);
-                /*    .call(function () {
-                      
-                        circle.x = 0;
-                        circle.y = 0;
-                        circle.regX = regX;
-                        circle.regY = regY;
-                        circle.scaleX = scaleX;
-                        circle.scaleY = scaleY;
-                        circle.alpha = 1;
-  
-                    })*/;
+                    .to({ regX: maxWidth / 4, regY: maxHeight / 4, scaleX: 0.8, scaleY: 0.8 }, 50)
+                    .to({ x: 0, y: 0, regX: regX, regY: regY, scaleX: scaleX, scaleY: scaleY }, 50)
+                    .to({ scaleX: 0.8, scaleY: 0.8 }, 50)
+                    .to({ x: 0, y: 0, regX: regX, regY: regY, scaleX: scaleX, scaleY: scaleY }, 50)
+                    .to({ scaleX: 0.8, scaleY: 0.8 }, 50)
+                    .to({ x: 0, y: 0, regX: regX, regY: regY, scaleX: scaleX, scaleY: scaleY }, 50);
+
 
 
 
@@ -1257,12 +1322,17 @@ var Game = Game || (function (createjs, $) {
 
             function showQuestionContainer(question) {
                 clearTimeout(tableAnimateTimeout);
+
+
+
                 if (mainBox)
                     mainBox.mouseEnabled = false;
                 hintButtonContainer.visible = false;
                 var container = questionContainer;
                 container.visible = true;
-                container.getChildByName('question').text = question.Text;
+
+                var questionNbr = currentQuestion + 1;
+                container.getChildByName('question').text = questionNbr + ". " + question.Text;
 
                 var answer = container.getChildByName('answer');
                 while (answer) {
@@ -1389,6 +1459,9 @@ var Game = Game || (function (createjs, $) {
             function handleAnswerPressUp(evt) {
 
                 gameState.initialize = false;
+
+                questionsLeft--;
+                questionsLeftContainer.getChildByName("questionsLeft").text = questionsLeft;
                 for (var k = 0; k < questionContainer.children.length; k++) {
                     //-------------------------->
 
@@ -1398,10 +1471,10 @@ var Game = Game || (function (createjs, $) {
                             // alert(correctButton.text);
                             correctButton.getChildByName("answerText").color = "green";
                             createjs.Tween.get(correctButton.getChildByName("answerShape"))
-                                      .to({ scaleX: 0.5, scaleY: 0.7 }, 1000)
-                                      .to({ scaleX: 1, scaleY: 1 }, 1000)
-                                      .to({ scaleX: 0.5, scaleY: 0.7 }, 1000)
-                                      .to({ scaleX: 1, scaleY: 1 }, 1000);
+                                      .to({ scaleX: 0.5, scaleY: 0.7 }, 500)
+                                      .to({ scaleX: 1, scaleY: 1 }, 500)
+                                      .to({ scaleX: 0.5, scaleY: 0.7 }, 500)
+                                      .to({ scaleX: 1, scaleY: 1 }, 500);
                         }
                         else {
                             questionContainer.children[k].alpha = 0.3;
@@ -1543,9 +1616,9 @@ var Game = Game || (function (createjs, $) {
 
 
                 //user score title
-                var scoreLabel = new createjs.Text("", "24px Verdana", "");
+                var scoreLabel = new createjs.Text("", "20px Verdana", "");
                 scoreLabel.color = "yellow";
-                scoreLabel.text = "Score:";
+                scoreLabel.text = " Score:";
                 scoreLabel.x = 5;
                 scoreLabel.y = 2;
                 container.addChild(scoreLabel);
@@ -1575,31 +1648,32 @@ var Game = Game || (function (createjs, $) {
 
 
                 container.on("pressup", handleButtonPressUp);
-                container.on("mouseover", handleButtonHover);
-                container.on("mouseout", handleButtonHover);
+                container.on("rollover", handleButtonHover);
+                container.on("rollout", handleButtonHover);
 
                 function handleButtonPressUp(evt) {
 
+                    clearTimeout(tableAnimateTimeout);
+
                     animateMatch(currentBestMatch);
-                    
+
 
                 }
 
                 return container;
             }
 
-            function animateMatch(match)
-            {
+            function animateMatch(match) {
 
                 if (match) {
-                    createjs.Tween.get(match.source, { override: true })
+                    createjs.Tween.get(match.source)
                                         .to({ scaleX: 1.1, scaleY: 1.1, alpha: 0.2 }, 500)
                                         .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 500)
                                         .to({ scaleX: 1.1, scaleY: 1.1, alpha: 0.2 }, 500)
                                         .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 500)
                                         .to({ scaleX: 1.1, scaleY: 1.1, alpha: 0.2 }, 500)
                                         .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 500)
-                    createjs.Tween.get(match.target, { override: true })
+                    createjs.Tween.get(match.target)
                                 .to({ scaleX: 1.1, scaleY: 1.1, alpha: 0.2 }, 500)
                                 .to({ scaleX: 1.0, scaleY: 1.0, alpha: 1 }, 500)
                                 .to({ scaleX: 1.1, scaleY: 1.1, alpha: 0.2 }, 500)
@@ -1616,9 +1690,9 @@ var Game = Game || (function (createjs, $) {
 
 
                 //user score title
-                var movesLeftLabel = new createjs.Text("", "24px Verdana", "");
+                var movesLeftLabel = new createjs.Text("", "20px Verdana", "");
                 movesLeftLabel.color = "yellow";
-                movesLeftLabel.text = "Moves\n Left:";
+                movesLeftLabel.text = " Moves\n  Left:";
                 movesLeftLabel.x = 5;
                 movesLeftLabel.y = 2;
                 container.addChild(movesLeftLabel);
@@ -1628,11 +1702,36 @@ var Game = Game || (function (createjs, $) {
                 movesLeftText.color = "white";
                 movesLeftText.text = movesLeft; //this will need to change later to be a var to hold user score. 
                 movesLeftText.x = 30;
-                movesLeftText.y = 60;
+                movesLeftText.y = 50;
                 movesLeftText.name = "movesLeft";
                 container.addChild(movesLeftText);
                 return container;
             }
+
+            function createQuestionsLeftContainer() {
+                //user score container
+                var container = new createjs.Container();
+
+
+                //user score title
+                var qLeftLabel = new createjs.Text("", "20px Verdana", "");
+                qLeftLabel.color = "yellow";
+                qLeftLabel.text = "Questions\n   Left:";
+                qLeftLabel.x = 5;
+                qLeftLabel.y = 2;
+                container.addChild(qLeftLabel);
+
+                //user score score
+                var qLeftText = new createjs.Text("", "32px Verdana", "");
+                qLeftText.color = "white";
+                qLeftText.text = questionsLeft;
+                qLeftText.x = 30;
+                qLeftText.y = 50;
+                qLeftText.name = "questionsLeft";
+                container.addChild(qLeftText);
+                return container;
+            }
+
 
             function createWinnerView() {
 
