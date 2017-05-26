@@ -652,7 +652,7 @@ var Game = Game || (function (createjs, $) {
                                     xx = targetNeighbour.original_x;
 
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: xx }, 50);
+                                evt.currentTarget.tween = createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: xx }, 50);
 
                                 //identify right neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
@@ -671,7 +671,7 @@ var Game = Game || (function (createjs, $) {
                                 if (xx < targetNeighbour.original_x - dragThreshold)
                                     xx = targetNeighbour.original_x;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: xx }, 50);
+                                evt.currentTarget.tween = createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: xx }, 50);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
@@ -690,7 +690,7 @@ var Game = Game || (function (createjs, $) {
                                 if (yy < targetNeighbour.original_y - dragThreshold)
                                     yy = targetNeighbour.original_y;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget, { override: true }).to({ y: yy }, 50);
+                                evt.currentTarget.tween = createjs.Tween.get(evt.currentTarget, { override: true }).to({ y: yy }, 50);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
@@ -712,7 +712,7 @@ var Game = Game || (function (createjs, $) {
                                 if (yy > targetNeighbour.original_y + dragThreshold)
                                     yy = targetNeighbour.original_y;
                                 mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                                createjs.Tween.get(evt.currentTarget, { override: true }).to({ y: yy }, 50);
+                                evt.currentTarget.tween = createjs.Tween.get(evt.currentTarget, { override: true }).to({ y: yy }, 50);
 
                                 //identify left neigbor and save it in the element property
                                 evt.currentTarget.targetNeighbour = targetNeighbour;
@@ -739,7 +739,7 @@ var Game = Game || (function (createjs, $) {
 
                 //determine if term is outside mainbox and return to terms library container
                 function handleElementPressUp(evt) {
-                    evt.nativeEvent.preventDefault();
+
                     if (navigator.userAgent.match(/Android/i)
                    || navigator.userAgent.match(/webOS/i)
                    || navigator.userAgent.match(/iPhone/i)
@@ -756,7 +756,7 @@ var Game = Game || (function (createjs, $) {
                     if (evt.currentTarget.targetNeighbour != null) {
                         var targetCircle = evt.currentTarget.targetNeighbour;
 
-                        createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 100);
+                        evt.currentTarget.tween = createjs.Tween.get(evt.currentTarget).to({ x: targetCircle.original_x, y: targetCircle.original_y }, 100);
 
 
                         if (evt.currentTarget.allowSwap === true) {/////////////////////////////////////////////////////////////////////
@@ -775,9 +775,11 @@ var Game = Game || (function (createjs, $) {
                             gameData[targetCircle.i][targetCircle.j] = targetCircle;
 
                             mainBox.setChildIndex(targetCircle, mainBox.getNumChildren() - 1);
-                            createjs.Tween.get(targetCircle, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 100)
-                                                                                .wait(150)
-                                                                                .call(scanAndCompactTable);
+
+
+                            targetCircle.tween = createjs.Tween.get(targetCircle).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 100)
+                                                                                  .wait(150).call(scanAndCompactTable);
+
 
                             var curx = evt.currentTarget.original_x; var cury = evt.currentTarget.original_y;
                             evt.currentTarget.original_x = targetCircle.original_x;
@@ -790,12 +792,11 @@ var Game = Game || (function (createjs, $) {
                             movesLeftContainer.getChildByName('movesLeft').text = movesLeft;
 
 
-                            tableCompactTimeout = setTimeout(scanAndCompactTable, 150);
 
                         }
                         else {
                             mainBox.setChildIndex(evt.currentTarget, mainBox.getNumChildren() - 1);
-                            createjs.Tween.get(evt.currentTarget, { override: true }).to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 250);
+                            evt.currentTarget.tween = evt.currentTarget.tween.to({ x: evt.currentTarget.original_x, y: evt.currentTarget.original_y }, 250);
 
 
                         }
@@ -1093,10 +1094,11 @@ var Game = Game || (function (createjs, $) {
 
             function appendMoveDownTween(tween, parent, y) {
                 if (tween == null) {
-                    tween = createjs.Tween.get(parent).to({ y: y }, 500);
+                    tween = createjs.Tween.get(parent).to({ y: y, alpha: 1 }, 500);
                 }
                 tween.call(function (evt) {
-                    createjs.Tween.get(parent).to({ y: y }, 500).call(function () { var c = mainBox.getChildByName("circle"); if (c) mainBox.removeChild(c); });
+                    createjs.Tween.get(parent).to({ y: y, alpha: 1 }, 500)
+                        .call(function () { var c = mainBox.getChildByName("circle"); if (c) mainBox.removeChild(c); });
 
                 });
             }
@@ -1112,7 +1114,11 @@ var Game = Game || (function (createjs, $) {
                         //    var timeline = new createjs.Timeline();
                         if (gameData[i][j].isEmpty) {
                             changed = true;
-                            //  var xx = gameData[i][j].original_x;
+
+
+
+
+
                             var yy = gameData[i][j].original_y;
 
 
@@ -1137,6 +1143,17 @@ var Game = Game || (function (createjs, $) {
                                 crcl.regY = maxHeight / 4;
                                 circleTween = createjs.Tween.get(crcl);
                                 circleTween.to({ scaleX: 3, scaleY: 3 }, 100).to({ alpha: 0 }, 50);
+
+
+                                if (!gameState.initialize)//don't increment before the first question was answered
+                                {
+                                    gameState.score += Math.max(gameData[i][j].left, gameData[i][j].right, gameData[i][j].top, gameData[i][j].bottom);
+
+
+                                    userScoreContainer.getChildByName('score').text = gameState.score;
+
+
+                                }
                             }
 
 
@@ -1180,43 +1197,6 @@ var Game = Game || (function (createjs, $) {
 
 
 
-                            //increment the score
-                            if (!gameState.initialize)//don't increment before the first question was answered
-                            {
-                                gameState.score++;
-
-                                if (gameState.score == 100) {
-
-                                    displayMessage("10 eXtra points");
-
-
-                                    gameState.score += 10
-
-                                } else if (gameState.score == 200) {
-                                    displayMessage("15 eXtra points");
-
-
-                                    gameState.score += 15
-                                }
-
-                                else if (gameState.score == 300) {
-                                    displayMessage("25 eXtra points");
-
-
-                                    gameState.score += 25
-                                }
-
-
-                                userScoreContainer.getChildByName('score').text = gameState.score;
-
-
-                            }
-
-
-
-
-
-
 
                         }
                         //   timeline.setPaused(false);
@@ -1227,8 +1207,8 @@ var Game = Game || (function (createjs, $) {
 
                 mainBox.mouseEnabled = true;
                 if (changed) {
-
-                    tableCompactTimeout = setTimeout(scanAndCompactTable, 1000);
+                    circleTween.wait(1000).call(scanAndCompactTable);
+                    //   tableCompactTimeout = setTimeout(scanAndCompactTable, 1000);
                 }
 
 
@@ -1484,17 +1464,7 @@ var Game = Game || (function (createjs, $) {
                     //-------------------------->
 
                     if (questionContainer.children[k].name == "answer") {
-                        if (questionContainer.children[k].IsCorrect) {
-                            var correctButton = questionContainer.children[k];
-                            // alert(correctButton.text);
-                            correctButton.getChildByName("answerText").color = "green";
-                            createjs.Tween.get(correctButton.getChildByName("answerShape"))
-                                      .to({ scaleX: 0.5, scaleY: 0.7 }, 500)
-                                      .to({ scaleX: 1, scaleY: 1 }, 500)
-                                      .to({ scaleX: 0.5, scaleY: 0.7 }, 500)
-                                      .to({ scaleX: 1, scaleY: 1 }, 500);
-                        }
-                        else {
+                        if (!questionContainer.children[k].IsCorrect) {
                             questionContainer.children[k].alpha = 0.3;
                         }
 
@@ -1519,6 +1489,25 @@ var Game = Game || (function (createjs, $) {
 
                 }
                 else {
+                    for (var k = 0; k < questionContainer.children.length; k++) {
+                        //-------------------------->
+
+                        if (questionContainer.children[k].name == "answer") {
+                            if (questionContainer.children[k].IsCorrect) {
+                                var correctButton = questionContainer.children[k];
+                                // alert(correctButton.text);
+                                correctButton.getChildByName("answerText").color = "green";
+                                createjs.Tween.get(correctButton, { override: true })
+                                          .to({ x: -20, scaleX: 1.1, scaleY: 1.1 }, 500)
+                                          .to({ x: 10, scaleX: 1, scaleY: 1 }, 500)
+                                          .to({ x: -20, scaleX: 1.1, scaleY: 1.1 }, 500)
+                                          .to({ x: 10, scaleX: 1, scaleY: 1 }, 500);
+                            }
+
+                        }
+
+                        //--------------------------->
+                    }
                     var message;
 
                     message = "Wrong Answer!";
@@ -1645,7 +1634,7 @@ var Game = Game || (function (createjs, $) {
                 var scoreText = new createjs.Text("", "32px Verdana bold", "");
                 scoreText.color = "white";
                 scoreText.text = gameState.score;
-                scoreText.x = 30;
+                scoreText.x = 25;
                 scoreText.y = 40;
                 scoreText.name = "score";
                 container.addChild(scoreText);
