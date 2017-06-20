@@ -156,7 +156,6 @@ var Game = Game || (function (createjs) {
             var maxEnemyCount = 5;
             var isEnemySpawnedEnabled = true;
 
-
             var canEnemyFire = true;
 
             var isQuestionDisplayed = false;
@@ -167,9 +166,9 @@ var Game = Game || (function (createjs) {
 
             var pausedGame = false; //not used yet
 
-            var Score = 0; 
+            var Score = 0;
             var scoreLabel;
-          
+
             var netCount = 10;
             var netCountLabel;
 
@@ -185,10 +184,11 @@ var Game = Game || (function (createjs) {
 
             var currentQuestionNumber = 0;
 
-            //////////////////////////////////////sometimes squids spawn over the panel (depends on the panel inported?) //////////////
             /////////////////////////////////looking to add spritesheets/////////////////////
             //////////////////////////looking to finish artwork ///////
             ////////////////////looking to finish json and keep track of high score//////////
+            //////add audio?/////
+            ////endgame screen after all questions delivered + answered //
 
 
             function printNetCount() {
@@ -202,7 +202,6 @@ var Game = Game || (function (createjs) {
                 // load player
                 playerContainer = new createjs.Container();
                 var player = new createjs.Bitmap(queue.getResult("pirate"))
-
 
                 playerContainer.addChild(player)
 
@@ -263,7 +262,7 @@ var Game = Game || (function (createjs) {
                             Score = Score - 20;
                             printScore();
                             //deliver answers?
-                          //  printNetCount();
+                            //  printNetCount();
                         }
                         //  isQuestionDisplayed = false
 
@@ -295,7 +294,7 @@ var Game = Game || (function (createjs) {
                                 .to({ alpha: 0 }, 100)
                                 .call(function (evt) {
                                     stage.removeChild(evt.currentTarget);
-
+                                    stage.removeChild(theTween.target);
                                     Score = Score + 10;
                                     printScore();
                                 });
@@ -308,6 +307,18 @@ var Game = Game || (function (createjs) {
                             }
                             // we removed an item from the array, fix the index so we dont skip checking any enemies.
                             --i;
+
+                            //this is where i  put the tween for netcontainer change
+                            //this works but just makes it disappear first without removing it (still kills squids).
+
+                            //createjs.Tween.get(theTween.target)
+                            // .to({ scaleX: 1.25, scaleY: 1.25 }, 200)
+                            // .to({ scaleX: 1, scaleY: 1 }, 100)
+                            // .to({ alpha: 0 }, 100)
+                            // .call(function (evt) {
+                            //     stage.removeChild(theTween.target);
+                            // });
+
                         }
                     }
                 }
@@ -382,14 +393,14 @@ var Game = Game || (function (createjs) {
                                     netCount--;
                                     console.log(netCount);
 
-                                   printNetCount();
+                                    printNetCount();
                                 }
                                 if (netCount == 0 && !isQuestionDisplayed) {
-                                   printNetCount();
+                                    printNetCount();
                                     deliverQuestion(gameData.Questions[currentQuestionNumber]);
                                 }
 
-                             //   printNetCount();
+                                //   printNetCount();
                                 event.preventDefault();
                                 break;
                             }
@@ -427,7 +438,7 @@ var Game = Game || (function (createjs) {
                                 createjs.Tween.get(netContainer, {
                                     onChange: onNetContainerTweenChange
                                 })
-                                    .to({ y: -200 }, 500)
+                                    .to({ y: -200 }, 2000)
                                     .call(function (evt) {
                                         var theThingBeingTweened = evt.target;
                                         self.stage.removeChild(theThingBeingTweened);
@@ -467,12 +478,12 @@ var Game = Game || (function (createjs) {
 
                 enemyContainer.x = 50 + Math.random() * (self.stage.canvas.width - widthOfSquid / 2);
 
-                var totalTime = 3000;
+                var totalTime = 5000;
                 var totalWidth = self.stage.canvas.width - (widthOfSquid / 2) - 50;
                 var timeToTake = (enemyContainer.x / totalWidth) * totalTime;
 
                 createjs.Tween.get(enemyContainer)
-                    .to({ alpha: 1, scaleX: 0.5, scaleY: 0.5 }, 1000)
+                    .to({ alpha: 1, scaleX: 0.5, scaleY: 0.5 }, 2000)
                     .wait(100)
                     .to({ x: 50 }, timeToTake, createjs.Ease.sinInOut)
                     .call(function (evt) {
@@ -572,8 +583,8 @@ var Game = Game || (function (createjs) {
 
                     answerHolder.scaleX = 1.8;
 
-                    answerHolder.x = answersText.x -15;
-                    answerHolder.y = answersText.y -10;
+                    answerHolder.x = answersText.x - 15;
+                    answerHolder.y = answersText.y - 10;
 
                     answerContainer.name = "child";
                     answerContainer.IsCorrect = question.Answers[j].IsCorrect;
@@ -597,10 +608,10 @@ var Game = Game || (function (createjs) {
                                 deliverFeedback("incorrect");
                             }
                         }
-                    
+
                         //check if this is the last question, if yes- exit the game
                         // if not increment current question index
-                       
+
                     });
                     answerContainersParent.addChild(answerContainer);
                 }
@@ -623,15 +634,13 @@ var Game = Game || (function (createjs) {
                     feedbackText = new createjs.Text("Correct. Click the what ever to continue", "20px Alegreya", "#FFFFFF");
                 } else {
 
-                    for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++)
-                    {
-                        if (gameData.Questions[currentQuestionNumber].Answers[i].IsCorrect == true)
-                        {
+                    for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++) {
+                        if (gameData.Questions[currentQuestionNumber].Answers[i].IsCorrect == true) {
                             feedbackText = new createjs.Text("I'm sorry the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#FFFFFF')
                         }
                     }
 
-                  //  feedbackText = new createjs.Text("InCorrect:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
+                    //  feedbackText = new createjs.Text("InCorrect:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
                 }
 
 
@@ -655,29 +664,23 @@ var Game = Game || (function (createjs) {
                     isEnemySpawnedEnabled = true;
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
-                    
+
                     printNetCount();
 
                     //self.stage.removeChild(answerContainer);
 
-                    
+
                 }
 
 
                 //turn off feedback panel if it is true
                 //if (isFeedbackDisplayed == true) {
-                 
-
-
-
                 //}
 
                 feedbackContainer.addChild(feedbackPanel, feedbackText, redx)
                 self.stage.addChild(feedbackContainer);
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
-
-
 
                 return feedbackContainer;
 
