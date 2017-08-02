@@ -289,9 +289,11 @@ var Game = Game || (function (createjs) {
 
                             // we hit the enemy... KILL IT!
                             createjs.Tween.get(enemies[i])
-                                .to({ scaleX: 1.25, scaleY: 1.25 }, 200)
-                                .to({ scaleX: 1, scaleY: 1 }, 100)
+                                .to({ scaleX: 1.25, scaleY: 1.25}, 200)
+                                .to({ scaleX: 1, scaleY: 1, rotation: 360 }, 1000)
+                                         
                                 .to({ alpha: 0 }, 100)
+                      
                                 .call(function (evt) {
                                     stage.removeChild(evt.currentTarget);
                                     stage.removeChild(theTween.target);
@@ -344,6 +346,7 @@ var Game = Game || (function (createjs) {
                         .to({ y: playerContainer.y + (Math.random() * 200 - 100), x: playerContainer.x + (Math.random() * 200) }, 8000)
                         .call(function (evt) {
                             var theThingBeingTweened = evt.target;
+                           
                             self.stage.removeChild(theThingBeingTweened);
                         });
 
