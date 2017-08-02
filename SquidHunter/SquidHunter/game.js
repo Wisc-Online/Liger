@@ -67,7 +67,8 @@ var Game = Game || (function (createjs) {
                 { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
                 { id: "redx", src: assetsPath + "redx.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
-                { id: "logo", src: assetsPath + "Logo.png" }
+                { id: "logo", src: assetsPath + "Logo.png" },
+                { id: "coin", src: assetsPath + "coin.png" }
 
             ];
 
@@ -183,6 +184,60 @@ var Game = Game || (function (createjs) {
             var playerContainer;
 
             var currentQuestionNumber = 0;
+
+          //  var coinImage = new Image();
+
+
+            //function sprite(options) {
+            //    var that = {};
+
+            //    that.context = options.context;
+            //    that.width = options.width;
+            //    that.height = options.height;
+            //   that.image = options.image;
+
+              //  return that;
+
+          //  }
+        
+
+           // var coinimage = new createjs.Bitmap(queue.getResult("coin"))
+            
+
+
+            //var coin = sprite({
+            //    context: canvas.getContext("2d"),
+            //    width: 100,
+            //    height: 100,
+            //    image: coinImage
+            //});
+
+            //function sprite(options) {
+            //    ...
+
+            //    that.render = function() {
+            //    //draw animation
+            //        that.context.drawImage(
+            //            that.image,
+            //            0,
+            //            0,
+            //            that.width,
+            //            that.height,
+            //            0,
+            //            0,
+            //            that.width,
+            //            that.height);
+
+            //    };
+
+            //    ...
+            //}
+
+            //coin.render();
+
+
+
+
 
             /////////////////////////////////looking to add spritesheets/////////////////////
             //////////////////////////looking to finish artwork ///////
@@ -441,7 +496,7 @@ var Game = Game || (function (createjs) {
                                 createjs.Tween.get(netContainer, {
                                     onChange: onNetContainerTweenChange
                                 })
-                                    .to({ y: -200 }, 2000)
+                                    .to({ y: -200 }, 5000, createjs.Ease.bounceInOut)
                                     .call(function (evt) {
                                         var theThingBeingTweened = evt.target;
                                         self.stage.removeChild(theThingBeingTweened);
