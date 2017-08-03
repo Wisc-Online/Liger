@@ -68,7 +68,7 @@ var Game = Game || (function (createjs) {
                 { id: "redx", src: assetsPath + "redx.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
                 { id: "logo", src: assetsPath + "Logo.png" },
-                { id: "coin", src: assetsPath + "coin.png" }
+                { id: "blob", src: assetsPath + "blob-sprite.png" }
 
             ];
 
@@ -185,58 +185,7 @@ var Game = Game || (function (createjs) {
 
             var currentQuestionNumber = 0;
 
-          //  var coinImage = new Image();
-
-
-            //function sprite(options) {
-            //    var that = {};
-
-            //    that.context = options.context;
-            //    that.width = options.width;
-            //    that.height = options.height;
-            //   that.image = options.image;
-
-              //  return that;
-
-          //  }
-        
-
-           // var coinimage = new createjs.Bitmap(queue.getResult("coin"))
-            
-
-
-            //var coin = sprite({
-            //    context: canvas.getContext("2d"),
-            //    width: 100,
-            //    height: 100,
-            //    image: coinImage
-            //});
-
-            //function sprite(options) {
-            //    ...
-
-            //    that.render = function() {
-            //    //draw animation
-            //        that.context.drawImage(
-            //            that.image,
-            //            0,
-            //            0,
-            //            that.width,
-            //            that.height,
-            //            0,
-            //            0,
-            //            that.width,
-            //            that.height);
-
-            //    };
-
-            //    ...
-            //}
-
-            //coin.render();
-
-
-
+          
 
 
             /////////////////////////////////looking to add spritesheets/////////////////////
@@ -344,11 +293,11 @@ var Game = Game || (function (createjs) {
 
                             // we hit the enemy... KILL IT!
                             createjs.Tween.get(enemies[i])
-                                .to({ scaleX: 1.25, scaleY: 1.25}, 200)
+                                .to({ scaleX: 1.25, scaleY: 1.25 }, 200)
                                 .to({ scaleX: 1, scaleY: 1, rotation: 360 }, 1000)
-                                         
+
                                 .to({ alpha: 0 }, 100)
-                      
+
                                 .call(function (evt) {
                                     stage.removeChild(evt.currentTarget);
                                     stage.removeChild(theTween.target);
@@ -401,7 +350,7 @@ var Game = Game || (function (createjs) {
                         .to({ y: playerContainer.y + (Math.random() * 200 - 100), x: playerContainer.x + (Math.random() * 200) }, 8000)
                         .call(function (evt) {
                             var theThingBeingTweened = evt.target;
-                           
+
                             self.stage.removeChild(theThingBeingTweened);
                         });
 
@@ -515,6 +464,86 @@ var Game = Game || (function (createjs) {
                 }
                 return false;
             }
+
+
+
+
+
+
+            //OLD SPRITESHEET CONFUSION
+            //var imgObj = new createjs.Bitmap(queue.getResult("blob"))
+            //var imageObj = new Image();
+            ////imageObj.addChild(imgObj)
+            //self.stage.addChild(imgObj);
+
+            //imageObj.onload = function () {
+            //    var blob = new self.Sprite({
+            //        x: 50,
+            //        y: 50,
+            //        image: imageObj,
+            //        animation: 'idle',
+            //        animations: animations,
+            //        frameRate: 7,
+            //        frameIndex: 0
+            //    });
+
+            //    var layer = new self.Layer();
+            //    var animations = {
+            //        idle: [
+            //          2, 2, 70, 119,
+            //          71, 2, 74, 119,
+            //          146, 2, 81, 119,
+            //          226, 2, 76, 119
+            //        ],
+            //        punch: [
+            //          2, 138, 74, 122,
+            //          76, 138, 84, 122,
+            //          346, 138, 120, 122
+            //        ]
+            //    };
+            //    var imageObj = new Image();
+            //    imageObj.onload = function () {
+            //        var blob = new self.Sprite({
+            //            x: 50,
+            //            y: 50,
+            //            image: imageObj,
+            //            animation: 'idle',
+            //            animations: animations,
+            //            frameRate: 7,
+            //            frameIndex: 0
+            //        });
+            //        // add the shape to the layer
+            //        layer.add(blob);
+            //        // add the layer to the stage
+            //        stage.add(layer);
+            //        // start sprite animation
+            //        blob.start();
+            //        // resume transition
+            //        document.getElementById('punch').addEventListener('click', function () {
+            //            blob.setAnimation('punch');
+            //            blob.on('frameIndexChange.button', function () {
+            //                if (this.frameIndex() === 2) {
+            //                    setTimeout(function () {
+            //                        blob.setAnimation('idle');
+            //                        blob.off('.button');
+            //                    }, 1000 / blob.frameRate());
+            //                }
+            //            });
+            //        }, false);
+            //    };
+
+
+            //}
+
+
+
+
+
+
+
+
+
+
 
             function spawnEnemy() {
                 //spawn enemies
