@@ -70,6 +70,7 @@
     <Content Include="Assets\background.jpg" />
     <Content Include="Assets\beam.png" />
     <Content Include="Assets\blob-sprite.png" />
+    <Content Include="Assets\coin.png" />
     <Content Include="Assets\crate.png" />
     <Content Include="Assets\enemy.png" />
     <Content Include="Assets\greenchk.png" />

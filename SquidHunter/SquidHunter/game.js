@@ -68,7 +68,7 @@ var Game = Game || (function (createjs) {
                 { id: "redx", src: assetsPath + "redx.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
                 { id: "logo", src: assetsPath + "Logo.png" },
-                { id: "blob", src: assetsPath + "blob-sprite.png" }
+                { id: "coin", src: assetsPath + "coin.png" }
 
             ];
 
@@ -88,7 +88,12 @@ var Game = Game || (function (createjs) {
                 var bgimage = new createjs.Bitmap(queue.getResult("background"))
                 gameBackground.addChild(bgimage)
 
+
+
+                ////////////////////////////////
+
                 self.stage.addChild(gameBackground);
+                //////////////////////////////////
                 introductionScreen();
 
             }
@@ -185,7 +190,12 @@ var Game = Game || (function (createjs) {
 
             var currentQuestionNumber = 0;
 
-          
+
+
+
+
+
+
 
 
             /////////////////////////////////looking to add spritesheets/////////////////////
@@ -203,19 +213,49 @@ var Game = Game || (function (createjs) {
 
             function StartInteraction() {
 
+
                 // load player
                 playerContainer = new createjs.Container();
                 var player = new createjs.Bitmap(queue.getResult("pirate"))
 
                 playerContainer.addChild(player)
 
+                //load coin
+
+                var data = {
+                    images: [queue.getResult("coin")],
+                    frames: { width: 40, height: 40 },
+                    animations: { run: [0, 4] }
+                };
+
+                var mySpriteSheet = new createjs.SpriteSheet(data);
+
+              // var myGoodSprite = createjs.Sprite(mySpriteSheet);
+
+                var mySpriteContainer =  new createjs.SpriteContainer(mySpriteSheet);
+                //mySpriteContainer.addChild(myGoodSprite);
+
+                //mySpriteContainer.x = 100;
+                //self.stage.addChild(mySpriteContainer);
+
+
+                //coinContainer = new createjs.Container();
+                //var coin = new createjs.Bitmap(queue.getResult("coin"))
+
+                //coinContainer.addChild(coin)
+
+
+
                 //load controls
                 this.document.onkeydown = keyPressed;
                 var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39, KEYCODE_SPACEBAR = 32, KEYCODE_UP = 38, KEYCODE_DOWN = 40
 
                 self.stage.addChild(playerContainer);
+
                 playerContainer.x = 400;
                 playerContainer.y = 550;
+                //coinContainer.x = 100;
+                //coinContainer.y = 100;
 
                 spawnEnemy();
 
@@ -236,6 +276,43 @@ var Game = Game || (function (createjs) {
                 netCountLabel.x = 600;
 
                 self.stage.addChild(netCountLabel);
+
+
+                ///////////////////////////////////////////////  cliff's way /////////////////////////////
+                // var spriteData = {
+                //     images: [queue.getResult("coin")],
+                //     frames: {
+                //         width: 100, height: 100, frames: 4,
+                //         regX: 455 / 2,
+                //         regY: 0,
+                //     }
+                // }
+                // var spriteSheet = new createjs.SpriteSheet(spriteData);
+                // var coin = new createjs.Sprite(spriteSheet);
+
+                // coin.y = 30;
+                // coin.x = 100;
+
+                // self.stage.addChild(coin);
+
+                ///////////////////////////////////////////// createjs / adobe way ////////////////////////////
+                // var spriteData = new createjs.SpriteSheet({
+                //    images: [queue.getResult("coin")],
+                //    frames: { width: 400, height: 40, regX: 58, regY: 62 },
+                //    animations: { run: [0, 3, "run", ], explode: [4, 10, "run"] }
+                //});
+                //var spriteSheet = new createjs.SpriteSheet(spriteData);
+                // var coin = new createjs.Sprite(spriteSheet);
+                // coin.x = 100;
+                //coin.y = 100;
+                //coin.setTransform(160, 160, 2, 2);
+                //                coin.gotoAndPlay("run");
+                //                 self.stage.addChild(coin, spriteSheet, spriteData);
+                //                coin.onClick = function () {
+                //                    this.gotoAndPlay("explode");
+                //                }
+
+               
 
                 setInterval(function () {
                     if (isEnemySpawnedEnabled && enemies.length < maxEnemyCount) {
@@ -278,8 +355,6 @@ var Game = Game || (function (createjs) {
                     scoreLabel.text = "Score: " + Score;
 
                 }
-
-
 
                 //blow up the squid when the net hits the squid
                 function onNetContainerTweenChange(evt) {
@@ -464,84 +539,6 @@ var Game = Game || (function (createjs) {
                 }
                 return false;
             }
-
-
-
-
-
-
-            //OLD SPRITESHEET CONFUSION
-            //var imgObj = new createjs.Bitmap(queue.getResult("blob"))
-            //var imageObj = new Image();
-            ////imageObj.addChild(imgObj)
-            //self.stage.addChild(imgObj);
-
-            //imageObj.onload = function () {
-            //    var blob = new self.Sprite({
-            //        x: 50,
-            //        y: 50,
-            //        image: imageObj,
-            //        animation: 'idle',
-            //        animations: animations,
-            //        frameRate: 7,
-            //        frameIndex: 0
-            //    });
-
-            //    var layer = new self.Layer();
-            //    var animations = {
-            //        idle: [
-            //          2, 2, 70, 119,
-            //          71, 2, 74, 119,
-            //          146, 2, 81, 119,
-            //          226, 2, 76, 119
-            //        ],
-            //        punch: [
-            //          2, 138, 74, 122,
-            //          76, 138, 84, 122,
-            //          346, 138, 120, 122
-            //        ]
-            //    };
-            //    var imageObj = new Image();
-            //    imageObj.onload = function () {
-            //        var blob = new self.Sprite({
-            //            x: 50,
-            //            y: 50,
-            //            image: imageObj,
-            //            animation: 'idle',
-            //            animations: animations,
-            //            frameRate: 7,
-            //            frameIndex: 0
-            //        });
-            //        // add the shape to the layer
-            //        layer.add(blob);
-            //        // add the layer to the stage
-            //        stage.add(layer);
-            //        // start sprite animation
-            //        blob.start();
-            //        // resume transition
-            //        document.getElementById('punch').addEventListener('click', function () {
-            //            blob.setAnimation('punch');
-            //            blob.on('frameIndexChange.button', function () {
-            //                if (this.frameIndex() === 2) {
-            //                    setTimeout(function () {
-            //                        blob.setAnimation('idle');
-            //                        blob.off('.button');
-            //                    }, 1000 / blob.frameRate());
-            //                }
-            //            });
-            //        }, false);
-            //    };
-
-
-            //}
-
-
-
-
-
-
-
-
 
 
 
