@@ -190,13 +190,10 @@ var Game = Game || (function (createjs) {
 
             var currentQuestionNumber = 0;
 
-
-
-
-
-
-
-
+            var spriteSheet;
+            var coinXPos = 200;
+            var coinYPos = 200;
+            var animation;
 
             /////////////////////////////////looking to add spritesheets/////////////////////
             //////////////////////////looking to finish artwork ///////
@@ -210,6 +207,7 @@ var Game = Game || (function (createjs) {
 
             }
 
+           
 
             function StartInteraction() {
 
@@ -221,28 +219,35 @@ var Game = Game || (function (createjs) {
                 playerContainer.addChild(player)
 
                 //load coin
+                var spriteSheet = new createjs.SpriteSheet({
+                    "images": [queue.getResult('coin')],
+                    "frames": { "width": 100, "height": 100 },
+                    "animations": { "go": [0, 1] }
+                });
 
-                var data = {
-                    images: [queue.getResult("coin")],
-                    frames: { width: 40, height: 40 },
-                    animations: { run: [0, 4] }
-                };
+                createCoin();
 
-                var mySpriteSheet = new createjs.SpriteSheet(data);
-
-              // var myGoodSprite = createjs.Sprite(mySpriteSheet);
-
-                var mySpriteContainer =  new createjs.SpriteContainer(mySpriteSheet);
-                //mySpriteContainer.addChild(myGoodSprite);
-
-                //mySpriteContainer.x = 100;
-                //self.stage.addChild(mySpriteContainer);
+                function createCoin() {
+                    animation = new createjs.Sprite(spriteSheet, "go");
+                    animation.regX = 100;
+                    animation.regY = 100;
+                    animation.x = coinXPos;
+                    animation.y = coinYPos;
+                    animation.gotoAndPlay("go");
+                    
+                    self.stage.addChild(animation, 1);
 
 
-                //coinContainer = new createjs.Container();
-                //var coin = new createjs.Bitmap(queue.getResult("coin"))
+                }
 
-                //coinContainer.addChild(coin)
+
+                //coin = new createjs.Sprite(spriteSheet);
+                ////var coinsprite = new createjs.Sprite(coin);
+                ////instance.gotoAndStop("coin")
+                //coin.y = 35;
+                //coin.x = 50;
+
+                //self.stage.addChild(coin);
 
 
 
@@ -254,8 +259,7 @@ var Game = Game || (function (createjs) {
 
                 playerContainer.x = 400;
                 playerContainer.y = 550;
-                //coinContainer.x = 100;
-                //coinContainer.y = 100;
+               
 
                 spawnEnemy();
 
@@ -276,43 +280,8 @@ var Game = Game || (function (createjs) {
                 netCountLabel.x = 600;
 
                 self.stage.addChild(netCountLabel);
-
-
-                ///////////////////////////////////////////////  cliff's way /////////////////////////////
-                // var spriteData = {
-                //     images: [queue.getResult("coin")],
-                //     frames: {
-                //         width: 100, height: 100, frames: 4,
-                //         regX: 455 / 2,
-                //         regY: 0,
-                //     }
-                // }
-                // var spriteSheet = new createjs.SpriteSheet(spriteData);
-                // var coin = new createjs.Sprite(spriteSheet);
-
-                // coin.y = 30;
-                // coin.x = 100;
-
-                // self.stage.addChild(coin);
-
-                ///////////////////////////////////////////// createjs / adobe way ////////////////////////////
-                // var spriteData = new createjs.SpriteSheet({
-                //    images: [queue.getResult("coin")],
-                //    frames: { width: 400, height: 40, regX: 58, regY: 62 },
-                //    animations: { run: [0, 3, "run", ], explode: [4, 10, "run"] }
-                //});
-                //var spriteSheet = new createjs.SpriteSheet(spriteData);
-                // var coin = new createjs.Sprite(spriteSheet);
-                // coin.x = 100;
-                //coin.y = 100;
-                //coin.setTransform(160, 160, 2, 2);
-                //                coin.gotoAndPlay("run");
-                //                 self.stage.addChild(coin, spriteSheet, spriteData);
-                //                coin.onClick = function () {
-                //                    this.gotoAndPlay("explode");
-                //                }
-
                
+
 
                 setInterval(function () {
                     if (isEnemySpawnedEnabled && enemies.length < maxEnemyCount) {
@@ -800,9 +769,16 @@ var Game = Game || (function (createjs) {
 
                 movePlayerContainer();
 
+                var deltaS = event.delta / 1000;
+
+                //animation.x = coinXPos;
+                //animation.y = coinYPos;
+
+
+               
                 self.stage.update();
             }
-
+            
             function movePlayerContainer() {
                 if (playerContainer) {
                     playerContainer.x += playerVelocityX;

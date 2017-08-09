@@ -80,6 +80,7 @@
     <Content Include="Assets\pirate.png" />
     <Content Include="Assets\redx.png" />
     <Content Include="Assets\SmallPanel2.png" />
+    <Content Include="game2.js" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -118,6 +119,7 @@
     <Content Include="Assets\triangle border.png" />
     <Content Include="game.js" />
     <Content Include="index.html" />
+    <Content Include="spritetest.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
