@@ -87,13 +87,7 @@ var Game = Game || (function (createjs) {
                 gameBackground.y = 0;
                 var bgimage = new createjs.Bitmap(queue.getResult("background"))
                 gameBackground.addChild(bgimage)
-
-
-
-                ////////////////////////////////
-
                 self.stage.addChild(gameBackground);
-                //////////////////////////////////
                 introductionScreen();
 
             }
@@ -190,10 +184,10 @@ var Game = Game || (function (createjs) {
 
             var currentQuestionNumber = 0;
 
-            var spriteSheet;
-            var coinXPos = 200;
-            var coinYPos = 200;
-            var animation;
+            //var spriteSheet;
+            //var redgreenXPos = 200;
+            //var redgreenYPos = 200;
+            //var animation;
 
             /////////////////////////////////looking to add spritesheets/////////////////////
             //////////////////////////looking to finish artwork ///////
@@ -201,65 +195,20 @@ var Game = Game || (function (createjs) {
             //////add audio?/////
             ////endgame screen after all questions delivered + answered //
 
-
-            function printNetCount() {
-                netCountLabel.text = "Nets: " + netCount;
-
-            }
-
-           
-
             function StartInteraction() {
 
 
                 // load player
                 playerContainer = new createjs.Container();
                 var player = new createjs.Bitmap(queue.getResult("pirate"))
-
                 playerContainer.addChild(player)
-
-                //load coin
-                var spriteSheet = new createjs.SpriteSheet({
-                    "images": [queue.getResult('coin')],
-                    "frames": { "width": 100, "height": 100 },
-                    "animations": { "go": [0, 1] }
-                });
-
-                createCoin();
-
-                function createCoin() {
-                    animation = new createjs.Sprite(spriteSheet, "go");
-                    animation.regX = 100;
-                    animation.regY = 100;
-                    animation.x = coinXPos;
-                    animation.y = coinYPos;
-                    animation.gotoAndPlay("go");
-                    
-                    self.stage.addChild(animation, 1);
-
-
-                }
-
-
-                //coin = new createjs.Sprite(spriteSheet);
-                ////var coinsprite = new createjs.Sprite(coin);
-                ////instance.gotoAndStop("coin")
-                //coin.y = 35;
-                //coin.x = 50;
-
-                //self.stage.addChild(coin);
-
-
-
+                self.stage.addChild(playerContainer);
+                playerContainer.x = 400;
+                playerContainer.y = 550;
+                //load sprite
                 //load controls
                 this.document.onkeydown = keyPressed;
                 var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39, KEYCODE_SPACEBAR = 32, KEYCODE_UP = 38, KEYCODE_DOWN = 40
-
-                self.stage.addChild(playerContainer);
-
-                playerContainer.x = 400;
-                playerContainer.y = 550;
-               
 
                 spawnEnemy();
 
@@ -280,7 +229,6 @@ var Game = Game || (function (createjs) {
                 netCountLabel.x = 600;
 
                 self.stage.addChild(netCountLabel);
-               
 
 
                 setInterval(function () {
@@ -319,10 +267,14 @@ var Game = Game || (function (createjs) {
                     }
                 }
 
+                function printNetCount() {
+                    netCountLabel.text = "Nets: " + netCount;
+
+                }
+
                 function printScore() {
                     //self.stage.removeChild(scoreLabel);
                     scoreLabel.text = "Score: " + Score;
-
                 }
 
                 //blow up the squid when the net hits the squid
@@ -510,7 +462,6 @@ var Game = Game || (function (createjs) {
             }
 
 
-
             function spawnEnemy() {
                 //spawn enemies
                 console.log("made enemy")
@@ -521,7 +472,7 @@ var Game = Game || (function (createjs) {
 
                 //enemy functionality
                 do {
-                    enemyContainer.y = 30 + (Math.floor((Math.random() * maxEnemyCount)) * 50);
+                    enemyContainer.y = 50 + (Math.floor((Math.random() * maxEnemyCount)) * 50);
                 } while (isEnemyAtY(enemyContainer.y));
 
                 enemies.push(enemyContainer);
@@ -720,8 +671,7 @@ var Game = Game || (function (createjs) {
 
                     printNetCount();
 
-                    //self.stage.removeChild(answerContainer);
-
+                    //self.stage.removeChild(answerContainer
 
                 }
 
@@ -771,14 +721,11 @@ var Game = Game || (function (createjs) {
 
                 var deltaS = event.delta / 1000;
 
-                //animation.x = coinXPos;
-                //animation.y = coinYPos;
 
 
-               
                 self.stage.update();
             }
-            
+
             function movePlayerContainer() {
                 if (playerContainer) {
                     playerContainer.x += playerVelocityX;
