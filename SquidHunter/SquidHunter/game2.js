@@ -98,9 +98,10 @@ var Game = Game || (function (createjs) {
                 //self.stage.addChild(redGreen);
 
                 var spriteSun = new createjs.Container();
-    
 
-                var speed = .05; 
+                var speed = .02;
+
+
                 var data = {
                     images: [resourceLoader.getResult("redgreen")],
                     frames: {
@@ -120,6 +121,8 @@ var Game = Game || (function (createjs) {
                 var sprite = new createjs.Sprite(spriteSheet, "sunRotation");
                 spriteSun.addChild(sprite);
                 self.stage.addChild(spriteSun);
+
+
 
                 ////load redgreen
                 //var spriteSheet = new createjs.SpriteSheet({

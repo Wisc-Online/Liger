@@ -61,14 +61,15 @@ var Game = Game || (function (createjs) {
                 { id: "playbutton", src: assetsPath + "SequencePlayButton.png" },
                 { id: "pirate", src: assetsPath + "pirate.png" },
                 { id: "enemy", src: assetsPath + "enemy.png" },
-                { id: "net", src: assetsPath + "net.png" },
+                { id: "harpoon", src: assetsPath + "harpoon.png" },
                 { id: "ink", src: assetsPath + "ink.png" },
                 { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
                 { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
                 { id: "redx", src: assetsPath + "redx.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
                 { id: "logo", src: assetsPath + "Logo.png" },
-                { id: "coin", src: assetsPath + "coin.png" }
+                { id: "coin", src: assetsPath + "coin.png" },
+                { id: "treasure", src: assetsPath + "treasure.png" }
 
             ];
 
@@ -100,7 +101,7 @@ var Game = Game || (function (createjs) {
                 panelBG.x = 50;
                 panelBG.y = 100;
 
-                titleText = new createjs.Text(gameData.Title, " Bold 24px Alegreya", "#000000");
+                titleText = new createjs.Text(gameData.Title, " Bold 30px Alegreya", "#000000");
                 titleText.x = panelBG.x + 75;
                 titleText.y = panelBG.y + 50;
 
@@ -118,15 +119,15 @@ var Game = Game || (function (createjs) {
 
                 var directionsText = new createjs.Text("Directions:" + " " + gameData.Directions, "20px Alegreya", "#000000");
                 directionsText.x = panelBG.x + 75;
-                directionsText.y = panelBG.y + 200;
+                directionsText.y = panelBG.y + 150;
 
                 var logo = new createjs.Bitmap(queue.getResult("logo"))
 
-                logo.regX = 200;
-                logo.regY = 50;
-                logo.x = panelBG.x + 250;
-                logo.y = panelBG.y + 250;
-                logo.scaleX = logo.scaleY = 0.25;
+                logo.regX = 180;
+                logo.regY = 60;
+                logo.x = panelBG.x + 220;
+                logo.y = panelBG.y + 210;
+                logo.scaleX = logo.scaleY = 0.40;
 
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
                 createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000);
@@ -143,11 +144,11 @@ var Game = Game || (function (createjs) {
             }
 
             //declare vars for start of game
-            var netContainer;
-            var net;
+            var harpoonContainer;
+            var harpoon;
             var inkContainer;
             var ink;
-            var netdelay = 0;
+            var harpoondelay = 0;
             var inkdelay = 0;
 
             var enemyContainer;
@@ -169,8 +170,8 @@ var Game = Game || (function (createjs) {
             var Score = 0;
             var scoreLabel;
 
-            var netCount = 10;
-            var netCountLabel;
+            var harpoonCount = 10;
+            var harpoonCountLabel;
 
             var submittedScoreAlready = false;
 
@@ -195,6 +196,13 @@ var Game = Game || (function (createjs) {
             //////add audio?/////
             ////endgame screen after all questions delivered + answered //
 
+
+            function printHarpoonCount() {
+                harpoonCountLabel.text = " " + harpoonCount;
+
+            }
+
+
             function StartInteraction() {
 
 
@@ -212,23 +220,46 @@ var Game = Game || (function (createjs) {
 
                 spawnEnemy();
 
-                scoreLabel = new createjs.Text("Score: " + Score, "Bold 20px Alegreya", "#FFFFFF");
+
+                //load score label
+                scoreLabel = new createjs.Text(Score, "Bold 20px Alegreya", "#FFFFFF");
                 scoreLabel.textAlign = "center";
                 scoreLabel.lineWidth = 270;
                 scoreLabel.color = "white";
                 scoreLabel.y = 30;
                 scoreLabel.x = 720;
-
                 self.stage.addChild(scoreLabel);
 
-                netCountLabel = new createjs.Text("Nets: " + netCount, "Bold 20px Alegreya", "#FFFFFF");
-                netCountLabel.textAlign = "center";
-                netCountLabel.lineWidth = 270;
-                netCountLabel.color = "white";
-                netCountLabel.y = 30;
-                netCountLabel.x = 600;
+                //load treasure icon
+                treasureContainer = new createjs.Container();
+                var treasure = new createjs.Bitmap(queue.getResult("treasure"))
+                treasureContainer.y = 15;
+                treasureContainer.x = 635;
+                treasureContainer.scaleX = 0.3
+                treasureContainer.scaleY = 0.3
+                treasureContainer.addChild(treasure)
+                self.stage.addChild(treasureContainer);
 
-                self.stage.addChild(netCountLabel);
+                //load harpoon count label
+                harpoonCountLabel = new createjs.Text(" " + harpoonCount, "Bold 20px Alegreya", "#FFFFFF");
+                harpoonCountLabel.textAlign = "center";
+                harpoonCountLabel.lineWidth = 270;
+                harpoonCountLabel.color = "white";
+                harpoonCountLabel.y = 30;
+                harpoonCountLabel.x = 600;
+
+                self.stage.addChild(harpoonCountLabel);
+
+                //load harpoon icon
+                harpoonContainer = new createjs.Container();
+                harpoon = new createjs.Bitmap(queue.getResult("harpoon"));
+                harpoonContainer.y = 15;
+                harpoonContainer.x = 575;
+                harpoonContainer.scaleX = 1.2
+                harpoonContainer.scaleY = 1.2
+                harpoonContainer.rotation = 45
+                harpoonContainer.addChild(harpoon);
+                self.stage.addChild(harpoonContainer);
 
 
                 setInterval(function () {
@@ -260,30 +291,27 @@ var Game = Game || (function (createjs) {
                             Score = Score - 20;
                             printScore();
                             //deliver answers?
-                            //  printNetCount();
+                            //  printHarpoonCount();
                         }
                         //  isQuestionDisplayed = false
 
                     }
                 }
 
-                function printNetCount() {
-                    netCountLabel.text = "Nets: " + netCount;
-
-                }
+    
 
                 function printScore() {
                     //self.stage.removeChild(scoreLabel);
-                    scoreLabel.text = "Score: " + Score;
+                    scoreLabel.text = " " + Score;
                 }
 
-                //blow up the squid when the net hits the squid
-                function onNetContainerTweenChange(evt) {
+                //blow up the squid when the harpoon hits the squid
+                function onHarpoonContainerTweenChange(evt) {
                     var theTween = evt.target;
-                    var theNetContainer = theTween.target;
+                    var theHarpoonContainer = theTween.target;
                     for (var i = 0; i < enemies.length; ++i) {
 
-                        var pt = enemies[i].globalToLocal(theNetContainer.x, theNetContainer.y);
+                        var pt = enemies[i].globalToLocal(theHarpoonContainer.x, theHarpoonContainer.y);
 
                         if (enemies[i].hitTest(pt.x, pt.y)) {
 
@@ -310,7 +338,7 @@ var Game = Game || (function (createjs) {
                             // we removed an item from the array, fix the index so we dont skip checking any enemies.
                             --i;
 
-                            //this is where i  put the tween for netcontainer change
+                            //this is where i  put the tween for harpooncontainer change
                             //this works but just makes it disappear first without removing it (still kills squids).
 
                             //createjs.Tween.get(theTween.target)
@@ -348,6 +376,8 @@ var Game = Game || (function (createjs) {
                             var theThingBeingTweened = evt.target;
 
                             self.stage.removeChild(theThingBeingTweened);
+                            //this is where im going to add ink splat sprite
+                            //self.stage.addChild()
                         });
 
                     madeInk = true;
@@ -386,24 +416,24 @@ var Game = Game || (function (createjs) {
                             moveDown();
                             event.preventDefault();
                             break;
-                            //map net to spacebar
+                            //map harpoon to spacebar
                         case KEYCODE_SPACEBAR:
-                            if (netdelay <= 0) {
-                                netdelay = 30
+                            if (harpoondelay <= 0) {
+                                harpoondelay = 30
 
-                                if (netCount > 0) {
-                                    makeNet();
-                                    netCount--;
-                                    console.log(netCount);
+                                if (harpoonCount > 0) {
+                                    makeHarpoon();
+                                    harpoonCount--;
+                                    console.log(harpoonCount);
 
-                                    printNetCount();
+                                    printHarpoonCount();
                                 }
-                                if (netCount == 0 && !isQuestionDisplayed) {
-                                    printNetCount();
+                                if (harpoonCount == 0 && !isQuestionDisplayed) {
+                                    printHarpoonCount();
                                     deliverQuestion(gameData.Questions[currentQuestionNumber]);
                                 }
 
-                                //   printNetCount();
+                              //    printHarpoonCount();
                                 event.preventDefault();
                                 break;
                             }
@@ -424,24 +454,26 @@ var Game = Game || (function (createjs) {
                             }
 
 
-                            //only called when enough net available
-                            function makeNet() {
+                            //only called when enough harpoon available
+                            function makeHarpoon() {
 
-                                console.log("making net")
-                                netContainer = new createjs.Container();
-                                net = new createjs.Bitmap(queue.getResult("net"));
-                                netContainer.addChild(net);
+                                console.log("making harpoon")
+                                harpoonContainer = new createjs.Container();
+                                harpoon = new createjs.Bitmap(queue.getResult("harpoon"));
+                                harpoonContainer.addChild(harpoon);
 
-                                self.stage.addChild(netContainer);
+                                self.stage.addChild(harpoonContainer);
 
-                                netContainer.x = playerContainer.x + 9;
-                                netContainer.y = playerContainer.y + 9;
+                                harpoonContainer.x = playerContainer.x + 9;
+                                harpoonContainer.y = playerContainer.y + 9;
 
-                                //when net hits the squid
-                                createjs.Tween.get(netContainer, {
-                                    onChange: onNetContainerTweenChange
+                                //when harpoon hits the squid
+                                createjs.Tween.get(harpoonContainer, {
+                                    onChange: onHarpoonContainerTweenChange
                                 })
+                                    //.wait(2000)
                                     .to({ y: -200 }, 5000, createjs.Ease.bounceInOut)
+                                    .wait(2000)
                                     .call(function (evt) {
                                         var theThingBeingTweened = evt.target;
                                         self.stage.removeChild(theThingBeingTweened);
@@ -632,7 +664,7 @@ var Game = Game || (function (createjs) {
                 feedbackPanel.x = 50;
                 feedbackPanel.y = 400;
 
-                //add net count
+                //add harpoon count
                 //this will be the correct answer
                 if (answerstatus == "correct") {
                     feedbackText = new createjs.Text("Correct. Click the what ever to continue", "20px Alegreya", "#FFFFFF");
@@ -661,7 +693,7 @@ var Game = Game || (function (createjs) {
                 function handleClick(event) {
                     currentQuestionNumber++;
                     self.stage.removeChild(feedbackContainer);
-                    netCount = 10;
+                    harpoonCount = 10;
                     canEnemyFire = true;
                     isQuestionDisplayed = false;
                     isFeedbackDisplayed = false;
@@ -669,7 +701,7 @@ var Game = Game || (function (createjs) {
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
 
-                    printNetCount();
+                    printHarpoonCount();
 
                     //self.stage.removeChild(answerContainer
 
@@ -711,8 +743,8 @@ var Game = Game || (function (createjs) {
             createjs.Ticker.setFPS(fps);
 
             function handleTick(event) {
-                if (netdelay > 0)
-                    netdelay--
+                if (harpoondelay > 0)
+                    harpoondelay--
 
                 playerVelocityX = playerVelocityX * playerMovementFriction;
                 playerVelocityY = playerVelocityY * playerMovementFriction;
