@@ -68,7 +68,7 @@ var Game = Game || (function (createjs) {
                 { id: "redx", src: assetsPath + "redx.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
                 { id: "logo", src: assetsPath + "Logo.png" },
-                { id: "coin", src: assetsPath + "coin.png" },
+                { id: "redgreen", src: assetsPath + "inksplat.png" },
                 { id: "treasure", src: assetsPath + "treasure.png" }
 
             ];
@@ -213,7 +213,9 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(playerContainer);
                 playerContainer.x = 400;
                 playerContainer.y = 550;
-                //load sprite
+
+
+
                 //load controls
                 this.document.onkeydown = keyPressed;
                 var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39, KEYCODE_SPACEBAR = 32, KEYCODE_UP = 38, KEYCODE_DOWN = 40
@@ -281,6 +283,9 @@ var Game = Game || (function (createjs) {
                     var theInkContainer = theTween.target;
 
                     var pt = playerContainer.globalToLocal(theInkContainer.x, theInkContainer.y);
+
+                    
+                    
 
                     if (playerContainer.hitTest(pt.x, pt.y)) {
                         console.log("ink hit the player")
@@ -357,6 +362,32 @@ var Game = Game || (function (createjs) {
 
                     console.log("making ink")
                     inkContainer = new createjs.Container();
+
+
+                    //load sprite
+                    //var spriteSun = new createjs.Container();
+                    //var speed = .02;
+                    //var data = {
+                    //    images: [queue.getResult("redgreen")],
+                    //    frames: {
+                    //        width: 50,
+                    //        height: 50,
+                    //        frames: 2,
+                    //    }
+                    //    ,
+                    //    animations: {
+                    //        sunRotation: [0, 1, "sunRotation", speed],
+                    //    },
+                    //};
+
+                    //var spriteSheet = new createjs.SpriteSheet(data);
+                    //var sprite = new createjs.Sprite(spriteSheet, "sunRotation");
+                    //spriteSun.addChild(sprite);
+                    //self.stage.addChild(spriteSun);
+
+
+
+
                     ink = new createjs.Bitmap(queue.getResult("ink"));
                     inkContainer.addChild(ink);
                     self.stage.addChild(inkContainer);
@@ -377,6 +408,7 @@ var Game = Game || (function (createjs) {
 
                             self.stage.removeChild(theThingBeingTweened);
                             //this is where im going to add ink splat sprite
+                            // add child or call a function that adds the sprite
                             //self.stage.addChild()
                         });
 

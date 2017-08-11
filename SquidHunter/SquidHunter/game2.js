@@ -56,7 +56,7 @@ var Game = Game || (function (createjs) {
             var assets = [
 
                 { id: "background", src: assetsPath + "background2.jpg" },
-                { id: "redgreen", src: assetsPath + "redgreen.png" }
+                { id: "redgreen", src: assetsPath + "inksplat.png" }
 
             ];
             resourceLoader.loadManifest(assets);
@@ -72,8 +72,8 @@ var Game = Game || (function (createjs) {
             //declare vars for start of game
 
             var spriteSheet;
-            var redgreenXPos = 200;
-            var redgreenYPos = 200;
+            //var redgreenXPos = 200;
+            //var redgreenYPos = 200;
             var animation;
 
             //loads background image
@@ -105,11 +105,9 @@ var Game = Game || (function (createjs) {
                 var data = {
                     images: [resourceLoader.getResult("redgreen")],
                     frames: {
-                        width: 100,
-                        height: 100,
+                        width: 50,
+                        height: 50,
                         frames: 2,
-                        //regX: (_width / 2),
-                       // regY: (_height / 2),
                     }
                     ,
                     animations: {
