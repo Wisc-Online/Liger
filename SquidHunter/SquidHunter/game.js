@@ -56,20 +56,20 @@ var Game = Game || (function (createjs) {
             var assets = [
 
                 { id: "start_button", src: assetsPath + "SequencePlayButton.png" },
-                { id: "background", src: assetsPath + "background.jpg" },
+                { id: "background", src: assetsPath + "backgroundship.jpg" },
                 { id: "panel", src: assetsPath + "Panel.png" },
                 { id: "playbutton", src: assetsPath + "SequencePlayButton.png" },
                 { id: "pirate", src: assetsPath + "pirate.png" },
                 { id: "enemy", src: assetsPath + "enemy.png" },
                 { id: "harpoon", src: assetsPath + "harpoon.png" },
-                { id: "ink", src: assetsPath + "ink.png" },
+                { id: "inksplat", src: assetsPath + "inksplat.png" },
                 { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
                 { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
                 { id: "redx", src: assetsPath + "redx.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
                 { id: "logo", src: assetsPath + "Logo.png" },
-                { id: "redgreen", src: assetsPath + "inksplat.png" },
-                { id: "treasure", src: assetsPath + "treasure.png" }
+                { id: "treasure", src: assetsPath + "treasure.png" },
+                { id: "piratesprite", src: assetsPath + "piratesprite.png" }
 
             ];
 
@@ -182,6 +182,7 @@ var Game = Game || (function (createjs) {
             var playerMovementFriction = .98;
 
             var playerContainer;
+           
 
             var currentQuestionNumber = 0;
 
@@ -205,23 +206,35 @@ var Game = Game || (function (createjs) {
 
             function StartInteraction() {
 
-
-                // load player
+                //load pirate
                 playerContainer = new createjs.Container();
-                var player = new createjs.Bitmap(queue.getResult("pirate"))
-                playerContainer.addChild(player)
+                var speed = .02;
+                var data = {
+                    images: [queue.getResult("piratesprite")],
+                    frames: {
+                        width: 60,
+                        height: 100,
+                        frames: 4,
+                    }
+                    ,
+                    animations: {
+                        pegleg: [0, 3, "pegleg", speed],
+                    },
+                };
+
+                var spriteSheet = new createjs.SpriteSheet(data);
+                var sprite = new createjs.Sprite(spriteSheet, "pegleg");
+                playerContainer.addChild(sprite);
                 self.stage.addChild(playerContainer);
                 playerContainer.x = 400;
-                playerContainer.y = 550;
-
-
+                playerContainer.y = 500;
 
                 //load controls
                 this.document.onkeydown = keyPressed;
                 var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39, KEYCODE_SPACEBAR = 32, KEYCODE_UP = 38, KEYCODE_DOWN = 40
 
+                //load squid/s
                 spawnEnemy();
-
 
                 //load score label
                 scoreLabel = new createjs.Text(Score, "Bold 20px Alegreya", "#FFFFFF");
@@ -249,7 +262,6 @@ var Game = Game || (function (createjs) {
                 harpoonCountLabel.color = "white";
                 harpoonCountLabel.y = 30;
                 harpoonCountLabel.x = 600;
-
                 self.stage.addChild(harpoonCountLabel);
 
                 //load harpoon icon
@@ -285,7 +297,6 @@ var Game = Game || (function (createjs) {
                     var pt = playerContainer.globalToLocal(theInkContainer.x, theInkContainer.y);
 
                     
-                    
 
                     if (playerContainer.hitTest(pt.x, pt.y)) {
                         console.log("ink hit the player")
@@ -302,6 +313,8 @@ var Game = Game || (function (createjs) {
 
                     }
                 }
+
+
 
     
 
@@ -361,39 +374,37 @@ var Game = Game || (function (createjs) {
                 function makeInk(theenemy) {
 
                     console.log("making ink")
-                    inkContainer = new createjs.Container();
-
+                  //  inkContainer = new createjs.Container();
 
                     //load sprite
-                    //var spriteSun = new createjs.Container();
-                    //var speed = .02;
-                    //var data = {
-                    //    images: [queue.getResult("redgreen")],
-                    //    frames: {
-                    //        width: 50,
-                    //        height: 50,
-                    //        frames: 2,
-                    //    }
-                    //    ,
-                    //    animations: {
-                    //        sunRotation: [0, 1, "sunRotation", speed],
-                    //    },
-                    //};
+                    inkContainer = new createjs.Container();
+                    var speed = .02;
+                    var data = {
+                        images: [queue.getResult("inksplat")],
+                        frames: {
+                            width: 50,
+                            height: 50,
+                            frames: 2,
+                        }
+                        ,
+                        animations: {
+                            splatter: [0, 1, "splatter", speed],
+                        },
+                    };
 
-                    //var spriteSheet = new createjs.SpriteSheet(data);
-                    //var sprite = new createjs.Sprite(spriteSheet, "sunRotation");
-                    //spriteSun.addChild(sprite);
-                    //self.stage.addChild(spriteSun);
-
-
-
-
-                    ink = new createjs.Bitmap(queue.getResult("ink"));
-                    inkContainer.addChild(ink);
+                    var spriteSheet = new createjs.SpriteSheet(data);
+                    var sprite = new createjs.Sprite(spriteSheet, "splatter");
+                    inkContainer.addChild(sprite);
                     self.stage.addChild(inkContainer);
+
 
                     inkContainer.x = theenemy.x;
                     inkContainer.y = theenemy.y;
+
+
+                  //  ink = new createjs.Bitmap(queue.getResult("ink"));
+                  //  inkContainer.addChild(ink);
+                 //   self.stage.addChild(inkContainer);
 
                     //when ink hits the player
                     createjs.Tween.get(inkContainer, {
@@ -405,6 +416,8 @@ var Game = Game || (function (createjs) {
                         .to({ y: playerContainer.y + (Math.random() * 200 - 100), x: playerContainer.x + (Math.random() * 200) }, 8000)
                         .call(function (evt) {
                             var theThingBeingTweened = evt.target;
+                           
+                          //  inkContainer.goToAndPlay("splatter");
 
                             self.stage.removeChild(theThingBeingTweened);
                             //this is where im going to add ink splat sprite
@@ -615,13 +628,13 @@ var Game = Game || (function (createjs) {
                 questionPanel = new createjs.Bitmap(queue.getResult("questionPanel"));
                 isQuestionDisplayed = true;
                 questionPanel.scaleX = 2;
-                questionPanel.scaleY = 2;
+                questionPanel.scaleY = 1.8;
                 questionPanel.x = 50;
-                questionPanel.y = 50;
+                questionPanel.y = 32;
 
                 var questionsText = new createjs.Text("Question:" + " " + question.Text, "Bold 20px Alegreya", "#000000");
-                questionsText.x = questionPanel.x + 50;
-                questionsText.y = questionPanel.y + 35;
+                questionsText.x = questionPanel.x + 70;
+                questionsText.y = questionPanel.y + 45;
 
                 questionContainer.name = "question";
                 questionContainer.addChild(questionPanel, questionsText)
@@ -646,7 +659,7 @@ var Game = Game || (function (createjs) {
 
                     var answerHolder = new createjs.Bitmap(queue.getResult("answerHolder"))
                     answersText.x = questionPanel.x + 90;
-                    answersText.y = questionPanel.y + 75 + stackIncrement;
+                    answersText.y = questionPanel.y + 60 + stackIncrement;
 
 
                     answerHolder.scaleX = 1.8;
@@ -693,18 +706,19 @@ var Game = Game || (function (createjs) {
                 var feedbackText;
                 isFeedbackDisplayed = true;
                 feedbackPanel.scaleX = 2;
+                feedbackPanel.scaleY = .75;
                 feedbackPanel.x = 50;
-                feedbackPanel.y = 400;
+                feedbackPanel.y = 410;
 
                 //add harpoon count
                 //this will be the correct answer
                 if (answerstatus == "correct") {
-                    feedbackText = new createjs.Text("Correct. Click the what ever to continue", "20px Alegreya", "#FFFFFF");
+                    feedbackText = new createjs.Text("Correct. Click the what ever to continue", "20px Alegreya", "#000000");
                 } else {
 
                     for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++) {
                         if (gameData.Questions[currentQuestionNumber].Answers[i].IsCorrect == true) {
-                            feedbackText = new createjs.Text("I'm sorry the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#FFFFFF')
+                            feedbackText = new createjs.Text("I'm sorry the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
                         }
                     }
 
@@ -713,16 +727,18 @@ var Game = Game || (function (createjs) {
 
 
                 feedbackText.x = feedbackPanel.x + 100
-                feedbackText.y = feedbackPanel.y + 80
+                feedbackText.y = feedbackPanel.y + 40
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
-                redx.x = feedbackPanel.x + 580;
-                redx.y = feedbackPanel.y + 130;
+                redx.x = feedbackPanel.x + 560;
+                redx.y = feedbackPanel.y + 90;
 
                 redx.addEventListener("click", handleClick);
 
 
                 function handleClick(event) {
+
+                    //create an if statement, if question iscorrect, netcount 5, if incorrect, netcount 0
                     currentQuestionNumber++;
                     self.stage.removeChild(feedbackContainer);
                     harpoonCount = 10;
@@ -767,6 +783,11 @@ var Game = Game || (function (createjs) {
 
             }
 
+            function replay() {
+                gameBoard = null;
+
+                initializeGame();  //wow that was easy
+            }
             var fps = 45;
 
             //this updates the stage every tick not sure if we need it but
