@@ -6,6 +6,7 @@ var Game = Game || (function (createjs) {
 
     function Game(canvas, gameData) {
         StartitALL()
+
         function StartitALL() {
 
             var self = this;
@@ -31,7 +32,8 @@ var Game = Game || (function (createjs) {
             }
 
             function shuffle(array) {
-                var currentIndex = array.length, temporaryValue, randomIndex;
+                var currentIndex = array.length,
+                    temporaryValue, randomIndex;
 
                 // While there remain elements to shuffle...
                 while (0 !== currentIndex) {
@@ -55,21 +57,66 @@ var Game = Game || (function (createjs) {
             //declare each individual asset
             var assets = [
 
-                { id: "start_button", src: assetsPath + "SequencePlayButton.png" },
-                { id: "background", src: assetsPath + "backgroundship.jpg" },
-                { id: "panel", src: assetsPath + "Panel.png" },
-                { id: "playbutton", src: assetsPath + "SequencePlayButton.png" },
-                { id: "pirate", src: assetsPath + "pirate.png" },
-                { id: "enemy", src: assetsPath + "enemy.png" },
-                { id: "harpoon", src: assetsPath + "harpoon.png" },
-                { id: "inksplat", src: assetsPath + "inksplat.png" },
-                { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
-                { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
-                { id: "redx", src: assetsPath + "redx.png" },
-                { id: "answerHolder", src: assetsPath + "answerHolder.png" },
-                { id: "logo", src: assetsPath + "Logo.png" },
-                { id: "treasure", src: assetsPath + "treasure.png" },
-                { id: "piratesprite", src: assetsPath + "piratesprite.png" }
+                {
+                    id: "start_button",
+                    src: assetsPath + "SequencePlayButton.png"
+                },
+                {
+                    id: "background",
+                    src: assetsPath + "backgroundship.jpg"
+                },
+                {
+                    id: "panel",
+                    src: assetsPath + "Panel.png"
+                },
+                {
+                    id: "playbutton",
+                    src: assetsPath + "SequencePlayButton.png"
+                },
+                {
+                    id: "pirate",
+                    src: assetsPath + "pirate.png"
+                },
+                {
+                    id: "enemy",
+                    src: assetsPath + "enemy.png"
+                },
+                {
+                    id: "harpoon",
+                    src: assetsPath + "harpoon.png"
+                },
+                {
+                    id: "inksplat",
+                    src: assetsPath + "inksplat.png"
+                },
+                {
+                    id: "questionPanel",
+                    src: assetsPath + "SmallPanel.png"
+                },
+                {
+                    id: "feedbackPanel",
+                    src: assetsPath + "SmallPanel2.png"
+                },
+                {
+                    id: "redx",
+                    src: assetsPath + "redx.png"
+                },
+                {
+                    id: "answerHolder",
+                    src: assetsPath + "answerHolder.png"
+                },
+                {
+                    id: "logo",
+                    src: assetsPath + "logo.png"
+                },
+                {
+                    id: "treasure",
+                    src: assetsPath + "treasure.png"
+                },
+                {
+                    id: "piratesprite",
+                    src: assetsPath + "piratesprite.png"
+                }
 
             ];
 
@@ -130,10 +177,17 @@ var Game = Game || (function (createjs) {
                 logo.scaleX = logo.scaleY = 0.40;
 
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
-                createjs.Tween.get(playButton, { loop: false }).to({ rotation: 360, scaleX: .4, scaleY: .4 }, 2000);
+                createjs.Tween.get(playButton, {
+                    loop: false
+                }).to({
+                    rotation: 360,
+                    scaleX: .4,
+                    scaleY: .4
+                }, 2000);
                 self.stage.addChild(instructionsScreen);
 
                 playButton.addEventListener("click", handleClick);
+
                 function handleClick(event) {
                     self.stage.removeChild(instructionsScreen);
 
@@ -182,7 +236,7 @@ var Game = Game || (function (createjs) {
             var playerMovementFriction = .98;
 
             var playerContainer;
-           
+
 
             var currentQuestionNumber = 0;
 
@@ -215,8 +269,7 @@ var Game = Game || (function (createjs) {
                         width: 60,
                         height: 100,
                         frames: 4,
-                    }
-                    ,
+                    },
                     animations: {
                         pegleg: [0, 3, "pegleg", speed],
                     },
@@ -231,7 +284,11 @@ var Game = Game || (function (createjs) {
 
                 //load controls
                 this.document.onkeydown = keyPressed;
-                var KEYCODE_LEFT = 37, KEYCODE_RIGHT = 39, KEYCODE_SPACEBAR = 32, KEYCODE_UP = 38, KEYCODE_DOWN = 40
+                var KEYCODE_LEFT = 37,
+                    KEYCODE_RIGHT = 39,
+                    KEYCODE_SPACEBAR = 32,
+                    KEYCODE_UP = 38,
+                    KEYCODE_DOWN = 40
 
                 //load squid/s
                 spawnEnemy();
@@ -296,7 +353,7 @@ var Game = Game || (function (createjs) {
 
                     var pt = playerContainer.globalToLocal(theInkContainer.x, theInkContainer.y);
 
-                    
+
 
                     if (playerContainer.hitTest(pt.x, pt.y)) {
                         console.log("ink hit the player")
@@ -316,7 +373,6 @@ var Game = Game || (function (createjs) {
 
 
 
-    
 
                 function printScore() {
                     //self.stage.removeChild(scoreLabel);
@@ -335,10 +391,19 @@ var Game = Game || (function (createjs) {
 
                             // we hit the enemy... KILL IT!
                             createjs.Tween.get(enemies[i])
-                                .to({ scaleX: 1.25, scaleY: 1.25 }, 200)
-                                .to({ scaleX: 1, scaleY: 1, rotation: 360 }, 1000)
+                                .to({
+                                    scaleX: 1.25,
+                                    scaleY: 1.25
+                                }, 200)
+                                .to({
+                                    scaleX: 1,
+                                    scaleY: 1,
+                                    rotation: 360
+                                }, 1000)
 
-                                .to({ alpha: 0 }, 100)
+                                .to({
+                                    alpha: 0
+                                }, 100)
 
                                 .call(function (evt) {
                                     stage.removeChild(evt.currentTarget);
@@ -371,10 +436,14 @@ var Game = Game || (function (createjs) {
                     }
                 }
 
+                function handlesplatter() {
+                    sprite.gotoAndPlay("splatter")
+                }
+
                 function makeInk(theenemy) {
 
                     console.log("making ink")
-                  //  inkContainer = new createjs.Container();
+                    //  inkContainer = new createjs.Container();
 
                     //load sprite
                     inkContainer = new createjs.Container();
@@ -385,26 +454,26 @@ var Game = Game || (function (createjs) {
                             width: 50,
                             height: 50,
                             frames: 2,
-                        }
-                        ,
+                        },
                         animations: {
                             splatter: [0, 1, "splatter", speed],
                         },
                     };
 
                     var spriteSheet = new createjs.SpriteSheet(data);
-                    var sprite = new createjs.Sprite(spriteSheet, "splatter");
+                    var sprite = new createjs.Sprite(spriteSheet);
+                  //  var sprite = new createjs.Sprite(spriteSheet, "splatter");
+
                     inkContainer.addChild(sprite);
                     self.stage.addChild(inkContainer);
-
 
                     inkContainer.x = theenemy.x;
                     inkContainer.y = theenemy.y;
 
 
-                  //  ink = new createjs.Bitmap(queue.getResult("ink"));
-                  //  inkContainer.addChild(ink);
-                 //   self.stage.addChild(inkContainer);
+                    //  ink = new createjs.Bitmap(queue.getResult("ink"));
+                    //  inkContainer.addChild(ink);
+                    //   self.stage.addChild(inkContainer);
 
                     //when ink hits the player
                     createjs.Tween.get(inkContainer, {
@@ -413,17 +482,24 @@ var Game = Game || (function (createjs) {
                         //add a .to for the y  //// self.stage.canvas.height
 
                         ////add new tween for ink here //http://andysaia.com/blog/tweenjs/
-                        .to({ y: playerContainer.y + (Math.random() * 200 - 100), x: playerContainer.x + (Math.random() * 200) }, 8000)
+                        .to({
+                            y: playerContainer.y + (Math.random() * 200 - 100),
+                            x: playerContainer.x + (Math.random() * 200)
+                        }, 8000)
                         .call(function (evt) {
                             var theThingBeingTweened = evt.target;
-                           
-                          //  inkContainer.goToAndPlay("splatter");
+                            handlesplatter();
+                            //  inkContainer.goToAndPlay("splatter");
 
-                            self.stage.removeChild(theThingBeingTweened);
+                           // self.stage.removeChild(theThingBeingTweened);
                             //this is where im going to add ink splat sprite
                             // add child or call a function that adds the sprite
                             //self.stage.addChild()
                         });
+
+                  
+                    //.wait to remove.
+
 
                     madeInk = true;
                 }
@@ -435,8 +511,7 @@ var Game = Game || (function (createjs) {
 
                         if (canEnemyFire && theenemy) {
                             makeInk(theenemy);
-                        }
-                        else {
+                        } else {
                             console.log("wtf?");
                         }
                     }
@@ -478,7 +553,7 @@ var Game = Game || (function (createjs) {
                                     deliverQuestion(gameData.Questions[currentQuestionNumber]);
                                 }
 
-                              //    printHarpoonCount();
+                                //    printHarpoonCount();
                                 event.preventDefault();
                                 break;
                             }
@@ -494,6 +569,7 @@ var Game = Game || (function (createjs) {
                             function moveUp() {
                                 playerVelocityY -= playerMovement;
                             }
+
                             function moveDown() {
                                 playerVelocityY += playerMovement;
                             }
@@ -517,7 +593,9 @@ var Game = Game || (function (createjs) {
                                     onChange: onHarpoonContainerTweenChange
                                 })
                                     //.wait(2000)
-                                    .to({ y: -200 }, 5000, createjs.Ease.bounceInOut)
+                                    .to({
+                                        y: -200
+                                    }, 5000, createjs.Ease.bounceInOut)
                                     .wait(2000)
                                     .call(function (evt) {
                                         var theThingBeingTweened = evt.target;
@@ -564,13 +642,25 @@ var Game = Game || (function (createjs) {
                 var timeToTake = (enemyContainer.x / totalWidth) * totalTime;
 
                 createjs.Tween.get(enemyContainer)
-                    .to({ alpha: 1, scaleX: 0.5, scaleY: 0.5 }, 2000)
+                    .to({
+                        alpha: 1,
+                        scaleX: 0.5,
+                        scaleY: 0.5
+                    }, 2000)
                     .wait(100)
-                    .to({ x: 50 }, timeToTake, createjs.Ease.sinInOut)
+                    .to({
+                        x: 50
+                    }, timeToTake, createjs.Ease.sinInOut)
                     .call(function (evt) {
-                        createjs.Tween.get(evt.target, { loop: true })
-                            .to({ x: totalWidth }, totalTime, createjs.Ease.sinInOut)
-                            .to({ x: 50 }, totalTime, createjs.Ease.sinInOut);
+                        createjs.Tween.get(evt.target, {
+                            loop: true
+                        })
+                            .to({
+                                x: totalWidth
+                            }, totalTime, createjs.Ease.sinInOut)
+                            .to({
+                                x: 50
+                            }, totalTime, createjs.Ease.sinInOut);
                     })
 
                 self.stage.addChild(enemyContainer);
@@ -606,10 +696,8 @@ var Game = Game || (function (createjs) {
                     $.ajax(url, {
                         type: "POST",
                         data: data,
-                        success: function (x) {
-                        },
-                        error: function (x, y, z) {
-                        }
+                        success: function (x) { },
+                        error: function (x, y, z) { }
                     });
 
                 }
@@ -652,7 +740,7 @@ var Game = Game || (function (createjs) {
                 answerContainersParent = new createjs.Container();
                 answerContainersParent.name = "parent";
 
-                for (var j = 0 ; j < gameData.Questions[0].Answers.length; j++) {
+                for (var j = 0; j < gameData.Questions[0].Answers.length; j++) {
                     console.log("answers")
                     var answersText = new createjs.Text("Answer:" + " " + question.Answers[j].Text, "16px Alegreya", "#000000");
                     var answerContainer = new createjs.Container();
@@ -683,8 +771,7 @@ var Game = Game || (function (createjs) {
                                 // alert("correct")
                                 //this is where code goes to change color of holder container and display the answer
                                 deliverFeedback("correct");
-                            }
-                            else {
+                            } else {
                                 //    alert("incorrect" + evt.currentTarget.IsCorrect);
                                 deliverFeedback("incorrect");
                             }
@@ -700,6 +787,7 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(answerContainersParent);
 
             }
+
             function deliverFeedback(answerstatus) {
                 var feedbackContainer = new createjs.Container();
                 var feedbackPanel = new createjs.Bitmap(queue.getResult("feedbackPanel"));
@@ -769,11 +857,14 @@ var Game = Game || (function (createjs) {
 
 
             }
+
             function gameOverScreen() {
 
             }
+
             function DisplayEndingNotes(EndedHow) {
                 replayContainer.addEventListener("click", handleClick);
+
                 function handleClick(event) {
                     StartitALL()
                 }
@@ -786,7 +877,7 @@ var Game = Game || (function (createjs) {
             function replay() {
                 gameBoard = null;
 
-                initializeGame();  //wow that was easy
+                initializeGame(); //wow that was easy
             }
             var fps = 45;
 
@@ -805,7 +896,6 @@ var Game = Game || (function (createjs) {
                 movePlayerContainer();
 
                 var deltaS = event.delta / 1000;
-
 
 
                 self.stage.update();
@@ -832,4 +922,3 @@ var Game = Game || (function (createjs) {
     }
     return Game;
 })(createjs);
-
