@@ -86,8 +86,8 @@ var Game = Game || (function (createjs) {
                     src: assetsPath + "harpoon.png"
                 },
                 {
-                    id: "inksplat",
-                    src: assetsPath + "inksplat.png"
+                    id: "ink",
+                    src: assetsPath + "ink.png"
                 },
                 {
                     id: "questionPanel",
@@ -116,7 +116,12 @@ var Game = Game || (function (createjs) {
                 {
                     id: "piratesprite",
                     src: assetsPath + "piratesprite.png"
+                },
+                {
+                     id: "splat",
+                     src: assetsPath + "splat.png"
                 }
+
 
             ];
 
@@ -443,37 +448,16 @@ var Game = Game || (function (createjs) {
                 function makeInk(theenemy) {
 
                     console.log("making ink")
-                    //  inkContainer = new createjs.Container();
-
-                    //load sprite
                     inkContainer = new createjs.Container();
-                    var speed = .02;
-                    var data = {
-                        images: [queue.getResult("inksplat")],
-                        frames: {
-                            width: 50,
-                            height: 50,
-                            frames: 2,
-                        },
-                        animations: {
-                            splatter: [0, 1, "splatter", speed],
-                        },
-                    };
-
-                    var spriteSheet = new createjs.SpriteSheet(data);
-                    var sprite = new createjs.Sprite(spriteSheet);
-                  //  var sprite = new createjs.Sprite(spriteSheet, "splatter");
-
-                    inkContainer.addChild(sprite);
-                    self.stage.addChild(inkContainer);
-
                     inkContainer.x = theenemy.x;
                     inkContainer.y = theenemy.y;
+                    ink = new createjs.Bitmap(queue.getResult("ink"));
+                    inkContainer.addChild(ink);
+                    self.stage.addChild(inkContainer);
 
-
-                    //  ink = new createjs.Bitmap(queue.getResult("ink"));
-                    //  inkContainer.addChild(ink);
-                    //   self.stage.addChild(inkContainer);
+                    splatContainer = new createjs.Container();
+                    splat = new createjs.Bitmap(queue.getResult("splat"));
+                    splatContainer.addChild(splat);
 
                     //when ink hits the player
                     createjs.Tween.get(inkContainer, {
@@ -486,18 +470,20 @@ var Game = Game || (function (createjs) {
                             y: playerContainer.y + (Math.random() * 200 - 100),
                             x: playerContainer.x + (Math.random() * 200)
                         }, 8000)
+                        
                         .call(function (evt) {
                             var theThingBeingTweened = evt.target;
-                            handlesplatter();
+                         //   var theThingChangingTo = 
+                  
                             //  inkContainer.goToAndPlay("splatter");
 
-                           // self.stage.removeChild(theThingBeingTweened);
+                            self.stage.removeChild(theThingBeingTweened);
                             //this is where im going to add ink splat sprite
                             // add child or call a function that adds the sprite
                             //self.stage.addChild()
                         });
 
-                  
+
                     //.wait to remove.
 
 
