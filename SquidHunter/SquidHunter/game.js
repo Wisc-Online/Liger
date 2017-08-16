@@ -455,9 +455,7 @@ var Game = Game || (function (createjs) {
                     inkContainer.addChild(ink);
                     self.stage.addChild(inkContainer);
 
-                    splatContainer = new createjs.Container();
-                    splat = new createjs.Bitmap(queue.getResult("splat"));
-                    splatContainer.addChild(splat);
+                    
 
                     //when ink hits the player
                     createjs.Tween.get(inkContainer, {
@@ -473,11 +471,21 @@ var Game = Game || (function (createjs) {
                         
                         .call(function (evt) {
                             var theThingBeingTweened = evt.target;
-                         //   var theThingChangingTo = 
-                  
-                            //  inkContainer.goToAndPlay("splatter");
+                                              
+                            //self.stage.removeChild(theThingBeingTweened);
 
-                            self.stage.removeChild(theThingBeingTweened);
+                            var theContainer = theThingBeingTweened.parent;
+
+                            theContainer.removeChild(theThingBeingTweened);
+
+                            splatContainer = new createjs.Container();
+                            splat = new createjs.Bitmap(queue.getResult("splat"));
+                            splatContainer.addChild(splat);
+                            splatContainer.x = theThingBeingTweened.x;
+                            splatContainer.y = theThingBeingTweened.y;
+
+                            theContainer.addChild(splatContainer);
+
                             //this is where im going to add ink splat sprite
                             // add child or call a function that adds the sprite
                             //self.stage.addChild()
