@@ -118,10 +118,13 @@ var Game = Game || (function (createjs) {
                     src: assetsPath + "piratesprite.png"
                 },
                 {
-                     id: "splat",
-                     src: assetsPath + "splat.png"
+                    id: "splat",
+                    src: assetsPath + "splat.png"
+                },
+                {
+                    id: "enemysprite",
+                    src: assetsPath + "enemysprite.png"
                 }
-
 
             ];
 
@@ -241,7 +244,7 @@ var Game = Game || (function (createjs) {
             var playerMovementFriction = .98;
 
             var playerContainer;
-
+           // var squidContainer;
 
             var currentQuestionNumber = 0;
 
@@ -286,6 +289,32 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(playerContainer);
                 playerContainer.x = 400;
                 playerContainer.y = 500;
+
+
+                // load enemy sprite
+                squidContainer = new createjs.Container();
+                var speed = .02;
+                var data = {
+                    images: [queue.getResult("enemysprite")],
+                    frames: {
+                        width: 200,
+                        height: 113,
+                        frames: 4,
+                    },
+                    animations: {
+                        pegleg: [0, 3, "pegleg", speed],
+                    },
+                };
+
+                var spriteSheet = new createjs.SpriteSheet(data);
+                var sprite = new createjs.Sprite(spriteSheet, "pegleg");
+                squidContainer.addChild(sprite);
+                self.stage.addChild(squidContainer);
+                squidContainer.x = 300;
+                squidContainer.y = 233;
+
+
+
 
                 //load controls
                 this.document.onkeydown = keyPressed;
@@ -357,7 +386,6 @@ var Game = Game || (function (createjs) {
                     var theInkContainer = theTween.target;
 
                     var pt = playerContainer.globalToLocal(theInkContainer.x, theInkContainer.y);
-
 
 
                     if (playerContainer.hitTest(pt.x, pt.y)) {
@@ -455,27 +483,24 @@ var Game = Game || (function (createjs) {
                     inkContainer.addChild(ink);
                     self.stage.addChild(inkContainer);
 
-                    
+
 
                     //when ink hits the player
                     createjs.Tween.get(inkContainer, {
                         onChange: onInkContainerTweenChange
                     })
-                        //add a .to for the y  //// self.stage.canvas.height
 
-                        ////add new tween for ink here //http://andysaia.com/blog/tweenjs/
                         .to({
                             y: playerContainer.y + (Math.random() * 200 - 100),
                             x: playerContainer.x + (Math.random() * 200)
                         }, 8000)
-                        
+
                         .call(function (evt) {
                             var theThingBeingTweened = evt.target;
-                                              
+
                             //self.stage.removeChild(theThingBeingTweened);
 
                             var theContainer = theThingBeingTweened.parent;
-
                             theContainer.removeChild(theThingBeingTweened);
 
                             splatContainer = new createjs.Container();
@@ -483,13 +508,16 @@ var Game = Game || (function (createjs) {
                             splatContainer.addChild(splat);
                             splatContainer.x = theThingBeingTweened.x;
                             splatContainer.y = theThingBeingTweened.y;
-
                             theContainer.addChild(splatContainer);
 
-                            //this is where im going to add ink splat sprite
-                            // add child or call a function that adds the sprite
-                            //self.stage.addChild()
                         });
+                    //.wait(3000)
+                    //.call(function (evt) {
+                    //    var theThingBeingTweened = evt.target;
+                    //    self.stage.removeChild(theThingBeingTweened);
+                    //});
+
+
 
 
                     //.wait to remove.
@@ -612,6 +640,7 @@ var Game = Game || (function (createjs) {
 
 
             function spawnEnemy() {
+
                 //spawn enemies
                 console.log("made enemy")
                 enemyContainer = makeEnemy();
@@ -660,14 +689,33 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(enemyContainer);
             }
 
+          
+
+
+
             //load enemy
             function makeEnemy() {
                 var container = new createjs.Container();
-                var enemy = new createjs.Bitmap(queue.getResult("enemy"));
+              //  var speed = .02;
+                 var enemy = new createjs.Bitmap(queue.getResult("enemy"));
+                //var data = {
+                //    images: [queue.getResult("enemysprite")],
+                //    frames: {
+                //        width: 200,
+                //        height: 113,
+                //        frames: 4,
+                //    },
+                //    animations: { tentacles: [0, 3, "tentacles", speed], },
+                //};
+
+                //var spriteSheet = new createjs.SpriteSheet(data);
+                //var sprite = new createjs.Sprite(spriteSheet, "tentacles");
+                container.addChild(enemy);
+
+
                 enemy.x = -100;
                 enemy.y = -56.5;
 
-                container.addChild(enemy);
                 return container;
             }
             var questionPanel;
@@ -831,6 +879,7 @@ var Game = Game || (function (createjs) {
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
 
+                    // if questions array over -> gameOverScreen();
                     printHarpoonCount();
 
                     //self.stage.removeChild(answerContainer
@@ -853,6 +902,24 @@ var Game = Game || (function (createjs) {
             }
 
             function gameOverScreen() {
+
+                gameoverContainer = new createjs.Container();
+                gameoverPanel = new createjs.Bitmap(queue.getResult("questionPanel"));
+                isQuestionDisplayed = true;
+                gameoverPanel.scaleX = 2;
+                gameoverPanel.scaleY = 1.8;
+                gameoverPanel.x = 50;
+                gameoverPanel.y = 32;
+
+                gameoverContainer.addChild(gameoverPanel)
+
+
+
+
+                replay();
+
+                self.stage.addChild(gameoverContainer);
+
 
             }
 
