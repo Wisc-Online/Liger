@@ -122,8 +122,8 @@ var Game = Game || (function (createjs) {
                     src: assetsPath + "splat.png"
                 },
                 {
-                    id: "enemysprite",
-                    src: assetsPath + "enemysprite.png"
+                    id: "squidsprite",
+                    src: assetsPath + "squidsprite2.png"
                 }
 
             ];
@@ -253,12 +253,6 @@ var Game = Game || (function (createjs) {
             //var redgreenYPos = 200;
             //var animation;
 
-            /////////////////////////////////looking to add spritesheets/////////////////////
-            //////////////////////////looking to finish artwork ///////
-            ////////////////////looking to finish json and keep track of high score//////////
-            //////add audio?/////
-            ////endgame screen after all questions delivered + answered //
-
 
             function printHarpoonCount() {
                 harpoonCountLabel.text = " " + harpoonCount;
@@ -288,30 +282,31 @@ var Game = Game || (function (createjs) {
                 playerContainer.addChild(sprite);
                 self.stage.addChild(playerContainer);
                 playerContainer.x = 400;
-                playerContainer.y = 500;
-
+                playerContainer.y = 550;
+                playerContainer.scaleX = 0.7;
+                playerContainer.scaleY = 0.7;
 
                 // load enemy sprite
-                squidContainer = new createjs.Container();
-                var speed = .02;
-                var data = {
-                    images: [queue.getResult("enemysprite")],
-                    frames: {
-                        width: 200,
-                        height: 113,
-                        frames: 4,
-                    },
-                    animations: {
-                        pegleg: [0, 3, "pegleg", speed],
-                    },
-                };
+                //squidContainer = new createjs.Container();
+                //var speed = .02;
+                //var data = {
+                //    images: [queue.getResult("squidsprite")],
+                //    frames: {
+                //        width: 125,
+                //        height: 100,
+                //        frames: 4,
+                //    },
+                //    animations: {
+                //        pegleg: [0, 3, "pegleg", speed],
+                //    },
+                //};
 
-                var spriteSheet = new createjs.SpriteSheet(data);
-                var sprite = new createjs.Sprite(spriteSheet, "pegleg");
-                squidContainer.addChild(sprite);
-                self.stage.addChild(squidContainer);
-                squidContainer.x = 300;
-                squidContainer.y = 233;
+                //var spriteSheet = new createjs.SpriteSheet(data);
+                //var sprite = new createjs.Sprite(spriteSheet, "pegleg");
+                //squidContainer.addChild(sprite);
+                //self.stage.addChild(squidContainer);
+                //squidContainer.x = 300;
+                //squidContainer.y = 233;
 
 
 
@@ -397,7 +392,7 @@ var Game = Game || (function (createjs) {
                             Score = Score - 20;
                             printScore();
                             //deliver answers?
-                            //  printHarpoonCount();
+                            //printHarpoonCount();
                         }
                         //  isQuestionDisplayed = false
 
@@ -496,6 +491,7 @@ var Game = Game || (function (createjs) {
                         }, 8000)
 
                         .call(function (evt) {
+
                             var theThingBeingTweened = evt.target;
 
                             //self.stage.removeChild(theThingBeingTweened);
@@ -503,25 +499,23 @@ var Game = Game || (function (createjs) {
                             var theContainer = theThingBeingTweened.parent;
                             theContainer.removeChild(theThingBeingTweened);
 
-                            splatContainer = new createjs.Container();
+                            var splatContainer = new createjs.Container();
                             splat = new createjs.Bitmap(queue.getResult("splat"));
                             splatContainer.addChild(splat);
                             splatContainer.x = theThingBeingTweened.x;
                             splatContainer.y = theThingBeingTweened.y;
                             theContainer.addChild(splatContainer);
 
+                            setTimeout(function () {
+
+                                createjs.Tween.get(splatContainer).to({ alpha: 0 }, 1000).call(function () {
+                                    theContainer.removeChild(splatContainer);
+                                })
+
+                            }, 3000);
+
                         });
-                    //.wait(3000)
-                    //.call(function (evt) {
-                    //    var theThingBeingTweened = evt.target;
-                    //    self.stage.removeChild(theThingBeingTweened);
-                    //});
-
-
-
-
-                    //.wait to remove.
-
+    
 
                     madeInk = true;
                 }
@@ -643,7 +637,41 @@ var Game = Game || (function (createjs) {
 
                 //spawn enemies
                 console.log("made enemy")
-                enemyContainer = makeEnemy();
+                enemyContainer =
+
+                 //  var container = new createjs.Container();
+                squidContainer = new createjs.Container();
+                var speed = .02;
+                // var enemy = new createjs.Bitmap(queue.getResult("enemy"));
+                var data = {
+                    images: [queue.getResult("squidsprite")],
+                    frames: {
+                        width: 125,
+                        height: 100,
+                        frames: 4,
+                    },
+                    animations: {
+                        pegleg: [0, 3, "pegleg", speed],
+                    },
+                };
+                //container.addChild(enemy);
+
+                //enemy.x = -100;
+                //enemy.y = -56.5;
+
+                //return container;
+
+
+
+                var spriteSheet = new createjs.SpriteSheet(data);
+                var sprite = new createjs.Sprite(spriteSheet, "pegleg");
+                squidContainer.addChild(sprite);
+                self.stage.addChild(squidContainer);
+                //squidContainer.x = 300;
+                //squidContainer.y = 233;
+
+
+                    //makeEnemy();
                 enemyContainer.scaleX = 0;
                 enemyContainer.scaleY = 0;
                 enemyContainer.alpha = 0;
@@ -679,7 +707,7 @@ var Game = Game || (function (createjs) {
                             loop: true
                         })
                             .to({
-                                x: totalWidth
+                                x: 700
                             }, totalTime, createjs.Ease.sinInOut)
                             .to({
                                 x: 50
@@ -695,28 +723,41 @@ var Game = Game || (function (createjs) {
 
             //load enemy
             function makeEnemy() {
-                var container = new createjs.Container();
-              //  var speed = .02;
-                 var enemy = new createjs.Bitmap(queue.getResult("enemy"));
-                //var data = {
-                //    images: [queue.getResult("enemysprite")],
-                //    frames: {
-                //        width: 200,
-                //        height: 113,
-                //        frames: 4,
-                //    },
-                //    animations: { tentacles: [0, 3, "tentacles", speed], },
-                //};
+              //  var container = new createjs.Container();
+                squidContainer = new createjs.Container();
+                var speed = .02;
+                // var enemy = new createjs.Bitmap(queue.getResult("enemy"));
+                var data = {
+                    images: [queue.getResult("squidsprite")],
+                    frames: {
+                        width: 125,
+                        height: 100,
+                        frames: 4,
+                    },
+                    animations: {
+                        pegleg: [0, 3, "pegleg", speed],
+                    },
+                };
+                //container.addChild(enemy);
 
-                //var spriteSheet = new createjs.SpriteSheet(data);
-                //var sprite = new createjs.Sprite(spriteSheet, "tentacles");
-                container.addChild(enemy);
+                //enemy.x = -100;
+                //enemy.y = -56.5;
+
+                //return container;
 
 
-                enemy.x = -100;
-                enemy.y = -56.5;
 
-                return container;
+                var spriteSheet = new createjs.SpriteSheet(data);
+                var sprite = new createjs.Sprite(spriteSheet, "pegleg");
+                squidContainer.addChild(sprite);
+                self.stage.addChild(squidContainer);
+                squidContainer.x = 300;
+                squidContainer.y = 233;
+
+
+
+
+
             }
             var questionPanel;
             var questionContainer
@@ -835,8 +876,8 @@ var Game = Game || (function (createjs) {
                 var feedbackPanel = new createjs.Bitmap(queue.getResult("feedbackPanel"));
                 var feedbackText;
                 isFeedbackDisplayed = true;
-                feedbackPanel.scaleX = 2;
-                feedbackPanel.scaleY = .75;
+                feedbackPanel.scaleX = .35;
+                feedbackPanel.scaleY = .20;
                 feedbackPanel.x = 50;
                 feedbackPanel.y = 410;
 
@@ -974,8 +1015,8 @@ var Game = Game || (function (createjs) {
 
                     if (playerContainer.y < 300)
                         playerContainer.y = 300;
-                    else if (playerContainer.y > 500)
-                        playerContainer.y = 500;
+                    else if (playerContainer.y > 480)
+                        playerContainer.y = 480;
                 }
             }
 
