@@ -63,7 +63,7 @@ var Game = Game || (function (createjs) {
                 },
                 {
                     id: "background",
-                    src: assetsPath + "backgroundship.jpg"
+                    src: assetsPath + "backgroundsprite.png"
                 },
                 {
                     id: "panel",
@@ -124,8 +124,12 @@ var Game = Game || (function (createjs) {
                 {
                     id: "squidsprite",
                     src: assetsPath + "squidsprite2.png"
+                },
+                {
+                    id: "gameover",
+                    src: assetsPath + "GameOver.mp3"
                 }
-
+                
             ];
 
             var queue = new createjs.LoadQueue(false);
@@ -141,10 +145,31 @@ var Game = Game || (function (createjs) {
                 var gameBackground = new createjs.Container();
                 gameBackground.x = 0;
                 gameBackground.y = 0;
-                var bgimage = new createjs.Bitmap(queue.getResult("background"))
-                gameBackground.addChild(bgimage)
+
+                var speed = .02;
+                var data = {
+                    images: [queue.getResult("background")],
+                    frames: {
+                        width: 800,
+                        height: 600,
+                        frames: 2,
+                    },
+                    animations: {
+                        pegleg: [0, 1, "pegleg", speed],
+                    },
+                };
+
+                var spriteSheet = new createjs.SpriteSheet(data);
+                var sprite = new createjs.Sprite(spriteSheet, "pegleg");
+                gameBackground.addChild(sprite);
                 self.stage.addChild(gameBackground);
+                gameBackground.x = 0;
+                gameBackground.y = 0;
+
+                //call intro screen
                 introductionScreen();
+
+
 
             }
             //load introduction screen/play button
@@ -176,7 +201,13 @@ var Game = Game || (function (createjs) {
                 directionsText.x = panelBG.x + 75;
                 directionsText.y = panelBG.y + 150;
 
+
                 var logo = new createjs.Bitmap(queue.getResult("logo"))
+                logo.alpha = 0;
+                createjs.Tween.get(logo).wait(1000).to({ alpha: 1, visible: true }, 1000).call(handleComplete);
+                function handleComplete() {
+                    //self.stage.addChild(logo)
+                }
 
                 logo.regX = 180;
                 logo.regY = 60;
@@ -196,8 +227,12 @@ var Game = Game || (function (createjs) {
 
                 playButton.addEventListener("click", handleClick);
 
+                var gameover = createjs.Sound.createInstance("gameover", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0});
+
+
                 function handleClick(event) {
                     self.stage.removeChild(instructionsScreen);
+                    createjs.Sound.play("gameover");
 
                     StartInteraction();
 
@@ -920,7 +955,9 @@ var Game = Game || (function (createjs) {
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
 
-                    // if questions array over -> gameOverScreen();
+                    
+                    // if questions array over ->
+                    gameOverScreen();
                     printHarpoonCount();
 
                     //self.stage.removeChild(answerContainer
@@ -952,14 +989,37 @@ var Game = Game || (function (createjs) {
                 gameoverPanel.x = 50;
                 gameoverPanel.y = 32;
 
-                gameoverContainer.addChild(gameoverPanel)
+                var gameoverText = new createjs.Text("Game Over!", "Bold 60px Alegreya", "#000000");
+                gameoverText.x = gameoverPanel.x + 70;
+                gameoverText.y = gameoverPanel.y + 45;
 
 
+             
 
-
-                replay();
+              //  replay();
 
                 self.stage.addChild(gameoverContainer);
+
+                var redx = new createjs.Bitmap(queue.getResult("redx"))
+                redx.x = gameoverPanel.x + 500;
+                redx.y = gameoverPanel.y + 230;
+                redx.scaleX = 2;
+                redx.scaleY = 2;
+
+
+                redx.addEventListener("click", handleClick);
+
+
+                function handleClick(event) {
+
+                    self.stage.removeChild(gameoverContainer);
+
+                }
+
+
+
+                gameoverContainer.addChild(gameoverPanel, gameoverText, redx);
+
 
 
             }
