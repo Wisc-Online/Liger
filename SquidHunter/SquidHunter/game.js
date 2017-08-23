@@ -63,7 +63,7 @@ var Game = Game || (function (createjs) {
                 },
                 {
                     id: "background",
-                    src: assetsPath + "backgroundsprite.png"
+                    src: assetsPath + "newbackground.png"
                 },
                 {
                     id: "panel",
@@ -152,10 +152,10 @@ var Game = Game || (function (createjs) {
                     frames: {
                         width: 800,
                         height: 600,
-                        frames: 2,
+                        frames: 1,
                     },
                     animations: {
-                        pegleg: [0, 1, "pegleg", speed],
+                        pegleg: [0, 0, "pegleg", speed],
                     },
                 };
 
@@ -303,8 +303,8 @@ var Game = Game || (function (createjs) {
                 var data = {
                     images: [queue.getResult("piratesprite")],
                     frames: {
-                        width: 60,
-                        height: 100,
+                        width: 240,
+                        height: 360,
                         frames: 4,
                     },
                     animations: {
@@ -318,8 +318,8 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(playerContainer);
                 playerContainer.x = 400;
                 playerContainer.y = 550;
-                playerContainer.scaleX = 0.7;
-                playerContainer.scaleY = 0.7;
+                playerContainer.scaleX = .5;
+                playerContainer.scaleY = .5;
 
                 // load enemy sprite
                 //squidContainer = new createjs.Container();
@@ -927,6 +927,8 @@ var Game = Game || (function (createjs) {
                             feedbackText = new createjs.Text("I'm sorry the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
                         }
                     }
+                    //need another if for end of game game over screen call
+
 
                     //  feedbackText = new createjs.Text("InCorrect:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
                 }
@@ -957,7 +959,7 @@ var Game = Game || (function (createjs) {
 
                     
                     // if questions array over ->
-                    gameOverScreen();
+                //    gameOverScreen();
                     printHarpoonCount();
 
                     //self.stage.removeChild(answerContainer
