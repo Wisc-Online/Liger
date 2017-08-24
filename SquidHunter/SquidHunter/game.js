@@ -115,7 +115,7 @@ var Game = Game || (function (createjs) {
                 },
                 {
                     id: "piratesprite",
-                    src: assetsPath + "piratesprite.png"
+                    src: assetsPath + "newpirate.png"
                 },
                 {
                     id: "splat",
@@ -128,7 +128,19 @@ var Game = Game || (function (createjs) {
                 {
                     id: "gameover",
                     src: assetsPath + "GameOver.mp3"
-                }
+                },
+                {
+                    id: "harpoonsound",
+                    src: assetsPath + "harpoonsound.mp3"
+                },
+            {
+                id: "oceanwave",
+                src: assetsPath + "oceanwave.mp3"
+            },
+              {
+                  id: "cheer",
+                  src: assetsPath + "cheer.mp3"
+              }
                 
             ];
 
@@ -152,10 +164,10 @@ var Game = Game || (function (createjs) {
                     frames: {
                         width: 800,
                         height: 600,
-                        frames: 1,
+                        frames: 3,
                     },
                     animations: {
-                        pegleg: [0, 0, "pegleg", speed],
+                        pegleg: [0, 2, "pegleg", speed],
                     },
                 };
 
@@ -178,28 +190,28 @@ var Game = Game || (function (createjs) {
                 var instructionsScreen = new createjs.Container();
 
                 var panelBG = new createjs.Bitmap(queue.getResult("panel"));
-                panelBG.x = 50;
-                panelBG.y = 100;
+                panelBG.x = 0;
+                panelBG.y = 50;
 
-                titleText = new createjs.Text(gameData.Title, " Bold 30px Alegreya", "#000000");
-                titleText.x = panelBG.x + 75;
-                titleText.y = panelBG.y + 50;
+                titleText = new createjs.Text(gameData.Title, " Bold 35px Alegreya", "#000000");
+                titleText.x = panelBG.x + 130;
+                titleText.y = panelBG.y + 75;
 
                 var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
 
-                playButton.regX = 97;
-                playButton.regY = 100;
-                playButton.x = panelBG.x + 550;
-                playButton.y = panelBG.y + 300;
+                playButton.regX = 100;
+                playButton.regY = 150;
+                playButton.x = panelBG.x + 600;
+                playButton.y = panelBG.y + 400;
                 playButton.scaleX = playButton.scaleY = 0.20;
 
                 var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#000000");
-                descriptionText.x = panelBG.x + 75;
-                descriptionText.y = panelBG.y + 100;
+                descriptionText.x = panelBG.x + 130;
+                descriptionText.y = panelBG.y + 125;
 
                 var directionsText = new createjs.Text("Directions:" + " " + gameData.Directions, "20px Alegreya", "#000000");
-                directionsText.x = panelBG.x + 75;
-                directionsText.y = panelBG.y + 150;
+                directionsText.x = panelBG.x + 130;
+                directionsText.y = panelBG.y + 175;
 
 
                 var logo = new createjs.Bitmap(queue.getResult("logo"))
@@ -212,7 +224,7 @@ var Game = Game || (function (createjs) {
                 logo.regX = 180;
                 logo.regY = 60;
                 logo.x = panelBG.x + 220;
-                logo.y = panelBG.y + 210;
+                logo.y = panelBG.y + 275;
                 logo.scaleX = logo.scaleY = 0.40;
 
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
@@ -227,12 +239,12 @@ var Game = Game || (function (createjs) {
 
                 playButton.addEventListener("click", handleClick);
 
-                var gameover = createjs.Sound.createInstance("gameover", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0});
+             //   var gameover = createjs.Sound.createInstance("gameover", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0});
 
 
                 function handleClick(event) {
                     self.stage.removeChild(instructionsScreen);
-                    createjs.Sound.play("gameover");
+                //    createjs.Sound.play("gameover");
 
                     StartInteraction();
 
@@ -279,14 +291,8 @@ var Game = Game || (function (createjs) {
             var playerMovementFriction = .98;
 
             var playerContainer;
-           // var squidContainer;
 
             var currentQuestionNumber = 0;
-
-            //var spriteSheet;
-            //var redgreenXPos = 200;
-            //var redgreenYPos = 200;
-            //var animation;
 
 
             function printHarpoonCount() {
@@ -297,18 +303,24 @@ var Game = Game || (function (createjs) {
 
             function StartInteraction() {
 
+
+                var oceanwave = createjs.Sound.createInstance("oceanwave", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+
+                createjs.Sound.play("oceanwave");
+
+
                 //load pirate
                 playerContainer = new createjs.Container();
                 var speed = .02;
                 var data = {
                     images: [queue.getResult("piratesprite")],
                     frames: {
-                        width: 240,
-                        height: 360,
-                        frames: 4,
+                        width: 250,
+                        height: 350,
+                        frames: 2,
                     },
                     animations: {
-                        pegleg: [0, 3, "pegleg", speed],
+                        pegleg: [0, 1, "pegleg", speed],
                     },
                 };
 
@@ -316,34 +328,10 @@ var Game = Game || (function (createjs) {
                 var sprite = new createjs.Sprite(spriteSheet, "pegleg");
                 playerContainer.addChild(sprite);
                 self.stage.addChild(playerContainer);
-                playerContainer.x = 400;
-                playerContainer.y = 550;
+                playerContainer.x = 300;
+                playerContainer.y = 420;
                 playerContainer.scaleX = .5;
                 playerContainer.scaleY = .5;
-
-                // load enemy sprite
-                //squidContainer = new createjs.Container();
-                //var speed = .02;
-                //var data = {
-                //    images: [queue.getResult("squidsprite")],
-                //    frames: {
-                //        width: 125,
-                //        height: 100,
-                //        frames: 4,
-                //    },
-                //    animations: {
-                //        pegleg: [0, 3, "pegleg", speed],
-                //    },
-                //};
-
-                //var spriteSheet = new createjs.SpriteSheet(data);
-                //var sprite = new createjs.Sprite(spriteSheet, "pegleg");
-                //squidContainer.addChild(sprite);
-                //self.stage.addChild(squidContainer);
-                //squidContainer.x = 300;
-                //squidContainer.y = 233;
-
-
 
 
                 //load controls
@@ -433,7 +421,6 @@ var Game = Game || (function (createjs) {
 
                     }
                 }
-
 
 
 
@@ -596,6 +583,10 @@ var Game = Game || (function (createjs) {
                                     makeHarpoon();
                                     harpoonCount--;
                                     console.log(harpoonCount);
+                                    var harpoonsound = createjs.Sound.createInstance("harpoonsound", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+
+                                    createjs.Sound.play("harpoonsound");
+
 
                                     printHarpoonCount();
                                 }
@@ -833,14 +824,14 @@ var Game = Game || (function (createjs) {
                 questionContainer = new createjs.Container();
                 questionPanel = new createjs.Bitmap(queue.getResult("questionPanel"));
                 isQuestionDisplayed = true;
-                questionPanel.scaleX = 2;
-                questionPanel.scaleY = 1.8;
-                questionPanel.x = 50;
+                questionPanel.scaleX = 2.2;
+                questionPanel.scaleY = 2;
+                questionPanel.x = 10;
                 questionPanel.y = 32;
 
                 var questionsText = new createjs.Text("Question:" + " " + question.Text, "Bold 20px Alegreya", "#000000");
-                questionsText.x = questionPanel.x + 70;
-                questionsText.y = questionPanel.y + 45;
+                questionsText.x = questionPanel.x + 100;
+                questionsText.y = questionPanel.y + 70;
 
                 questionContainer.name = "question";
                 questionContainer.addChild(questionPanel, questionsText)
@@ -864,11 +855,11 @@ var Game = Game || (function (createjs) {
                     var answerContainer = new createjs.Container();
 
                     var answerHolder = new createjs.Bitmap(queue.getResult("answerHolder"))
-                    answersText.x = questionPanel.x + 90;
-                    answersText.y = questionPanel.y + 60 + stackIncrement;
+                    answersText.x = questionPanel.x + 100;
+                    answersText.y = questionPanel.y + 80 + stackIncrement;
 
 
-                    answerHolder.scaleX = 1.8;
+                    answerHolder.scaleX = 1.3;
 
                     answerHolder.x = answersText.x - 15;
                     answerHolder.y = answersText.y - 10;
@@ -888,9 +879,16 @@ var Game = Game || (function (createjs) {
                             if (evt.currentTarget.IsCorrect) {
                                 // alert("correct")
                                 //this is where code goes to change color of holder container and display the answer
+                                
+                                var cheer = createjs.Sound.createInstance("cheer", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+
+                                createjs.Sound.play("cheer");
+
                                 deliverFeedback("correct");
                             } else {
                                 //    alert("incorrect" + evt.currentTarget.IsCorrect);
+
+
                                 deliverFeedback("incorrect");
                             }
                         }
@@ -914,7 +912,7 @@ var Game = Game || (function (createjs) {
                 feedbackPanel.scaleX = .35;
                 feedbackPanel.scaleY = .20;
                 feedbackPanel.x = 50;
-                feedbackPanel.y = 410;
+                feedbackPanel.y = 420;
 
                 //add harpoon count
                 //this will be the correct answer
@@ -938,7 +936,7 @@ var Game = Game || (function (createjs) {
                 feedbackText.y = feedbackPanel.y + 40
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
-                redx.x = feedbackPanel.x + 560;
+                redx.x = feedbackPanel.x + 580;
                 redx.y = feedbackPanel.y + 90;
 
                 redx.addEventListener("click", handleClick);

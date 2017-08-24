@@ -1103,6 +1103,7 @@ var Game = Game || (function (createjs, $) {
                 });
             }
 
+
             //this function removes matches and generates new circles
             function compactTable() {
                 mainBox.mouseEnabled = false;
