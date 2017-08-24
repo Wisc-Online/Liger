@@ -140,8 +140,19 @@ var Game = Game || (function (createjs) {
               {
                   id: "cheer",
                   src: assetsPath + "cheer.mp3"
-              }
+              },
+            {
+                id: "wrong",
+                src: assetsPath + "wrong.mp3"
+            },
+               {
+                   id: "inksplat",
+                   src: assetsPath + "inksplat.mp3"
+               }
+
                 
+
+
             ];
 
             var queue = new createjs.LoadQueue(false);
@@ -293,6 +304,7 @@ var Game = Game || (function (createjs) {
             var playerContainer;
 
             var currentQuestionNumber = 0;
+
 
 
             function printHarpoonCount() {
@@ -527,6 +539,12 @@ var Game = Game || (function (createjs) {
                             splatContainer.x = theThingBeingTweened.x;
                             splatContainer.y = theThingBeingTweened.y;
                             theContainer.addChild(splatContainer);
+
+                            var inksplat = createjs.Sound.createInstance("inksplat", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+
+                            createjs.Sound.play("inksplat");
+                            
+                            
 
                             setTimeout(function () {
 
@@ -888,7 +906,9 @@ var Game = Game || (function (createjs) {
                             } else {
                                 //    alert("incorrect" + evt.currentTarget.IsCorrect);
 
+                                var wrong = createjs.Sound.createInstance("wrong", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
 
+                                createjs.Sound.play("wrong");
                                 deliverFeedback("incorrect");
                             }
                         }
