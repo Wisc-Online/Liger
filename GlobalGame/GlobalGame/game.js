@@ -753,6 +753,7 @@ var Game = Game || (function (createjs, $) {
                     }
 
 
+
                     if (evt.currentTarget.targetNeighbour != null) {
                         var targetCircle = evt.currentTarget.targetNeighbour;
 

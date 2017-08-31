@@ -148,9 +148,17 @@ var Game = Game || (function (createjs) {
                {
                    id: "inksplat",
                    src: assetsPath + "inksplat.mp3"
-               }
+               },
+                {
+                    id: "musicOn",
+                    src: assetsPath + "musicOn.png"
+                },
+                {
+                    id: "musicOff",
+                    src: assetsPath + "musicOff.png"
+                }
 
-                
+
 
 
             ];
@@ -189,12 +197,87 @@ var Game = Game || (function (createjs) {
                 gameBackground.x = 0;
                 gameBackground.y = 0;
 
+
                 //call intro screen
                 introductionScreen();
 
 
 
             }
+
+
+            function handleButtonHover(event) {
+
+                var initScareX = 1;
+                var initScareY = 1;
+                if (event.type == "mouseover") {
+                    createjs.Tween.get(event.currentTarget).to({ scaleX: initScareX * 1.0625, scaleY: initScareY * 1.0625 }, 100)
+                                                            .to({ scaleX: initScareX, scaleY: initScareY }, 100)
+                                                            .to({ scaleX: initScareX * 1.0625, scaleY: initScareY * 1.0625 }, 100);
+                }
+                if (event.type == "mouseout") {
+                    createjs.Tween.get(event.currentTarget).to({ scaleX: initScareX, scaleY: initScareY }, 100);
+                }
+
+            }
+
+
+
+
+            function createSoundContainer() {
+                var scaleX = .75;
+                var scaleY = .75;
+
+                var soundContainer = new createjs.Container();
+                soundContainer.x = 0;
+                soundContainer.y = 0;
+                soundContainer.visible = true;
+                soundContainer.name = "theSoundContainer";
+                soundContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 50, 50));
+                soundContainer.cursor = 'pointer';
+
+                var sound = new createjs.Bitmap(queue.getResult("musicOn"));
+                sound.name = "musicOnImage"
+                sound.scaleX = scaleX;
+                sound.scaleY = scaleY;
+                soundContainer.addChild(sound);
+                soundContainer.addEventListener("click", function (evt) {
+                    if (musicOn == true) {
+
+                        musicOn = false;
+                        var sound = new createjs.Bitmap(queue.getResult("musicOff"));
+                        sound.scaleX = scaleX;
+                        sound.scaleY = scaleY;
+                        sound.name = "musicOffImage"
+                        var destroy = evt.currentTarget.getChildByName("musicOnImage");
+                        evt.currentTarget.removeChild(destroy);
+                        evt.currentTarget.addChild(sound);
+                        createjs.Sound.setMute(true);
+                    }
+                    else {
+                        musicOn = true;
+                        var sound = new createjs.Bitmap(queue.getResult("musicOn"));
+                        sound.scaleX = scaleX;
+                        sound.scaleY = scaleY;
+                        sound.name = "musicOnImage"
+                        var destroy =  evt.currentTarget.getChildByName("musicOffImage");
+                        evt.currentTarget.removeChild(destroy);
+                        evt.currentTarget.addChild(sound);
+                        createjs.Sound.setMute(false);
+                    }
+
+
+                    }
+                );
+
+
+                soundContainer.on("mouseover", handleButtonHover);
+                soundContainer.on("mouseout", handleButtonHover);
+                return soundContainer;
+            }
+
+          
+           
             //load introduction screen/play button
             function introductionScreen() {
 
@@ -246,16 +329,19 @@ var Game = Game || (function (createjs) {
                     scaleX: .4,
                     scaleY: .4
                 }, 2000);
-                self.stage.addChild(instructionsScreen);
 
+                var soundContain = createSoundContainer();
+                
+                self.stage.addChild(instructionsScreen);
+                self.stage.addChild(soundContain);
                 playButton.addEventListener("click", handleClick);
 
-             //   var gameover = createjs.Sound.createInstance("gameover", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0});
-
+                //   var gameover = createjs.Sound.createInstance("gameover", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0});
+                
 
                 function handleClick(event) {
                     self.stage.removeChild(instructionsScreen);
-                //    createjs.Sound.play("gameover");
+                    //    createjs.Sound.play("gameover");
 
                     StartInteraction();
 
@@ -305,6 +391,7 @@ var Game = Game || (function (createjs) {
 
             var currentQuestionNumber = 0;
 
+            var musicOn = true;
 
 
             function printHarpoonCount() {
@@ -317,8 +404,10 @@ var Game = Game || (function (createjs) {
 
 
                 var oceanwave = createjs.Sound.createInstance("oceanwave", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+                oceanwave.volume = oceanwave.volume * .5;
 
                 createjs.Sound.play("oceanwave");
+                // oceanwave.volume = oceanwave.volume * .05
 
 
                 //load pirate
@@ -543,8 +632,8 @@ var Game = Game || (function (createjs) {
                             var inksplat = createjs.Sound.createInstance("inksplat", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
 
                             createjs.Sound.play("inksplat");
-                            
-                            
+
+
 
                             setTimeout(function () {
 
@@ -555,7 +644,7 @@ var Game = Game || (function (createjs) {
                             }, 3000);
 
                         });
-    
+
 
                     madeInk = true;
                 }
@@ -715,7 +804,7 @@ var Game = Game || (function (createjs) {
                 //squidContainer.y = 233;
 
 
-                    //makeEnemy();
+                //makeEnemy();
                 enemyContainer.scaleX = 0;
                 enemyContainer.scaleY = 0;
                 enemyContainer.alpha = 0;
@@ -761,13 +850,13 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(enemyContainer);
             }
 
-          
+
 
 
 
             //load enemy
             function makeEnemy() {
-              //  var container = new createjs.Container();
+                //  var container = new createjs.Container();
                 squidContainer = new createjs.Container();
                 var speed = .02;
                 // var enemy = new createjs.Bitmap(queue.getResult("enemy"));
@@ -897,7 +986,7 @@ var Game = Game || (function (createjs) {
                             if (evt.currentTarget.IsCorrect) {
                                 // alert("correct")
                                 //this is where code goes to change color of holder container and display the answer
-                                
+
                                 var cheer = createjs.Sound.createInstance("cheer", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
 
                                 createjs.Sound.play("cheer");
@@ -975,9 +1064,9 @@ var Game = Game || (function (createjs) {
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
 
-                    
+
                     // if questions array over ->
-                //    gameOverScreen();
+                    //    gameOverScreen();
                     printHarpoonCount();
 
                     //self.stage.removeChild(answerContainer
@@ -1014,9 +1103,9 @@ var Game = Game || (function (createjs) {
                 gameoverText.y = gameoverPanel.y + 45;
 
 
-             
 
-              //  replay();
+
+                //  replay();
 
                 self.stage.addChild(gameoverContainer);
 
