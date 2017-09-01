@@ -197,11 +197,8 @@ var Game = Game || (function (createjs) {
                 gameBackground.x = 0;
                 gameBackground.y = 0;
 
-
                 //call intro screen
                 introductionScreen();
-
-
 
             }
 
@@ -220,7 +217,6 @@ var Game = Game || (function (createjs) {
                 }
 
             }
-
 
 
 
@@ -403,12 +399,12 @@ var Game = Game || (function (createjs) {
             function StartInteraction() {
 
 
-                var oceanwave = createjs.Sound.createInstance("oceanwave", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-                oceanwave.volume = oceanwave.volume * .5;
+                  var oceanwave = createjs.Sound.createInstance("oceanwave");
+                  oceanwave.volume = oceanwave.volume * .2;
 
-                createjs.Sound.play("oceanwave");
-                // oceanwave.volume = oceanwave.volume * .05
-
+            //    createjs.Sound.play("oceanwave");
+            
+                oceanwave.play();
 
                 //load pirate
                 playerContainer = new createjs.Container();
@@ -631,6 +627,7 @@ var Game = Game || (function (createjs) {
 
                             var inksplat = createjs.Sound.createInstance("inksplat", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
 
+
                             createjs.Sound.play("inksplat");
 
 
@@ -690,9 +687,11 @@ var Game = Game || (function (createjs) {
                                     makeHarpoon();
                                     harpoonCount--;
                                     console.log(harpoonCount);
-                                    var harpoonsound = createjs.Sound.createInstance("harpoonsound", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
 
-                                    createjs.Sound.play("harpoonsound");
+
+                                    var harpoonsound = createjs.Sound.createInstance("harpoonsound");
+                                    harpoonsound.volume = harpoonsound.volume * .2;
+                                    harpoonsound.play();
 
 
                                     printHarpoonCount();
@@ -849,8 +848,6 @@ var Game = Game || (function (createjs) {
 
                 self.stage.addChild(enemyContainer);
             }
-
-
 
 
 
