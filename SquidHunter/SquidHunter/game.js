@@ -57,109 +57,37 @@ var Game = Game || (function (createjs) {
             //declare each individual asset
             var assets = [
 
-                {
-                    id: "start_button",
-                    src: assetsPath + "SequencePlayButton.png"
-                },
-                {
-                    id: "background",
-                    src: assetsPath + "newbackground.png"
-                },
-                {
-                    id: "panel",
-                    src: assetsPath + "Panel.png"
-                },
-                {
-                    id: "playbutton",
-                    src: assetsPath + "SequencePlayButton.png"
-                },
-                {
-                    id: "pirate",
-                    src: assetsPath + "pirate.png"
-                },
-                {
-                    id: "enemy",
-                    src: assetsPath + "enemy.png"
-                },
-                {
-                    id: "harpoon",
-                    src: assetsPath + "harpoon.png"
-                },
-                {
-                    id: "ink",
-                    src: assetsPath + "ink.png"
-                },
-                {
-                    id: "questionPanel",
-                    src: assetsPath + "SmallPanel.png"
-                },
-                {
-                    id: "feedbackPanel",
-                    src: assetsPath + "SmallPanel2.png"
-                },
-                {
-                    id: "redx",
-                    src: assetsPath + "redx.png"
-                },
-                {
-                    id: "answerHolder",
-                    src: assetsPath + "answerHolder.png"
-                },
-                {
-                    id: "logo",
-                    src: assetsPath + "logo.png"
-                },
-                {
-                    id: "treasure",
-                    src: assetsPath + "treasure.png"
-                },
-                {
-                    id: "piratesprite",
-                    src: assetsPath + "newpirate.png"
-                },
-                {
-                    id: "splat",
-                    src: assetsPath + "splat.png"
-                },
-                {
-                    id: "squidsprite",
-                    src: assetsPath + "squidsprite2.png"
-                },
-                {
-                    id: "gameover",
-                    src: assetsPath + "GameOver.mp3"
-                },
-                {
-                    id: "harpoonsound",
-                    src: assetsPath + "harpoonsound.mp3"
-                },
-            {
-                id: "oceanwave",
-                src: assetsPath + "oceanwave.mp3"
-            },
-              {
-                  id: "cheer",
-                  src: assetsPath + "cheer.mp3"
-              },
-            {
-                id: "wrong",
-                src: assetsPath + "wrong.mp3"
-            },
-               {
-                   id: "inksplat",
-                   src: assetsPath + "inksplat.mp3"
-               },
-                {
-                    id: "musicOn",
-                    src: assetsPath + "musicOn.png"
-                },
-                {
-                    id: "musicOff",
-                    src: assetsPath + "musicOff.png"
-                }
-
-
-
+                {id: "start_button", src: assetsPath + "SequencePlayButton.png"},
+                {id: "background",src: assetsPath + "newbackground.png"},
+                {id: "panel",src: assetsPath + "Panel.png"},
+                {id: "playbutton",src: assetsPath + "SequencePlayButton.png"},
+                {id: "yesbutton",src: assetsPath + "yesButton.png"},
+                {id: "nobutton",src: assetsPath + "noButton.png"},
+                {id: "pirate",src: assetsPath + "pirate.png"},
+                {id: "enemy",src: assetsPath + "enemy.png"},
+                {id: "harpoon",src: assetsPath + "harpoon.png"},
+                {id: "ink",src: assetsPath + "ink.png"},
+                {id: "questionPanel",src: assetsPath + "SmallPanel.png"},
+                {id: "feedbackPanel",src: assetsPath + "SmallPanel2.png"},
+                {id: "redx",src: assetsPath + "redx.png"},
+                {id: "answerHolder",src: assetsPath + "answerHolder.png"},
+                {id: "logo",src: assetsPath + "logo.png"},
+                {id: "treasure",src: assetsPath + "treasure.png"},
+                {id: "piratesprite",src: assetsPath + "newpirate.png"},
+                {id: "splat",src: assetsPath + "splat.png"},
+                {id: "squidsprite",src: assetsPath + "squidsprite2.png"},
+                {id: "gameover",src: assetsPath + "GameOver.mp3"},
+                {id: "harpoonsound",src: assetsPath + "harpoonsound.mp3"},
+                {id: "oceanwave",src: assetsPath + "oceanwave.mp3"},
+                {id: "cheer",src: assetsPath + "cheer.mp3"},
+                {id: "wrong",src: assetsPath + "wrong.mp3"},
+                {id: "inksplat",src: assetsPath + "inksplat.mp3"},
+                {id: "musicOn",src: assetsPath + "musicOn.png"},
+                {id: "musicOff",src: assetsPath + "musicOff.png"},
+                {id: "arrowleft",src: assetsPath + "arrowleft.png"},
+                {id: "arrowright",src: assetsPath + "arrowright.png"},
+                {id: "arrowup",src: assetsPath + "arrowup.png"},
+                {id: "arrowdown",src: assetsPath + "arrowdown.png"}
 
             ];
 
@@ -197,8 +125,12 @@ var Game = Game || (function (createjs) {
                 gameBackground.x = 0;
                 gameBackground.y = 0;
 
+                //call mobile or desktop
+                mobilePanel();
+
+
                 //call intro screen
-                introductionScreen();
+                //  introductionScreen();
 
             }
 
@@ -256,14 +188,14 @@ var Game = Game || (function (createjs) {
                         sound.scaleX = scaleX;
                         sound.scaleY = scaleY;
                         sound.name = "musicOnImage"
-                        var destroy =  evt.currentTarget.getChildByName("musicOffImage");
+                        var destroy = evt.currentTarget.getChildByName("musicOffImage");
                         evt.currentTarget.removeChild(destroy);
                         evt.currentTarget.addChild(sound);
                         createjs.Sound.setMute(false);
                     }
 
 
-                    }
+                }
                 );
 
 
@@ -272,8 +204,159 @@ var Game = Game || (function (createjs) {
                 return soundContainer;
             }
 
-          
-           
+
+
+            function mobilePanel() {
+                var mobileScreen = new createjs.Container();
+
+                var instructionsScreen = new createjs.Container();
+
+                var panelBG = new createjs.Bitmap(queue.getResult("panel"));
+                panelBG.x = 0;
+                panelBG.y = 50;
+
+                titleText = new createjs.Text(gameData.Title, " Bold 35px Alegreya", "#000000");
+                titleText.x = panelBG.x + 130;
+                titleText.y = panelBG.y + 75;
+
+                var mobileText = new createjs.Text("Are you on mobile?", "28px Alegreya", "#000000");
+                mobileText.x = panelBG.x + 130;
+                mobileText.y = panelBG.y + 155;
+
+                var yesButton = new createjs.Bitmap(queue.getResult("yesbutton"))
+
+                yesButton.regX = 100;
+                yesButton.regY = 150;
+                yesButton.x = panelBG.x + 200;
+                yesButton.y = panelBG.y + 300;
+                yesButton.scaleX = yesButton.scaleY = 0.20;
+
+                var noButton = new createjs.Bitmap(queue.getResult("nobutton"))
+                noButton.regX = 100;
+                noButton.regY = 150;
+                noButton.x = panelBG.x + 400;
+                noButton.y = panelBG.y + 300;
+                noButton.scaleX = noButton.scaleY = 0.20;
+
+                instructionsScreen.addChild(panelBG, titleText, mobileText, yesButton, noButton);
+                createjs.Tween.get(yesButton, {
+                    loop: false
+                }).to({
+                    rotation: 360,
+                    scaleX: .4,
+                    scaleY: .4
+                }, 2000);
+
+                createjs.Tween.get(noButton, {
+                    loop: false
+                }).to({
+                    rotation: 360,
+                    scaleX: .4,
+                    scaleY: .4
+                }, 2000);
+
+                var soundContain = createSoundContainer();
+
+                self.stage.addChild(instructionsScreen);
+                self.stage.addChild(soundContain);
+                yesButton.addEventListener("click", yesClick);
+                noButton.addEventListener("click", noClick);
+
+                //   var gameover = createjs.Sound.createInstance("gameover", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0});
+
+
+                function yesClick(event) {
+                    self.stage.removeChild(instructionsScreen);
+                    //    createjs.Sound.play("gameover");
+
+                    mobileIntroScreen();
+                    // introductionScreen();
+
+                    //if mobile checked if desktop click on click //else introduction screens//
+                }
+
+                function noClick(event) {
+                    self.stage.removeChild(instructionsScreen);
+
+                    introductionScreen();
+
+                }
+
+
+            }
+
+            function mobileIntroScreen() {
+
+                var instructionsScreen = new createjs.Container();
+
+                var panelBG = new createjs.Bitmap(queue.getResult("panel"));
+                panelBG.x = 0;
+                panelBG.y = 50;
+
+                titleText = new createjs.Text(gameData.Title, " Bold 35px Alegreya", "#000000");
+                titleText.x = panelBG.x + 130;
+                titleText.y = panelBG.y + 75;
+
+                var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
+
+                playButton.regX = 100;
+                playButton.regY = 150;
+                playButton.x = panelBG.x + 600;
+                playButton.y = panelBG.y + 400;
+                playButton.scaleX = playButton.scaleY = 0.20;
+
+                var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#000000");
+                descriptionText.x = panelBG.x + 130;
+                descriptionText.y = panelBG.y + 125;
+
+                var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship\nHarpoons will fire every 2 seconds\nEliminate Squids for points", "20px Alegreya", "#000000");
+                directionsText.x = panelBG.x + 130;
+                directionsText.y = panelBG.y + 155;
+
+                var logo = new createjs.Bitmap(queue.getResult("logo"))
+                logo.alpha = 0;
+                createjs.Tween.get(logo).wait(1000).to({ alpha: 1, visible: true }, 1000).call(handleComplete);
+                function handleComplete() {
+                    //self.stage.addChild(logo)
+                }
+
+                logo.regX = 180;
+                logo.regY = 60;
+                logo.x = panelBG.x + 220;
+                logo.y = panelBG.y + 275;
+                logo.scaleX = logo.scaleY = 0.40;
+
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
+                createjs.Tween.get(playButton, {
+                    loop: false
+                }).to({
+                    rotation: 360,
+                    scaleX: .4,
+                    scaleY: .4
+                }, 2000);
+
+                var soundContain = createSoundContainer();
+
+                self.stage.addChild(instructionsScreen);
+                self.stage.addChild(soundContain);
+                playButton.addEventListener("click", handleClick);
+
+                //   var gameover = createjs.Sound.createInstance("gameover", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0});
+
+
+                function handleClick(event) {
+                    self.stage.removeChild(instructionsScreen);
+                    //    createjs.Sound.play("gameover");
+                    isMobile = true;
+                    StartInteraction();
+
+                };
+
+            }
+
+
+
+
             //load introduction screen/play button
             function introductionScreen() {
 
@@ -299,10 +382,9 @@ var Game = Game || (function (createjs) {
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
 
-                var directionsText = new createjs.Text("Directions:" + " " + gameData.Directions, "20px Alegreya", "#000000");
+                var directionsText = new createjs.Text("Directions: Use 'F' Key to Fire Harpoons\nUse Directional Arrow Keys to move along the ship\nEliminate Squids for points ", "20px Alegreya", "#000000");
                 directionsText.x = panelBG.x + 130;
-                directionsText.y = panelBG.y + 175;
-
+                directionsText.y = panelBG.y + 155;
 
                 var logo = new createjs.Bitmap(queue.getResult("logo"))
                 logo.alpha = 0;
@@ -327,13 +409,13 @@ var Game = Game || (function (createjs) {
                 }, 2000);
 
                 var soundContain = createSoundContainer();
-                
+
                 self.stage.addChild(instructionsScreen);
                 self.stage.addChild(soundContain);
                 playButton.addEventListener("click", handleClick);
 
                 //   var gameover = createjs.Sound.createInstance("gameover", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0});
-                
+
 
                 function handleClick(event) {
                     self.stage.removeChild(instructionsScreen);
@@ -377,7 +459,7 @@ var Game = Game || (function (createjs) {
 
             var submittedScoreAlready = false;
 
-            var playerMovement = 0.60; //player speed
+            var playerMovement = 2; //player speed
             var playerMaximumVelocity = 2;
             var playerVelocityX = 0;
             var playerVelocityY = 0;
@@ -389,6 +471,8 @@ var Game = Game || (function (createjs) {
 
             var musicOn = true;
 
+            var isMobile = false;
+            var touchContainer;
 
             function printHarpoonCount() {
                 harpoonCountLabel.text = " " + harpoonCount;
@@ -396,14 +480,119 @@ var Game = Game || (function (createjs) {
             }
 
 
+            function moveRight() {
+            
+                playerVelocityX += playerMovement;
+            }
+
+            function moveLeft() {
+               
+                playerVelocityX -= playerMovement;
+
+            }
+
+            function moveUp() {
+                
+                playerVelocityY -= playerMovement;
+            }
+
+            function moveDown() {
+                playerVelocityY += playerMovement;
+            }
+
             function StartInteraction() {
 
+                if (isMobile == true) {
 
-                  var oceanwave = createjs.Sound.createInstance("oceanwave");
-                  oceanwave.volume = oceanwave.volume * .2;
+                    var directionalArrows = new createjs.Container();
 
-            //    createjs.Sound.play("oceanwave");
-            
+
+                    leftContainer = new createjs.Container();
+                    left = new createjs.Bitmap(queue.getResult("arrowleft"));
+                    leftContainer.y = 475;
+                    leftContainer.x = 600;
+                    leftContainer.scaleX = 1.2
+                    leftContainer.scaleY = 1.2
+                    leftContainer.addChild(left);
+                   // self.stage.addChild(leftContainer);
+
+                    rightContainer = new createjs.Container();
+                    right = new createjs.Bitmap(queue.getResult("arrowright"));
+                    rightContainer.y = 475;
+                    rightContainer.x = 700;
+                    rightContainer.scaleX = 1.2
+                    rightContainer.scaleY = 1.2
+                    rightContainer.addChild(right);
+                   // self.stage.addChild(rightContainer);
+
+                    upContainer = new createjs.Container();
+                    up = new createjs.Bitmap(queue.getResult("arrowup"));
+                    upContainer.y = 425;
+                    upContainer.x = 650;
+                    upContainer.scaleX = 1.2
+                    upContainer.scaleY = 1.2
+                    upContainer.addChild(up);
+                   // self.stage.addChild(upContainer);
+
+                    downContainer = new createjs.Container();
+                    down = new createjs.Bitmap(queue.getResult("arrowdown"));
+                    downContainer.y = 525;
+                    downContainer.x = 650;
+                    downContainer.scaleX = 1.2
+                    downContainer.scaleY = 1.2
+                    downContainer.addChild(down);
+                    //  self.stage.addChild(downContainer);
+
+                    leftContainer.on("mousedown", function (evt) {
+
+                        var event = evt;
+                        moveLeft();
+                    });
+
+                    rightContainer.on("mousedown", function (evt) {
+
+                        var event = evt;
+                        moveRight();
+                    });
+
+                    upContainer.on("mousedown", function (evt) {
+
+                        var event = evt;
+                        moveUp();
+                    });
+
+
+                    downContainer.on("mousedown", function (evt) {
+
+                        var event = evt;
+                        moveDown();
+                    });
+
+
+
+
+
+
+                    directionalArrows.addChild(leftContainer, rightContainer, upContainer, downContainer);
+                    //createjs.Tween.get(playButton, {
+                    //    loop: false
+                    //}).to({
+                    //    rotation: 360,
+                    //    scaleX: .4,
+                    //    scaleY: .4
+                    //}, 2000);
+
+                    self.stage.addChild(directionalArrows);
+
+
+                }
+
+
+                var oceanwave = createjs.Sound.createInstance("oceanwave");
+                oceanwave.volume = oceanwave.volume * .2;
+
+                //    createjs.Sound.play("oceanwave");
+
                 oceanwave.play();
 
                 //load pirate
@@ -427,17 +616,20 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(playerContainer);
                 playerContainer.x = 300;
                 playerContainer.y = 420;
-                playerContainer.scaleX = .5;
-                playerContainer.scaleY = .5;
+                playerContainer.scaleX = .25;
+                playerContainer.scaleY = .25;
 
 
                 //load controls
                 this.document.onkeydown = keyPressed;
                 var KEYCODE_LEFT = 37,
                     KEYCODE_RIGHT = 39,
-                    KEYCODE_SPACEBAR = 32,
+                    KEYCODE_FIRE = 70,
                     KEYCODE_UP = 38,
                     KEYCODE_DOWN = 40
+
+                
+
 
                 //load squid/s
                 spawnEnemy();
@@ -615,6 +807,10 @@ var Game = Game || (function (createjs) {
 
                             //self.stage.removeChild(theThingBeingTweened);
 
+                            //ink sound goes 
+                            //sound should only trigger on initial hit and freeze screen 
+                            //no more splats after qpanel is up
+
                             var theContainer = theThingBeingTweened.parent;
                             theContainer.removeChild(theThingBeingTweened);
 
@@ -629,7 +825,6 @@ var Game = Game || (function (createjs) {
 
 
                             createjs.Sound.play("inksplat");
-
 
 
                             setTimeout(function () {
@@ -659,6 +854,12 @@ var Game = Game || (function (createjs) {
                     }
                 }
 
+
+
+
+
+
+
                 function keyPressed(event) {
                     //  console.log(event.keyCode);
                     switch (event.keyCode) {
@@ -679,7 +880,9 @@ var Game = Game || (function (createjs) {
                             event.preventDefault();
                             break;
                             //map harpoon to spacebar
-                        case KEYCODE_SPACEBAR:
+                        case KEYCODE_FIRE:
+
+
                             if (harpoondelay <= 0) {
                                 harpoondelay = 30
 
@@ -688,11 +891,9 @@ var Game = Game || (function (createjs) {
                                     harpoonCount--;
                                     console.log(harpoonCount);
 
-
                                     var harpoonsound = createjs.Sound.createInstance("harpoonsound");
                                     harpoonsound.volume = harpoonsound.volume * .2;
                                     harpoonsound.play();
-
 
                                     printHarpoonCount();
                                 }
@@ -704,6 +905,8 @@ var Game = Game || (function (createjs) {
                                 //    printHarpoonCount();
                                 event.preventDefault();
                                 break;
+
+                                event.preventDefault();
                             }
 
                             function moveRight() {
@@ -993,7 +1196,7 @@ var Game = Game || (function (createjs) {
                                 //    alert("incorrect" + evt.currentTarget.IsCorrect);
 
                                 var wrong = createjs.Sound.createInstance("wrong", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-
+                                
                                 createjs.Sound.play("wrong");
                                 deliverFeedback("incorrect");
                             }
@@ -1024,11 +1227,13 @@ var Game = Game || (function (createjs) {
                 //this will be the correct answer
                 if (answerstatus == "correct") {
                     feedbackText = new createjs.Text("Correct. Click the what ever to continue", "20px Alegreya", "#000000");
+                    harpoonCount = 10;
                 } else {
 
                     for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++) {
                         if (gameData.Questions[currentQuestionNumber].Answers[i].IsCorrect == true) {
                             feedbackText = new createjs.Text("I'm sorry the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
+                            harpoonCount = 5;
                         }
                     }
                     //need another if for end of game game over screen call
@@ -1053,7 +1258,7 @@ var Game = Game || (function (createjs) {
                     //create an if statement, if question iscorrect, netcount 5, if incorrect, netcount 0
                     currentQuestionNumber++;
                     self.stage.removeChild(feedbackContainer);
-                    harpoonCount = 10;
+                    //harpoonCount = 10;
                     canEnemyFire = true;
                     isQuestionDisplayed = false;
                     isFeedbackDisplayed = false;
