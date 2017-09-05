@@ -80,6 +80,7 @@
     <Content Include="Assets\pirate.png" />
     <Content Include="Assets\redx.png" />
     <Content Include="Assets\SmallPanel2.png" />
+    <Content Include="createjs.min.js" />
     <Content Include="game2.js" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
