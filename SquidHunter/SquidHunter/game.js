@@ -57,40 +57,40 @@ var Game = Game || (function (createjs) {
             //declare each individual asset
             var assets = [
 
-                {id: "start_button", src: assetsPath + "SequencePlayButton.png"},
-                {id: "background",src: assetsPath + "newbackground.png"},
-                {id: "panel",src: assetsPath + "Panel.png"},
-                {id: "playbutton",src: assetsPath + "SequencePlayButton.png"},
-                {id: "yesbutton",src: assetsPath + "yesButton.png"},
-                {id: "nobutton",src: assetsPath + "noButton.png"},
-                {id: "pirate",src: assetsPath + "pirate.png"},
-                {id: "enemy",src: assetsPath + "enemy.png"},
-                {id: "harpoon",src: assetsPath + "harpoon.png"},
-                {id: "ink",src: assetsPath + "ink.png"},
-                {id: "questionPanel",src: assetsPath + "SmallPanel.png"},
-                {id: "feedbackPanel",src: assetsPath + "SmallPanel2.png"},
-                {id: "redx",src: assetsPath + "redx.png"},
-                {id: "answerHolder",src: assetsPath + "answerHolder.png"},
-                {id: "logo",src: assetsPath + "logo.png"},
-                {id: "treasure",src: assetsPath + "treasure.png"},
-                {id: "piratesprite",src: assetsPath + "newpirate.png"},
-                {id: "splat",src: assetsPath + "splat.png"},
-                {id: "squidsprite",src: assetsPath + "squidsprite2.png"},
-                {id: "gameover",src: assetsPath + "GameOver.mp3"},
-                {id: "harpoonsound",src: assetsPath + "harpoonsound.wav"},
-                {id: "oceanwave",src: assetsPath + "oceanwave.mp3"},
-                {id: "chime",src: assetsPath + "chime.mp3"},
-                {id: "wrong",src: assetsPath + "wrong.wav"},
-                {id: "inksplat",src: assetsPath + "inksplat.mp3"},
-                {id: "musicOn",src: assetsPath + "musicOn.png"},
-                {id: "musicOff",src: assetsPath + "musicOff.png"},
-                {id: "arrowleft",src: assetsPath + "arrowleft.png"},
-                {id: "arrowright",src: assetsPath + "arrowright.png"},
-                {id: "arrowup",src: assetsPath + "arrowup.png"},
-                {id: "arrowdown", src: assetsPath + "arrowdown.png" },
-                {id: "fish", src: assetsPath + "fish.wav" },
-                {id: "bass", src: assetsPath + "bass.wav" },
-                {id: "level-up", src: assetsPath + "level-up.mp3" },
+                { id: "start_button", src: assetsPath + "SequencePlayButton.png" },
+                { id: "background", src: assetsPath + "newbackground.png" },
+                { id: "panel", src: assetsPath + "Panel.png" },
+                { id: "playbutton", src: assetsPath + "SequencePlayButton.png" },
+                { id: "yesbutton", src: assetsPath + "yesButton.png" },
+                { id: "nobutton", src: assetsPath + "noButton.png" },
+                { id: "pirate", src: assetsPath + "pirate.png" },
+                { id: "enemy", src: assetsPath + "enemy.png" },
+                { id: "harpoon", src: assetsPath + "harpoon.png" },
+                { id: "ink", src: assetsPath + "ink.png" },
+                { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
+                { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
+                { id: "redx", src: assetsPath + "redx.png" },
+                { id: "answerHolder", src: assetsPath + "answerHolder.png" },
+                { id: "logo", src: assetsPath + "logo.png" },
+                { id: "treasure", src: assetsPath + "treasure.png" },
+                { id: "piratesprite", src: assetsPath + "newpirate.png" },
+                { id: "splat", src: assetsPath + "splat.png" },
+                { id: "squidsprite", src: assetsPath + "squidsprite2.png" },
+                { id: "gameover", src: assetsPath + "GameOver.mp3" },
+                { id: "harpoonsound", src: assetsPath + "harpoonsound.wav" },
+                { id: "oceanwave", src: assetsPath + "oceanwave.mp3" },
+                { id: "chime", src: assetsPath + "chime.mp3" },
+                { id: "wrong", src: assetsPath + "wrong.wav" },
+                { id: "inksplat", src: assetsPath + "inksplat.mp3" },
+                { id: "musicOn", src: assetsPath + "musicOn.png" },
+                { id: "musicOff", src: assetsPath + "musicOff.png" },
+                { id: "arrowleft", src: assetsPath + "arrowleft.png" },
+                { id: "arrowright", src: assetsPath + "arrowright.png" },
+                { id: "arrowup", src: assetsPath + "arrowup.png" },
+                { id: "arrowdown", src: assetsPath + "arrowdown.png" },
+                { id: "fish", src: assetsPath + "fish.wav" },
+                { id: "bass", src: assetsPath + "bass.wav" },
+                { id: "level-up", src: assetsPath + "level-up.mp3" },
                 { id: "page", src: assetsPath + "page.wav" },
                 { id: "coin", src: assetsPath + "coin.wav" },
                 { id: "splash", src: assetsPath + "splash.wav" }
@@ -217,7 +217,7 @@ var Game = Game || (function (createjs) {
             var bassSound = createjs.Sound.createInstance("bass");
 
             function playBass() {
-                
+
                 if (!bassSound.paused) {
                     bassSound.play();
                 }
@@ -297,7 +297,7 @@ var Game = Game || (function (createjs) {
                 }
 
                 function noClick(event) {
-                    self.stage.removeChild(instructionsScreen);                    
+                    self.stage.removeChild(instructionsScreen);
                     introductionScreen();
 
                 }
@@ -372,7 +372,7 @@ var Game = Game || (function (createjs) {
 
 
                     StartInteraction();
-                  
+
                 };
 
             }
@@ -383,7 +383,7 @@ var Game = Game || (function (createjs) {
             //load introduction screen/play button
             function introductionScreen() {
 
-               
+
 
                 //var bass = createjs.Sound.createInstance("bass");
                 //bass.volume = bass.volume * .7;
@@ -515,18 +515,18 @@ var Game = Game || (function (createjs) {
 
 
             function moveRight() {
-            
+
                 playerVelocityX += playerMovement;
             }
 
             function moveLeft() {
-               
+
                 playerVelocityX -= playerMovement;
 
             }
 
             function moveUp() {
-                
+
                 playerVelocityY -= playerMovement;
             }
 
@@ -558,7 +558,7 @@ var Game = Game || (function (createjs) {
                     leftContainer.scaleX = 1.2
                     leftContainer.scaleY = 1.2
                     leftContainer.addChild(left);
-                   // self.stage.addChild(leftContainer);
+                    // self.stage.addChild(leftContainer);
 
                     rightContainer = new createjs.Container();
                     right = new createjs.Bitmap(queue.getResult("arrowright"));
@@ -567,7 +567,7 @@ var Game = Game || (function (createjs) {
                     rightContainer.scaleX = 1.2
                     rightContainer.scaleY = 1.2
                     rightContainer.addChild(right);
-                   // self.stage.addChild(rightContainer);
+                    // self.stage.addChild(rightContainer);
 
                     upContainer = new createjs.Container();
                     up = new createjs.Bitmap(queue.getResult("arrowup"));
@@ -576,7 +576,7 @@ var Game = Game || (function (createjs) {
                     upContainer.scaleX = 1.2
                     upContainer.scaleY = 1.2
                     upContainer.addChild(up);
-                   // self.stage.addChild(upContainer);
+                    // self.stage.addChild(upContainer);
 
                     downContainer = new createjs.Container();
                     down = new createjs.Bitmap(queue.getResult("arrowdown"));
@@ -726,7 +726,11 @@ var Game = Game || (function (createjs) {
 
                         if (!isQuestionDisplayed) {
                             canEnemyFire = false;
-                            deliverQuestion(gameData.Questions[currentQuestionNumber]);
+                            if (currentQuestionNumber >= gameData.Questions.length) {
+                                gameOverScreen();
+                            }
+                            else
+                                deliverQuestion(gameData.Questions[currentQuestionNumber]);
                             Score = Score - 20;
                             printScore();
                             //deliver answers?
@@ -900,13 +904,17 @@ var Game = Game || (function (createjs) {
                         }
                         if (harpoonCount == 0 && !isQuestionDisplayed) {
                             printHarpoonCount();
-                            deliverQuestion(gameData.Questions[currentQuestionNumber]);
+                            if (currentQuestionNumber >= gameData.Questions.length) {
+                                gameOverScreen();
+                            }
+                            else
+                                deliverQuestion(gameData.Questions[currentQuestionNumber]);
                         }
 
                     }
                 }
 
-                
+
                 function moveRight() {
                     playerVelocityX += playerMovement;
                 }
@@ -993,7 +1001,7 @@ var Game = Game || (function (createjs) {
                     harpoonProgressBar.alpha = 0;
                     harpoonProgressBar.y = canvas.height - height;
 
-                    createjs.Tween.get(harpoonProgressBar, {loop: true})
+                    createjs.Tween.get(harpoonProgressBar, { loop: true })
                                   .to({ scaleX: 1, alpha: 1 }, 2000)
                                   .call(function () {
                                       makeHarpoonOrAskQuestion();
