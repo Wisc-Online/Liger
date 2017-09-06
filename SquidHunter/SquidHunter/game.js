@@ -77,17 +77,24 @@ var Game = Game || (function (createjs) {
                 {id: "splat",src: assetsPath + "splat.png"},
                 {id: "squidsprite",src: assetsPath + "squidsprite2.png"},
                 {id: "gameover",src: assetsPath + "GameOver.mp3"},
-                {id: "harpoonsound",src: assetsPath + "harpoonsound.mp3"},
+                {id: "harpoonsound",src: assetsPath + "harpoonsound.wav"},
                 {id: "oceanwave",src: assetsPath + "oceanwave.mp3"},
-                {id: "cheer",src: assetsPath + "cheer.mp3"},
-                {id: "wrong",src: assetsPath + "wrong.mp3"},
+                {id: "chime",src: assetsPath + "chime.mp3"},
+                {id: "wrong",src: assetsPath + "wrong.wav"},
                 {id: "inksplat",src: assetsPath + "inksplat.mp3"},
                 {id: "musicOn",src: assetsPath + "musicOn.png"},
                 {id: "musicOff",src: assetsPath + "musicOff.png"},
                 {id: "arrowleft",src: assetsPath + "arrowleft.png"},
                 {id: "arrowright",src: assetsPath + "arrowright.png"},
                 {id: "arrowup",src: assetsPath + "arrowup.png"},
-                {id: "arrowdown",src: assetsPath + "arrowdown.png"}
+                {id: "arrowdown", src: assetsPath + "arrowdown.png" },
+                {id: "fish", src: assetsPath + "fish.wav" },
+                {id: "bass", src: assetsPath + "bass.wav" },
+                {id: "level-up", src: assetsPath + "level-up.mp3" },
+                { id: "page", src: assetsPath + "page.wav" },
+                { id: "coin", src: assetsPath + "coin.wav" },
+                { id: "splash", src: assetsPath + "splash.wav" }
+
 
             ];
 
@@ -101,6 +108,9 @@ var Game = Game || (function (createjs) {
 
             //loads background image
             function addBackground() {
+
+
+
                 var gameBackground = new createjs.Container();
                 gameBackground.x = 0;
                 gameBackground.y = 0;
@@ -204,9 +214,19 @@ var Game = Game || (function (createjs) {
                 return soundContainer;
             }
 
+            var bassSound = createjs.Sound.createInstance("bass");
 
+            function playBass() {
+                
+                if (!bassSound.paused) {
+                    bassSound.play();
+                }
+            }
 
             function mobilePanel() {
+
+                playBass();
+
                 var mobileScreen = new createjs.Container();
 
                 var instructionsScreen = new createjs.Container();
@@ -266,6 +286,7 @@ var Game = Game || (function (createjs) {
 
 
                 function yesClick(event) {
+                    playBass();
                     self.stage.removeChild(instructionsScreen);
                     //    createjs.Sound.play("gameover");
 
@@ -276,8 +297,7 @@ var Game = Game || (function (createjs) {
                 }
 
                 function noClick(event) {
-                    self.stage.removeChild(instructionsScreen);
-
+                    self.stage.removeChild(instructionsScreen);                    
                     introductionScreen();
 
                 }
@@ -348,8 +368,11 @@ var Game = Game || (function (createjs) {
                     self.stage.removeChild(instructionsScreen);
                     //    createjs.Sound.play("gameover");
                     isMobile = true;
-                    StartInteraction();
+                    playBass();
 
+
+                    StartInteraction();
+                  
                 };
 
             }
@@ -359,6 +382,15 @@ var Game = Game || (function (createjs) {
 
             //load introduction screen/play button
             function introductionScreen() {
+
+               
+
+                //var bass = createjs.Sound.createInstance("bass");
+                //bass.volume = bass.volume * .7;
+
+                //bass.play();
+
+
 
                 var instructionsScreen = new createjs.Container();
 
@@ -474,6 +506,8 @@ var Game = Game || (function (createjs) {
             var isMobile = false;
             var touchContainer;
 
+            var isBassPlaying = false;
+
             function printHarpoonCount() {
                 harpoonCountLabel.text = " " + harpoonCount;
 
@@ -500,12 +534,22 @@ var Game = Game || (function (createjs) {
                 playerVelocityY += playerMovement;
             }
 
+
+
+            function printScore() {
+                //self.stage.removeChild(scoreLabel);
+                scoreLabel.text = " " + Score;
+                var coin = createjs.Sound.createInstance("coin");
+                //    coin.volume = oceanwave.volume * .4;
+                coin.play();
+
+            }
+
             function StartInteraction() {
 
                 if (isMobile == true) {
 
                     var directionalArrows = new createjs.Container();
-
 
                     leftContainer = new createjs.Container();
                     left = new createjs.Bitmap(queue.getResult("arrowleft"));
@@ -544,43 +588,24 @@ var Game = Game || (function (createjs) {
                     //  self.stage.addChild(downContainer);
 
                     leftContainer.on("mousedown", function (evt) {
-
                         var event = evt;
                         moveLeft();
                     });
-
                     rightContainer.on("mousedown", function (evt) {
-
                         var event = evt;
                         moveRight();
                     });
 
                     upContainer.on("mousedown", function (evt) {
-
                         var event = evt;
                         moveUp();
                     });
-
-
                     downContainer.on("mousedown", function (evt) {
-
                         var event = evt;
                         moveDown();
                     });
 
-
-
-
-
-
                     directionalArrows.addChild(leftContainer, rightContainer, upContainer, downContainer);
-                    //createjs.Tween.get(playButton, {
-                    //    loop: false
-                    //}).to({
-                    //    rotation: 360,
-                    //    scaleX: .4,
-                    //    scaleY: .4
-                    //}, 2000);
 
                     self.stage.addChild(directionalArrows);
 
@@ -590,10 +615,11 @@ var Game = Game || (function (createjs) {
 
                 var oceanwave = createjs.Sound.createInstance("oceanwave");
                 oceanwave.volume = oceanwave.volume * .2;
-
-                //    createjs.Sound.play("oceanwave");
-
                 oceanwave.play();
+
+                var fish = createjs.Sound.createInstance("fish");
+                fish.volume = oceanwave.volume * .4;
+                fish.play();
 
                 //load pirate
                 playerContainer = new createjs.Container();
@@ -627,8 +653,6 @@ var Game = Game || (function (createjs) {
                     KEYCODE_FIRE = 70,
                     KEYCODE_UP = 38,
                     KEYCODE_DOWN = 40
-
-                
 
 
                 //load squid/s
@@ -685,8 +709,10 @@ var Game = Game || (function (createjs) {
                     setTimeout(delayEnemyShootInk, Math.random() * 500 + 300)
                 }
 
-                setTimeout(delayEnemyShootInk, Math.random() * 500 + 1000)
 
+
+
+                setTimeout(delayEnemyShootInk, Math.random() * 500 + 1000)
 
                 function onInkContainerTweenChange(evt) {
                     var theTween = evt.target;
@@ -713,12 +739,9 @@ var Game = Game || (function (createjs) {
 
 
 
-                function printScore() {
-                    //self.stage.removeChild(scoreLabel);
-                    scoreLabel.text = " " + Score;
-                }
 
                 //blow up the squid when the harpoon hits the squid
+
                 function onHarpoonContainerTweenChange(evt) {
                     var theTween = evt.target;
                     var theHarpoonContainer = theTween.target;
@@ -727,6 +750,11 @@ var Game = Game || (function (createjs) {
                         var pt = enemies[i].globalToLocal(theHarpoonContainer.x, theHarpoonContainer.y);
 
                         if (enemies[i].hitTest(pt.x, pt.y)) {
+
+                            var splash = createjs.Sound.createInstance("splash");
+                            splash.volume = splash.volume * .6;
+                            splash.play();
+
 
                             // we hit the enemy... KILL IT!
                             createjs.Tween.get(enemies[i])
@@ -790,7 +818,6 @@ var Game = Game || (function (createjs) {
                     self.stage.addChild(inkContainer);
 
 
-
                     //when ink hits the player
                     createjs.Tween.get(inkContainer, {
                         onChange: onInkContainerTweenChange
@@ -819,8 +846,10 @@ var Game = Game || (function (createjs) {
                             splatContainer.addChild(splat);
                             splatContainer.x = theThingBeingTweened.x;
                             splatContainer.y = theThingBeingTweened.y;
-                            theContainer.addChild(splatContainer);
 
+                            if (!isQuestionDisplayed) {
+                                theContainer.addChild(splatContainer);
+                            }
                             var inksplat = createjs.Sound.createInstance("inksplat", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
 
 
@@ -854,11 +883,76 @@ var Game = Game || (function (createjs) {
                     }
                 }
 
+                function makeHarpoonOrAskQuestion() {
+                    if (harpoondelay <= 0) {
+                        harpoondelay = 30
+
+                        if (harpoonCount > 0) {
+                            makeHarpoon();
+                            harpoonCount--;
+                            console.log(harpoonCount);
+
+                            var harpoonsound = createjs.Sound.createInstance("harpoonsound");
+                            harpoonsound.volume = harpoonsound.volume * .2;
+                            harpoonsound.play();
+
+                            printHarpoonCount();
+                        }
+                        if (harpoonCount == 0 && !isQuestionDisplayed) {
+                            printHarpoonCount();
+                            deliverQuestion(gameData.Questions[currentQuestionNumber]);
+                        }
+
+                    }
+                }
+
+                
+                function moveRight() {
+                    playerVelocityX += playerMovement;
+                }
+
+                function moveLeft() {
+                    playerVelocityX -= playerMovement;
+                }
+
+                function moveUp() {
+                    playerVelocityY -= playerMovement;
+                }
+
+                function moveDown() {
+                    playerVelocityY += playerMovement;
+                }
 
 
+                //only called when enough harpoon available
+                function makeHarpoon() {
 
+                    console.log("making harpoon")
+                    harpoonContainer = new createjs.Container();
+                    harpoon = new createjs.Bitmap(queue.getResult("harpoon"));
+                    if (!isQuestionDisplayed) {
+                        harpoonContainer.addChild(harpoon);
+                    }
+                    self.stage.addChild(harpoonContainer);
 
+                    harpoonContainer.x = playerContainer.x + 9;
+                    harpoonContainer.y = playerContainer.y + 9;
 
+                    //when harpoon hits the squid
+                    createjs.Tween.get(harpoonContainer, {
+                        onChange: onHarpoonContainerTweenChange
+                    })
+                        //.wait(2000)
+                        .to({
+                            y: -200
+                        }, 5000, createjs.Ease.bounceInOut)
+                        .wait(2000)
+                        .call(function (evt) {
+                            var theThingBeingTweened = evt.target;
+                            self.stage.removeChild(theThingBeingTweened);
+                        });
+
+                }
 
                 function keyPressed(event) {
                     //  console.log(event.keyCode);
@@ -882,79 +976,30 @@ var Game = Game || (function (createjs) {
                             //map harpoon to spacebar
                         case KEYCODE_FIRE:
 
+                            makeHarpoonOrAskQuestion();
+                            event.preventDefault();
+                            break;
 
-                            if (harpoondelay <= 0) {
-                                harpoondelay = 30
-
-                                if (harpoonCount > 0) {
-                                    makeHarpoon();
-                                    harpoonCount--;
-                                    console.log(harpoonCount);
-
-                                    var harpoonsound = createjs.Sound.createInstance("harpoonsound");
-                                    harpoonsound.volume = harpoonsound.volume * .2;
-                                    harpoonsound.play();
-
-                                    printHarpoonCount();
-                                }
-                                if (harpoonCount == 0 && !isQuestionDisplayed) {
-                                    printHarpoonCount();
-                                    deliverQuestion(gameData.Questions[currentQuestionNumber]);
-                                }
-
-                                //    printHarpoonCount();
-                                event.preventDefault();
-                                break;
-
-                                event.preventDefault();
-                            }
-
-                            function moveRight() {
-                                playerVelocityX += playerMovement;
-                            }
-
-                            function moveLeft() {
-                                playerVelocityX -= playerMovement;
-                            }
-
-                            function moveUp() {
-                                playerVelocityY -= playerMovement;
-                            }
-
-                            function moveDown() {
-                                playerVelocityY += playerMovement;
-                            }
-
-
-                            //only called when enough harpoon available
-                            function makeHarpoon() {
-
-                                console.log("making harpoon")
-                                harpoonContainer = new createjs.Container();
-                                harpoon = new createjs.Bitmap(queue.getResult("harpoon"));
-                                harpoonContainer.addChild(harpoon);
-
-                                self.stage.addChild(harpoonContainer);
-
-                                harpoonContainer.x = playerContainer.x + 9;
-                                harpoonContainer.y = playerContainer.y + 9;
-
-                                //when harpoon hits the squid
-                                createjs.Tween.get(harpoonContainer, {
-                                    onChange: onHarpoonContainerTweenChange
-                                })
-                                    //.wait(2000)
-                                    .to({
-                                        y: -200
-                                    }, 5000, createjs.Ease.bounceInOut)
-                                    .wait(2000)
-                                    .call(function (evt) {
-                                        var theThingBeingTweened = evt.target;
-                                        self.stage.removeChild(theThingBeingTweened);
-                                    });
-
-                            }
                     }
+                }
+
+                if (isMobile) {
+
+                    var harpoonProgressBar = new createjs.Shape();
+                    var height = 10;
+
+                    harpoonProgressBar.graphics.beginFill("#ff0000").drawRect(0, 0, canvas.width, height);
+                    harpoonProgressBar.scaleX = 0;
+                    harpoonProgressBar.alpha = 0;
+                    harpoonProgressBar.y = canvas.height - height;
+
+                    createjs.Tween.get(harpoonProgressBar, {loop: true})
+                                  .to({ scaleX: 1, alpha: 1 }, 2000)
+                                  .call(function () {
+                                      makeHarpoonOrAskQuestion();
+                                  });
+
+                    stage.addChild(harpoonProgressBar);
                 }
             }
 
@@ -997,19 +1042,17 @@ var Game = Game || (function (createjs) {
                 //return container;
 
 
-
                 var spriteSheet = new createjs.SpriteSheet(data);
                 var sprite = new createjs.Sprite(spriteSheet, "pegleg");
                 squidContainer.addChild(sprite);
                 self.stage.addChild(squidContainer);
-                //squidContainer.x = 300;
-                //squidContainer.y = 233;
-
+                squidContainer.x = 300;
+                squidContainer.y = 233;
 
                 //makeEnemy();
                 enemyContainer.scaleX = 0;
                 enemyContainer.scaleY = 0;
-                enemyContainer.alpha = 0;
+                enemyContainer.alpha = 1;
 
                 //enemy functionality
                 do {
@@ -1030,8 +1073,8 @@ var Game = Game || (function (createjs) {
                 createjs.Tween.get(enemyContainer)
                     .to({
                         alpha: 1,
-                        scaleX: 0.5,
-                        scaleY: 0.5
+                        scaleX: 0.7,
+                        scaleY: 0.7
                     }, 2000)
                     .wait(100)
                     .to({
@@ -1052,12 +1095,11 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(enemyContainer);
             }
 
-
-
             //load enemy
             function makeEnemy() {
                 //  var container = new createjs.Container();
                 squidContainer = new createjs.Container();
+
                 var speed = .02;
                 // var enemy = new createjs.Bitmap(queue.getResult("enemy"));
                 var data = {
@@ -1086,7 +1128,8 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(squidContainer);
                 squidContainer.x = 300;
                 squidContainer.y = 233;
-
+                //squidContainer.scaleX = 1.5;
+                //squidContainer.scaleY = 1.5;
 
 
 
@@ -1124,6 +1167,9 @@ var Game = Game || (function (createjs) {
 
             //deliver questions when player is by ink
             function deliverQuestion(question) {
+
+                var page = createjs.Sound.createInstance("page");
+                page.play();
 
                 isEnemySpawnedEnabled = false;
                 canEnemyFire = false;
@@ -1187,17 +1233,24 @@ var Game = Game || (function (createjs) {
                                 // alert("correct")
                                 //this is where code goes to change color of holder container and display the answer
 
-                                var cheer = createjs.Sound.createInstance("cheer", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
+                                var chime = createjs.Sound.createInstance("chime", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
 
-                                createjs.Sound.play("cheer");
+                                createjs.Sound.play("chime");
+
+                                Score = Score + 35;
+                                printScore();
+
 
                                 deliverFeedback("correct");
                             } else {
                                 //    alert("incorrect" + evt.currentTarget.IsCorrect);
-
                                 var wrong = createjs.Sound.createInstance("wrong", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-                                
+                                wrong.volume = wrong.volume * .5;
                                 createjs.Sound.play("wrong");
+
+                                Score = Score - 25;
+                                printScore();
+
                                 deliverFeedback("incorrect");
                             }
                         }
@@ -1213,7 +1266,9 @@ var Game = Game || (function (createjs) {
 
             }
 
+
             function deliverFeedback(answerstatus) {
+
                 var feedbackContainer = new createjs.Container();
                 var feedbackPanel = new createjs.Bitmap(queue.getResult("feedbackPanel"));
                 var feedbackText;
@@ -1254,7 +1309,8 @@ var Game = Game || (function (createjs) {
 
 
                 function handleClick(event) {
-
+                    var page = createjs.Sound.createInstance("page");
+                    page.play();
                     //create an if statement, if question iscorrect, netcount 5, if incorrect, netcount 0
                     currentQuestionNumber++;
                     self.stage.removeChild(feedbackContainer);
