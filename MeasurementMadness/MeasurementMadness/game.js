@@ -9,6 +9,24 @@ var Game = Game || (function (createjs) {
         var stage = new createjs.Stage(canvas);
         stage.enableMouseOver(10);
         var currentPage = null;
+        var assetsPath = gameData.assetsPath || "";
+
+        assetsPath += "images/"
+
+        var assets = [
+
+            { id: "start_button", src: assetsPath + "SequencePlayButton.png" }
+            
+        ];
+
+        var queue = new createjs.LoadQueue(false);
+        queue.installPlugin(createjs.Sound);
+        queue.addEventListener("complete", function (event) {
+            //Paint board
+            addBackground();
+        });
+        queue.loadManifest(assets);
+
 
         createjs.Ticker.setFPS(40);
         createjs.Ticker.addEventListener("tick", handleTick);
@@ -101,7 +119,14 @@ var Game = Game || (function (createjs) {
             circle.y = 100;
             page.addChild(circle);
             // do the stuff on the page, setup click handlers, etc...
+            var startButton = new createjs.Bitmap(queue.getResult("start_button"));
 
+            startButton.regX = 93;
+            startButton.regY = 95;
+            startButton.x = 650;
+            startButton.y = 350;
+            startButton.scaleX = startButton.scaleY = 0.20;
+            page.addChild(startButton);
 
             circle.addEventListener("click", function () {
                 showPage(createGamePage());
@@ -160,9 +185,12 @@ var Game = Game || (function (createjs) {
             ruler.y = 0;
             // ruler.regX = ruler.width / 2;
             //  ruler.regY = ruler.height / 2;
-            createjs.Tween.get(ruler).to({ x: 0, y: 100 }, 3000)
-
-
+            if (questionIndex >= 1) {
+                ruler.x = 0
+                ruler.y = 100;
+            } else {
+                createjs.Tween.get(ruler).to({ x: 0, y: 100 }, 3000)
+            }
 
             ruler.scaleX = targetRulerWidthOfCanvasPercent * (stage.canvas.width / rulerWidthPixels)
 
@@ -172,14 +200,14 @@ var Game = Game || (function (createjs) {
             return page;
         }
         function displayQuestionText() {
-            var questionDisplay = new createjs.Text("Timer: " + questionsArray[questionIndex].text, "18px Arial", "black");
+            var questionDisplay = new createjs.Text(questionsArray[questionIndex].text, "26px Arial bold", "yellow");
             questionDisplay.x = 10;
             questionDisplay.y = 150
-          //  page.addChild(questionDisplay);
+            //  page.addChild(questionDisplay);
             return questionDisplay;
         }
         var scoreTextDisplay;
-        function displayScoreText(){
+        function displayScoreText() {
 
             scoreTextDisplay = new createjs.Text("Score: " + score, "18px Arial", "black");
             scoreTextDisplay.x = 10;
@@ -191,19 +219,17 @@ var Game = Game || (function (createjs) {
         function CheckAnswer(answerValue) {
             if (answerValue == questionsArray[questionIndex].value) {
                 givePoints();
-                
-            } else
-            {
+
+            } else {
                 displayXXX_YourWrong();
                 strikes += 1;
             }
             //Check if its correct
-          
+
             incrementQuestion();
             showPage(createGamePage());
         }
-        function displayXXX_YourWrong()
-        {
+        function displayXXX_YourWrong() {
             //deliver X image.
         }
         function incrementQuestion() {
@@ -225,7 +251,22 @@ var Game = Game || (function (createjs) {
                     score += 40;
                     break;
                 case 5:
-                    score += 50
+                    score += 50;
+                    break;
+                case 6:
+                    score += 60;
+                    break;
+                case 7:
+                    score += 70;
+                    break;
+                case 8:
+                    score += 80;
+                    break;
+                case 9:
+                    score += 90;
+                    break;
+                case 10:
+                    score += 100;
                     break;
             }
 
@@ -341,15 +382,12 @@ var Game = Game || (function (createjs) {
                 // for (var m = 0; mmLengthInches <= lengthInInches; ++m) {
                 mmDivision = new createjs.Shape();
                 divisionContainer = new createjs.Container();
-                divisionContainer.value = m * (1 / settings.ruler.divisionsPerCentimenter);
+                divisionContainer.value = m * (10 / settings.ruler.divisionsPerCentimenter);
 
                 divisionContainer.y = rulerHeight;
                 divisionContainer.x = m * mmPixelsPerDivision;
 
-
-
                 mmDivision.graphics.setStrokeStyle(0.5).beginStroke("Black");
-
 
                 if (m % 10 == 0) {
                     //make big line
@@ -361,7 +399,6 @@ var Game = Game || (function (createjs) {
                         mmNumberText.y = -divisionHeight + 170;
 
                         divisionContainer.addChild(mmNumberText);
-
                     }
                 }
                 else {
@@ -404,17 +441,14 @@ var Game = Game || (function (createjs) {
                 divisionContainer.addEventListener("mousedown", function (e) {
 
                     // alert("Clicked Value: " + e.currentTarget.value.toString());
-                  CheckAnswer(e.currentTarget.value.toString());
-            
+                    CheckAnswer(e.currentTarget.value.toString());
+
                 });
 
                 ruler.addChild(divisionContainer);
 
                 mmLengthInches += mmInches;
             }
-
-
-
 
             return ruler;
         }
