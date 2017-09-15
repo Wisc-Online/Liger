@@ -77,6 +77,7 @@
   <ItemGroup>
     <Content Include="createjs.min.js" />
     <Content Include="game.js" />
+    <Content Include="images\cross-34976_960_720.png" />
     <Content Include="index.html" />
     <Content Include="style.css" />
     <Content Include="Web.config" />
