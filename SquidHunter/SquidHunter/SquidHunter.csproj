@@ -124,7 +124,6 @@
     <Content Include="Assets\wrong.wav" />
     <Content Include="Assets\yesButton.png" />
     <Content Include="createjs.min.js" />
-    <Content Include="game2.js" />
     <Content Include="packages.config" />
     <Content Include="Assets\backgroundphoto.psd" />
     <Content Include="Assets\backgroundship.psd" />
