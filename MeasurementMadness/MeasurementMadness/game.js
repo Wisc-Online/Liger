@@ -15,17 +15,30 @@ var Game = Game || (function (createjs) {
 
         var assets = [
 
-            { id: "start_button", src: assetsPath + "SequencePlayButton.png" }
-            
-        ];
+            { id: "start_button", src: assetsPath + "SequencePlayButton.png" },
+            { id: "RedXXX", src: assetsPath + "cross-34976_960_720.png" },
+            { id: "Buzzer", src: assetsPath + "WrongBuzzer.mp3" },
+            { id: "Correct", src: assetsPath + "Correct.mp3" },
+            { id: "backgroundImage", src: assetsPath + "Correct.mp3" },
+            { id: "TitleImage", src: assetsPath + "measurementMadnessTitle.png" }
 
+            
+
+
+        ];
         var queue = new createjs.LoadQueue(false);
-        queue.installPlugin(createjs.Sound);
-        queue.addEventListener("complete", function (event) {
-            //Paint board
-            addBackground();
-        });
-        queue.loadManifest(assets);
+        function LoadAssets() {
+
+            queue.installPlugin(createjs.Sound);
+            queue.addEventListener("complete", function (event) {
+                //Paint board
+                var introPage = createIntroductionPage();
+
+                showPage(introPage);
+            });
+            queue.loadManifest(assets);
+        }
+
 
 
         createjs.Ticker.setFPS(40);
@@ -44,6 +57,8 @@ var Game = Game || (function (createjs) {
         var strikes = 0;
         var level = 1;
         var timer = 10;
+
+
 
         questionsArray = gameData.questions;
         shuffle(questionsArray);
@@ -102,22 +117,29 @@ var Game = Game || (function (createjs) {
             }
         }
 
+        function createTitle() {
+           
 
+            var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
+            titleImage.x = 5;
+            titleImage.y = 5;
+
+            stage.addChild(titleImage);
+        }
 
         function createIntroductionPage() {
-
+            
             var page = new createjs.Container();
 
-            var Title = new createjs.Text("Measurement Madness", "24px Arial", "black");
-            Title.x = 5;
-            Title.y = 5
-            page.addChild(Title);
+            //var Title = new createjs.Text("Measurement Madness", "24px Arial", "black");
+            //Title.x = 5;
+            //Title.y = 5
+            //page.addChild(Title);
+            var backgroundImage = new createjs.Bitmap(queue.getResult("backgroundImage"));
+            backgroundImage.x = 0;
+            backgroundImage.y = 0;
+            page.addChild(backgroundImage);
 
-            var circle = new createjs.Shape();
-            circle.graphics.beginFill("red").drawCircle(0, 0, 50);
-            circle.x = 100;
-            circle.y = 100;
-            page.addChild(circle);
             // do the stuff on the page, setup click handlers, etc...
             var startButton = new createjs.Bitmap(queue.getResult("start_button"));
 
@@ -125,17 +147,18 @@ var Game = Game || (function (createjs) {
             startButton.regY = 95;
             startButton.x = 650;
             startButton.y = 350;
-            startButton.scaleX = startButton.scaleY = 0.20;
+            // startButton.scaleX = startButton.scaleY = 0.20;
             page.addChild(startButton);
 
-            circle.addEventListener("click", function () {
+            startButton.addEventListener("click", function () {
                 showPage(createGamePage());
             });
-
+            createTitle();
             return page;
         }
-
+        var timerTween;
         function createGamePage() {
+        
 
             var page = new createjs.Container();
 
@@ -143,30 +166,33 @@ var Game = Game || (function (createjs) {
             background.graphics.beginStroke("Green").beginFill("Green").drawRect(0, 0, 800, 600);
             page.addChild(background);
 
-            var Title = new createjs.Text("Measurement Madness", "24px Arial", "black");
-            Title.x = 5;
-            Title.y = 5
-            page.addChild(Title);
+
+            var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
+            titleImage.x = 5;
+            titleImage.y = 5;
+
+            page.addChild(titleImage);
+            //var Title = new createjs.Text("Measurement Madness", "24px Arial", "black");
+            //Title.x = 5;
+            //Title.y = 5
+            //page.addChild(Title);
 
             //Paint Text boxes
 
             var scoreTextDisplay = displayScoreText();
             page.addChild(scoreTextDisplay);
 
-
             var strikesDisplay = new createjs.Text("Strikes: " + strikes, "18px Arial", "black");
             strikesDisplay.x = 110;
-            strikesDisplay.y = 50
+            strikesDisplay.y = 150
             page.addChild(strikesDisplay);
 
             var levelDisplay = new createjs.Text("Level: " + level, "18px Arial", "black");
             levelDisplay.x = 210;
-            levelDisplay.y = 50
+            levelDisplay.y = 150
             page.addChild(levelDisplay);
 
-            var timerDisplay = new createjs.Text("Timer: " + timer, "18px Arial", "black");
-            timerDisplay.x = 310;
-            timerDisplay.y = 50
+            var timerDisplay = displayTimerText()
             page.addChild(timerDisplay);
 
             var questionDisplay = displayQuestionText();
@@ -195,14 +221,54 @@ var Game = Game || (function (createjs) {
             ruler.scaleX = targetRulerWidthOfCanvasPercent * (stage.canvas.width / rulerWidthPixels)
 
             page.addChild(ruler);
-            // do the stuff on the page, setup click handlers, etc...
 
+            createjs.Ticker.on("tick", stage);
+
+            //Create a shape
+            var bar = new createjs.Shape()
+                .set({ x: 380, y: 140 }); // Move away from the top left.
+            page.addChild(bar);
+
+            // Draw the outline
+            bar.graphics.setStrokeStyle(2)
+                .beginStroke("black")
+                .drawRect(-1, -1, 302, 26)
+                .endStroke();
+
+            // Draw the fill. Only set the style here
+            var fill = new createjs.Shape().set({ x: 380, y: 140, scaleX: 0 });
+            fill.graphics.beginFill("orange").drawRect(0, 0, 300, 24);
+            page.addChild(fill);
+
+
+            if (questionIndex > 0) {
+                timerTween.setPosition(0, 0);
+                timerTween = createjs.Tween.get(fill, { override: true })
+                    .to({ scaleX: 1 }, timer * 1000, createjs.Ease.quadIn).wait(.01).call(function () {
+                        strikes += 1;
+                        timerTween.paused = true;
+                        timerTween.setPaused(true);
+                        displayXXX_YourWrong();
+                    });
+            } else {
+
+                timerTween = createjs.Tween.get(fill, { override: true })
+                    .wait(3000)
+                    .to({ scaleX: 1 }, timer * 1000, createjs.Ease.quadIn).wait(.01).call(function () {
+                        strikes += 1;
+                        timerTween.paused = true;
+                        timerTween.setPaused(true);
+                        displayXXX_YourWrong();
+                    });
+            }
+    
             return page;
+           
         }
         function displayQuestionText() {
             var questionDisplay = new createjs.Text(questionsArray[questionIndex].text, "26px Arial bold", "yellow");
             questionDisplay.x = 10;
-            questionDisplay.y = 150
+            questionDisplay.y = 250
             //  page.addChild(questionDisplay);
             return questionDisplay;
         }
@@ -211,32 +277,93 @@ var Game = Game || (function (createjs) {
 
             scoreTextDisplay = new createjs.Text("Score: " + score, "18px Arial", "black");
             scoreTextDisplay.x = 10;
-            scoreTextDisplay.y = 50
+            scoreTextDisplay.y = 150
             //page.addChild(scoreTextDisplay);
             return scoreTextDisplay;
         }
+        var timerDisplay;
+        function displayTimerText() {
+            timerDisplay = new createjs.Text("Timer: ", "18px Arial", "black");
+            timerDisplay.x = 310;
+            timerDisplay.y = 150
+            return timerDisplay
 
+        }
         function CheckAnswer(answerValue) {
+            // timerTween.setPaused(true);
+            timerTween.paused = true;
+            timerTween.setPaused(true);
+
             if (answerValue == questionsArray[questionIndex].value) {
                 givePoints();
+                createjs.Sound.play("Correct");
+                incrementQuestion();
+                showPage(createGamePage());
 
             } else {
-                displayXXX_YourWrong();
+
                 strikes += 1;
+                displayXXX_YourWrong();
             }
             //Check if its correct
 
-            incrementQuestion();
-            showPage(createGamePage());
+
+
         }
         function displayXXX_YourWrong() {
             //deliver X image.
+            var redXXX = new createjs.Bitmap(queue.getResult("RedXXX"));
+            redXXX.x = (stage.canvas.width / 3)
+            redXXX.y = (stage.canvas.height / 4)
+            //redXXX.scaleX = 0.05;
+            //redXXX.scaleY = 0.05;
+
+            stage.addChild(redXXX);
+            createjs.Sound.play("Buzzer");
+
+
+            setTimeout(function () {
+                stage.removeChild(redXXX)
+                if (strikes >= 3) {
+                    showPage(GameOverScreen());
+                } else {
+                    incrementQuestion();
+                    showPage(createGamePage());
+                }
+            }, 1500);
+
         }
         function incrementQuestion() {
             questionIndex += 1;
         }
 
         function givePoints() {
+            if (score > 0 && score < 20) {
+                level = 1;
+            } else if (score > 20 && score < 40) {
+                level = 2;
+            } else if (score > 40 && score < 60) {
+                level = 3;
+            } else if (score > 60 && score < 80) {
+                level = 4;
+            } else if (score > 300 && score < 400) {
+                level = 5;
+            } else if (score > 400 && score < 500) {
+                level = 6;
+            } else if (score > 500 && score < 600) {
+                level = 7;
+            } else if (score > 600 && score < 700) {
+                level = 8;
+            } else if (score > 700 && score < 800) {
+                level = 9;
+            } else if (score > 800 && score < 900) {
+                level = 10;
+            } else if (score > 900) {
+                level = 10;
+            }
+
+
+
             switch (level) {
                 case 1:
                     score += 10;
@@ -356,12 +483,8 @@ var Game = Game || (function (createjs) {
 
                     // alert("Clicked Value: " + e.currentTarget.value.toString());
                     var isAnswerCorrect = CheckAnswer(e.currentTarget.value.toString());
-                    //Check if its correct
-                    if (isAnswerCorrect) {
-                        givePoints();
-                        incrementQuestion()
-                        //playCorrectAudioClip();
-                    }
+
+
                 });
 
                 divisionContainer.addChild(division);
@@ -441,8 +564,7 @@ var Game = Game || (function (createjs) {
                 divisionContainer.addEventListener("mousedown", function (e) {
 
                     // alert("Clicked Value: " + e.currentTarget.value.toString());
-                    CheckAnswer(e.currentTarget.value.toString());
-
+                    CheckAnswer(e.currentTarget.value.toString())
                 });
 
                 ruler.addChild(divisionContainer);
@@ -453,12 +575,51 @@ var Game = Game || (function (createjs) {
             return ruler;
         }
 
+        function resetGameVariables() {
+            score = 0;
+            questionIndex = 0;
+            strikes = 0;
+            level = 1;
+            timer = 10;
+            shuffle(questionsArray);
+        }
+
+        function GameOverScreen() {
+            var page = new createjs.Container();
+
+            var background = new createjs.Shape();
+            background.graphics.beginStroke("Red").beginFill("Red").drawRect(0, 0, 800, 600);
+            page.addChild(background);
+
+            var Title = new createjs.Text("Measurement Madness", "24px Arial", "black");
+            Title.x = 5;
+            Title.y = 5
+            page.addChild(Title);
+
+            // do the stuff on the page, setup click handlers, etc...
+            var startButton = new createjs.Bitmap(queue.getResult("start_button"));
+
+            startButton.regX = 93;
+            startButton.regY = 95;
+            startButton.x = 650;
+            startButton.y = 350;
+            // startButton.scaleX = startButton.scaleY = 0.20;
+            page.addChild(startButton);
+
+            startButton.addEventListener("click", function () {
+                resetGameVariables();
+                showPage(createGamePage());
+            });
+
+            return page;
+
+        }
 
 
         self.start = function () {
-            var introPage = createIntroductionPage();
-
-            showPage(introPage);
+            // var introPage = createIntroductionPage();
+            LoadAssets();
+            //showPage(introPage);
         }
 
     }
