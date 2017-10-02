@@ -141,6 +141,11 @@ var Game = Game || (function (createjs) {
             backgroundImage.y = 0;
             page.addChild(backgroundImage);
 
+            var selectQuarters = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            selectQuarters.x = 150 ;
+            selectQuarters.y = 150;
+            page.addChild(selectQuarters);
+
             // do the stuff on the page, setup click handlers, etc...
             //var startButton = new createjs.Bitmap(queue.getResult("start_button"));
 
@@ -151,7 +156,8 @@ var Game = Game || (function (createjs) {
             //// startButton.scaleX = startButton.scaleY = 0.20;
             //page.addChild(startButton);
 
-            startButton.addEventListener("click", function () {
+            selectQuarters.addEventListener("click", function () {
+                //send quarters
                 showPage(createGamePage());
             });
             
