@@ -82,6 +82,7 @@
     <Content Include="images\cross-34976_960_720.png" />
     <Content Include="images\measurementMadnessTitle.png" />
     <Content Include="images\SequencePlayButton.png" />
+    <Content Include="images\web-buttons-465941_1280.png" />
     <Content Include="images\WrongBuzzer.mp3" />
     <Content Include="index.html" />
     <Content Include="style.css" />

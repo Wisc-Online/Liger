@@ -19,7 +19,7 @@ var Game = Game || (function (createjs) {
             { id: "RedXXX", src: assetsPath + "cross-34976_960_720.png" },
             { id: "Buzzer", src: assetsPath + "WrongBuzzer.mp3" },
             { id: "Correct", src: assetsPath + "Correct.mp3" },
-            { id: "backgroundImage", src: assetsPath + "Correct.mp3" },
+            { id: "backgroundImage", src: assetsPath + "background.jpg" },
             { id: "TitleImage", src: assetsPath + "measurementMadnessTitle.png" }
 
             
@@ -35,6 +35,7 @@ var Game = Game || (function (createjs) {
                 var introPage = createIntroductionPage();
 
                 showPage(introPage);
+                createTitle();
             });
             queue.loadManifest(assets);
         }
@@ -141,19 +142,19 @@ var Game = Game || (function (createjs) {
             page.addChild(backgroundImage);
 
             // do the stuff on the page, setup click handlers, etc...
-            var startButton = new createjs.Bitmap(queue.getResult("start_button"));
+            //var startButton = new createjs.Bitmap(queue.getResult("start_button"));
 
-            startButton.regX = 93;
-            startButton.regY = 95;
-            startButton.x = 650;
-            startButton.y = 350;
-            // startButton.scaleX = startButton.scaleY = 0.20;
-            page.addChild(startButton);
+            //startButton.regX = 93;
+            //startButton.regY = 95;
+            //startButton.x = 650;
+            //startButton.y = 350;
+            //// startButton.scaleX = startButton.scaleY = 0.20;
+            //page.addChild(startButton);
 
             startButton.addEventListener("click", function () {
                 showPage(createGamePage());
             });
-            createTitle();
+            
             return page;
         }
         var timerTween;
