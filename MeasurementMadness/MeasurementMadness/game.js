@@ -20,10 +20,11 @@ var Game = Game || (function (createjs) {
             { id: "Buzzer", src: assetsPath + "WrongBuzzer.mp3" },
             { id: "Correct", src: assetsPath + "Correct.mp3" },
             { id: "backgroundImage", src: assetsPath + "background.jpg" },
+            { id: "buttonBlue", src: assetsPath + "buttonblue.png" },
             { id: "TitleImage", src: assetsPath + "measurementMadnessTitle.png" }
 
             
-
+            
 
         ];
         var queue = new createjs.LoadQueue(false);
@@ -141,11 +142,59 @@ var Game = Game || (function (createjs) {
             backgroundImage.y = 0;
             page.addChild(backgroundImage);
 
-            var selectQuarters = new createjs.Bitmap(queue.getResult("buttonBlue"));
-            selectQuarters.x = 150 ;
-            selectQuarters.y = 150;
-            page.addChild(selectQuarters);
+            var directionsPanel = new createjs.Bitmap(queue.getResult("dirPanel"));
+            backgroundImage.x = 0;
+            backgroundImage.y = 0;
+            page.addChild(backgroundImage);
 
+            var buttonContainer = new createjs.Container();
+            var ButtonX = 500;
+            var selectQuarters = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            selectQuarters.x = ButtonX ;
+            selectQuarters.y = 150;
+            buttonContainer.addChild(selectQuarters);
+            var selectQuartersText = new createjs.Text("Quarters", "26px Arial bold", "yellow");
+            selectQuartersText.x = ButtonX + 50;
+            selectQuartersText.y = selectQuarters.y + 20;
+            buttonContainer.addChild(selectQuartersText);
+
+            var selectEights = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            selectEights.x = ButtonX;
+            selectEights.y = 220;
+            buttonContainer.addChild(selectEights);
+            var selectEightsText = new createjs.Text("Eights", "26px Arial bold", "yellow");
+            selectEightsText.x = ButtonX + 65;
+            selectEightsText.y = selectEights.y + 20;
+            buttonContainer.addChild(selectEightsText);
+
+            var selectSixteenths = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            selectSixteenths.x = ButtonX;
+            selectSixteenths.y = 290;
+            buttonContainer.addChild(selectSixteenths);
+            var selectselectSixteenthsText = new createjs.Text("Sixteenths", "26px Arial bold", "yellow");
+            selectselectSixteenthsText.x = ButtonX + 50;
+            selectselectSixteenthsText.y = selectSixteenths.y + 20;
+            buttonContainer.addChild(selectselectSixteenthsText);
+
+            var selectSixteenths = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            selectSixteenths.x = ButtonX;
+            selectSixteenths.y = 290;
+            buttonContainer.addChild(selectSixteenths);
+            var selectSixteenthsText = new createjs.Text("Sixteenths", "26px Arial bold", "yellow");
+            selectSixteenthsText.x = ButtonX + 50;
+            selectSixteenthsText.y = selectSixteenths.y + 20;
+            buttonContainer.addChild(selectSixteenthsText);
+
+            var selectThirtySeconds = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            selectThirtySeconds.x = ButtonX;
+            selectThirtySeconds.y = 360;
+            buttonContainer.addChild(selectThirtySeconds);
+            var selectThirtySecondsText = new createjs.Text("Thirty Seconds", "26px Arial bold", "yellow");
+            selectThirtySecondsText.x = ButtonX + 20;
+            selectThirtySecondsText.y = selectThirtySeconds.y + 20;
+            buttonContainer.addChild(selectThirtySecondsText);
+
+            page.addChild(buttonContainer);
             // do the stuff on the page, setup click handlers, etc...
             //var startButton = new createjs.Bitmap(queue.getResult("start_button"));
 
