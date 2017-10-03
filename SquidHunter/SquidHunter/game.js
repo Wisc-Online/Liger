@@ -441,7 +441,7 @@ var Game = Game || (function (createjs) {
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
 
-                var directionsText = new createjs.Text("Directions: Use 'F' Key to Fire Harpoons\nUse Directional Arrow Keys to move along the ship\nEliminate Squids for points ", "20px Alegreya", "#000000");
+                var directionsText = new createjs.Text("Directions: Use 'SPACEBAR' Key to Fire Harpoons\nUse Directional Arrow Keys to move along the ship\nEliminate Squids for points ", "20px Alegreya", "#000000");
                 directionsText.x = panelBG.x + 130;
                 directionsText.y = panelBG.y + 155;
 
@@ -1308,8 +1308,8 @@ var Game = Game || (function (createjs) {
                 gameoverPanel.y = 32;
 
                 var gameoverText = new createjs.Text("Game Over!", "Bold 55px Alegreya", "#FFFFFF");
-                gameoverText.x = gameoverPanel.x + 350;
-                gameoverText.y = gameoverPanel.y + 400;
+                gameoverText.x = gameoverPanel.x + 300;
+                gameoverText.y = gameoverPanel.y + 390;
 
                 var replayText = new createjs.Text("Replay", "Bold 23px Alegreya", "#FFFFFF");
                 replayText.x = gameoverPanel.x + 265;
@@ -1343,7 +1343,9 @@ var Game = Game || (function (createjs) {
 
 
                 function handleClicks(event) {
-                //    replay();
+                    //    replay();
+
+
                 }
 
                 function handleClick(event) {
