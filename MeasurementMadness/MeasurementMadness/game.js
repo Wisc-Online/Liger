@@ -20,14 +20,13 @@ var Game = Game || (function (createjs) {
             { id: "Buzzer", src: assetsPath + "WrongBuzzer.mp3" },
             { id: "Correct", src: assetsPath + "Correct.mp3" },
             { id: "backgroundImage", src: assetsPath + "background.jpg" },
-            { id: "buttonBlue", src: assetsPath + "buttonblue.png" },
+            { id: "button", src: assetsPath + "button.png" },
+            { id: "selectedButton", src: assetsPath + "SelectedButton.png" },
             { id: "dirPanel", src: assetsPath + "Picture1.png" },
+            { id: "ButtonSprite", src: assetsPath + "spritesheet.png" },
             { id: "TitleImage", src: assetsPath + "measurementMadnessTitle.png" }
-
-            
-            
-
         ];
+
         var queue = new createjs.LoadQueue(false);
         function LoadAssets() {
 
@@ -41,7 +40,16 @@ var Game = Game || (function (createjs) {
             });
             queue.loadManifest(assets);
         }
-
+        var data = {
+            images: ["spritesheet.png"],
+            frames: { width: 50, height: 50, count:2, margin:5 },
+            animations: {
+                selected: 0,
+                original: 1
+            }
+        };
+        var spriteSheet = new createjs.SpriteSheet(data);
+        var animation = new createjs.Sprite(spriteSheet, "original");
 
 
         createjs.Ticker.setFPS(40);
@@ -150,7 +158,7 @@ var Game = Game || (function (createjs) {
 
             var buttonContainer = new createjs.Container();
             var ButtonX = 500;
-            var selectQuarters = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            var selectQuarters = new createjs.Bitmap(queue.getResult("button"));
             selectQuarters.x = ButtonX ;
             selectQuarters.y = 150;
             buttonContainer.addChild(selectQuarters);
@@ -159,7 +167,7 @@ var Game = Game || (function (createjs) {
             selectQuartersText.y = selectQuarters.y + 20;
             buttonContainer.addChild(selectQuartersText);
 
-            var selectEights = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            var selectEights = new createjs.Bitmap(queue.getResult("button"));
             selectEights.x = ButtonX;
             selectEights.y = 220;
             buttonContainer.addChild(selectEights);
@@ -168,7 +176,7 @@ var Game = Game || (function (createjs) {
             selectEightsText.y = selectEights.y + 20;
             buttonContainer.addChild(selectEightsText);
 
-            var selectSixteenths = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            var selectSixteenths = new createjs.Bitmap(queue.getResult("button"));
             selectSixteenths.x = ButtonX;
             selectSixteenths.y = 290;
             buttonContainer.addChild(selectSixteenths);
@@ -177,7 +185,7 @@ var Game = Game || (function (createjs) {
             selectselectSixteenthsText.y = selectSixteenths.y + 20;
             buttonContainer.addChild(selectselectSixteenthsText);
 
-            var selectSixteenths = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            var selectSixteenths = new createjs.Bitmap(queue.getResult("button"));
             selectSixteenths.x = ButtonX;
             selectSixteenths.y = 290;
             buttonContainer.addChild(selectSixteenths);
@@ -186,7 +194,7 @@ var Game = Game || (function (createjs) {
             selectSixteenthsText.y = selectSixteenths.y + 20;
             buttonContainer.addChild(selectSixteenthsText);
 
-            var selectThirtySeconds = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            var selectThirtySeconds = new createjs.Bitmap(queue.getResult("button"));
             selectThirtySeconds.x = ButtonX;
             selectThirtySeconds.y = 360;
             buttonContainer.addChild(selectThirtySeconds);
@@ -195,7 +203,7 @@ var Game = Game || (function (createjs) {
             selectThirtySecondsText.y = selectThirtySeconds.y + 20;
             buttonContainer.addChild(selectThirtySecondsText);
 
-            var highScore = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            var highScore = new createjs.Bitmap(queue.getResult("button"));
             highScore.x = ButtonX;
             highScore.y = 430;
             buttonContainer.addChild(highScore);
@@ -203,6 +211,10 @@ var Game = Game || (function (createjs) {
             highScoreText.x = ButtonX + 40;
             highScoreText.y = highScore.y + 20;
             buttonContainer.addChild(highScoreText);
+            animation.x = 50;
+            animation.y = 50;
+
+            buttonContainer.addChild(animation);
 
             page.addChild(buttonContainer);
             // do the stuff on the page, setup click handlers, etc...

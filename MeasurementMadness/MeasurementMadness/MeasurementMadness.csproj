@@ -83,8 +83,10 @@
     <Content Include="images\measurementMadnessTitle.png" />
     <Content Include="images\PanelBG.png" />
     <Content Include="images\Picture1.png" />
+    <Content Include="images\SelectedButton.png" />
     <Content Include="images\SequencePlayButton.png" />
     <Content Include="images\buttonblue.png" />
+    <Content Include="images\spritesheet.png" />
     <Content Include="images\WrongBuzzer.mp3" />
     <Content Include="images\X.png" />
     <Content Include="index.html" />
