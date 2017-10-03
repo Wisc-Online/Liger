@@ -41,8 +41,8 @@ var Game = Game || (function (createjs) {
             queue.loadManifest(assets);
         }
         var data = {
-            images: ["spritesheet.png"],
-            frames: { width: 50, height: 50, count:2, margin:5 },
+            images: ["spritesheet2.png"],
+            frames: { width: 200, height: 90, count:2, margin:5 },
             animations: {
                 selected: 0,
                 original: 1
