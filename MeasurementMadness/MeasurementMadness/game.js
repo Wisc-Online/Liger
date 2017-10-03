@@ -21,6 +21,7 @@ var Game = Game || (function (createjs) {
             { id: "Correct", src: assetsPath + "Correct.mp3" },
             { id: "backgroundImage", src: assetsPath + "background.jpg" },
             { id: "buttonBlue", src: assetsPath + "buttonblue.png" },
+            { id: "dirPanel", src: assetsPath + "Picture1.png" },
             { id: "TitleImage", src: assetsPath + "measurementMadnessTitle.png" }
 
             
@@ -143,9 +144,9 @@ var Game = Game || (function (createjs) {
             page.addChild(backgroundImage);
 
             var directionsPanel = new createjs.Bitmap(queue.getResult("dirPanel"));
-            backgroundImage.x = 0;
-            backgroundImage.y = 0;
-            page.addChild(backgroundImage);
+            directionsPanel.x = 20;
+            directionsPanel.y = 150;
+            page.addChild(directionsPanel);
 
             var buttonContainer = new createjs.Container();
             var ButtonX = 500;
@@ -193,6 +194,15 @@ var Game = Game || (function (createjs) {
             selectThirtySecondsText.x = ButtonX + 20;
             selectThirtySecondsText.y = selectThirtySeconds.y + 20;
             buttonContainer.addChild(selectThirtySecondsText);
+
+            var highScore = new createjs.Bitmap(queue.getResult("buttonBlue"));
+            highScore.x = ButtonX;
+            highScore.y = 430;
+            buttonContainer.addChild(highScore);
+            var highScoreText = new createjs.Text("High Score", "26px Arial bold", "yellow");
+            highScoreText.x = ButtonX + 40;
+            highScoreText.y = highScore.y + 20;
+            buttonContainer.addChild(highScoreText);
 
             page.addChild(buttonContainer);
             // do the stuff on the page, setup click handlers, etc...
