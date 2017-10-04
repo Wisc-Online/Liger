@@ -171,6 +171,7 @@ var Game = Game || (function (createjs) {
             var isGameRunning = false;
             var playButton;
 
+            var instructionsScreen;
 
             //loads background image
             function addBackground() {
@@ -371,7 +372,7 @@ var Game = Game || (function (createjs) {
             //call the mobile version of the instructions screen
             function mobileIntroScreen() {
 
-                var instructionsScreen = new createjs.Container();
+                instructionsScreen = new createjs.Container();
 
                 var panelBG = new createjs.Bitmap(queue.getResult("panel"));
                 panelBG.x = 0;
@@ -413,8 +414,6 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(instructionsScreen);
                 self.stage.addChild(soundContain);
 
-
-                if (isGameRunning = true) {
                     var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
 
                     playButton.regX = 93;
@@ -436,6 +435,7 @@ var Game = Game || (function (createjs) {
                     playButton.addEventListener("click", handleClick);
 
                     function handleClick(event) {
+                        instructionsScreen.removeChild(playButton);
                         self.stage.removeChild(instructionsScreen);
                         isMobile = true;
                         playBass();
@@ -448,7 +448,7 @@ var Game = Game || (function (createjs) {
 
                     }
 
-                }
+            
 
 
             }
@@ -456,7 +456,7 @@ var Game = Game || (function (createjs) {
             //load introduction screen/play button
             function introductionScreen() {
 
-                var instructionsScreen = new createjs.Container();
+                instructionsScreen = new createjs.Container();
 
                 var panelBG = new createjs.Bitmap(queue.getResult("panel"));
                 panelBG.x = 0;
@@ -500,7 +500,6 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(instructionsScreen);
                 self.stage.addChild(soundContain);
 
-                if (isGameRunning = true) {
                     var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
 
                     playButton.regX = 93;
@@ -523,10 +522,11 @@ var Game = Game || (function (createjs) {
                     playButton.addEventListener("click", handleClick);
 
                     function handleClick(event) {
+                        instructionsScreen.removeChild(playButton);
                         self.stage.removeChild(instructionsScreen);
                         StartInteraction();
                     };
-                }
+              
 
 
                 if (isGameRunning = true) {
@@ -700,9 +700,10 @@ var Game = Game || (function (createjs) {
 
                 function handleClick(event) {
                     if (isMobile) {
-                        self.stage.addChild(mobileIntroScreen);
+                        self.stage.addChild(instructionsScreen);
+                        
                     } else {
-                        self.stage.addChild(introductionScreen);
+                        self.stage.addChild(instructionsScreen);
                     }
                 };
 
