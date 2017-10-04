@@ -107,7 +107,9 @@ var Game = Game || (function (createjs) {
                 { id: "level-up", src: assetsPath + "level-up.mp3" },
                 { id: "page", src: assetsPath + "page.wav" },
                 { id: "coin", src: assetsPath + "coin.wav" },
-                { id: "splash", src: assetsPath + "splash.wav" }
+                { id: "splash", src: assetsPath + "splash.wav" },
+                { id: "instructions_question", src: assetsPath + "instructions_question.png" },
+                { id: "instructions_background", src: assetsPath + "instructions_background.png" }
 
             ];
 
@@ -166,6 +168,8 @@ var Game = Game || (function (createjs) {
             var touchContainer;
 
             var isBassPlaying = false;
+            var isGameRunning = false;
+            var playButton;
 
 
             //loads background image
@@ -214,6 +218,17 @@ var Game = Game || (function (createjs) {
                     createjs.Tween.get(event.currentTarget).to({ scaleX: initScareX, scaleY: initScareY }, 100);
                 }
             }
+
+            //used for scaling the question mark on mouseover
+            function handleInstructionsMouseOver(event) {
+                if (event.type == "mouseover") {
+                    createjs.Tween.get(questionMark, { loop: false }).to({ scaleX: 1.0625, scaleY: 1.0625 }, 50);
+                }
+                else {
+                    createjs.Tween.get(questionMark, { loop: false }).to({ scaleX: 1.0, scaleY: 1.0 }, 50);
+                }
+            }
+
 
 
             //loads volume on/off switch
@@ -343,11 +358,13 @@ var Game = Game || (function (createjs) {
                     playBass();
                     self.stage.removeChild(instructionsScreen);
                     mobileIntroScreen();
+                    isGameRunning = true;
                 }
 
                 function noClick(event) {
                     self.stage.removeChild(instructionsScreen);
                     introductionScreen();
+                    isGameRunning = true;
                 }
             }
 
@@ -364,19 +381,14 @@ var Game = Game || (function (createjs) {
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
 
-                var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
-
-                playButton.regX = 93;
-                playButton.regY = 95;
-                playButton.x = panelBG.x + 600;
-                playButton.y = panelBG.y + 400;
-                playButton.scaleX = playButton.scaleY = 0.20;
-
                 var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#000000");
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
 
-                var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship\nHarpoons will fire every 2 seconds\nEliminate Squids for points", "20px Alegreya", "#000000");
+                var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship." + 
+                   "\nHarpoons will fire every 2 seconds.\nEliminate squids for treasure." +
+                    "\nIf the pirate gets hit by the ink, you will need to answer a question." +
+                    "\nIf the pirate runs out of harpoons, you will need to answer a question.", "20px Alegreya", "#000000");
                 directionsText.x = panelBG.x + 130;
                 directionsText.y = panelBG.y + 155;
 
@@ -390,30 +402,55 @@ var Game = Game || (function (createjs) {
                 logo.regX = 180;
                 logo.regY = 60;
                 logo.x = panelBG.x + 220;
-                logo.y = panelBG.y + 275;
-                logo.scaleX = logo.scaleY = 0.40;
+                logo.y = panelBG.y + 305;
+                logo.scaleX = logo.scaleY = 0.30;
 
-                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
-                createjs.Tween.get(playButton, {
-                    loop: false
-                }).to({
-                    rotation: 360,
-                    scaleX: .4,
-                    scaleY: .4
-                }, 2000);
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo);
+               
 
                 var soundContain = createSoundContainer();
 
                 self.stage.addChild(instructionsScreen);
                 self.stage.addChild(soundContain);
-                playButton.addEventListener("click", handleClick);
 
-                function handleClick(event) {
-                    self.stage.removeChild(instructionsScreen);
-                    isMobile = true;
-                    playBass();
-                    StartInteraction();
-                };
+
+                if (isGameRunning = true) {
+                    var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
+
+                    playButton.regX = 93;
+                    playButton.regY = 95;
+                    playButton.x = panelBG.x + 600;
+                    playButton.y = panelBG.y + 400;
+                    playButton.scaleX = playButton.scaleY = 0.20;
+
+                    createjs.Tween.get(playButton, {
+                        loop: false
+                    }).to({
+                        rotation: 360,
+                        scaleX: .4,
+                        scaleY: .4
+                    }, 2000);
+
+                    instructionsScreen.addChild(playButton);
+
+                    playButton.addEventListener("click", handleClick);
+
+                    function handleClick(event) {
+                        self.stage.removeChild(instructionsScreen);
+                        isMobile = true;
+                        playBass();
+                        StartInteraction();
+                    };
+
+
+                    if (isGameRunning) {
+                        //create a backbutton to remove the instructions screen
+
+                    }
+
+                }
+
+
             }
 
             //load introduction screen/play button
@@ -429,19 +466,17 @@ var Game = Game || (function (createjs) {
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
 
-                var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
+              
 
-                playButton.regX = 93;
-                playButton.regY = 95;
-                playButton.x = panelBG.x + 600;
-                playButton.y = panelBG.y + 400;
-                playButton.scaleX = playButton.scaleY = 0.20;
 
                 var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#000000");
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
 
-                var directionsText = new createjs.Text("Directions: Use 'SPACEBAR' Key to Fire Harpoons\nUse Directional Arrow Keys to move along the ship\nEliminate Squids for points ", "20px Alegreya", "#000000");
+                var directionsText = new createjs.Text("Directions: Use 'Spacebar' key to fire harpoons.\nUse 'Directional Arrow' keys to move along the ship." +
+                   "\nEliminate squids for treasure." +
+                    "\nIf the pirate gets hit by the ink, you will need to answer a question." +
+                    "\nIf the pirate runs out of harpoons, you will need to answer a question.", "20px Alegreya", "#000000");
                 directionsText.x = panelBG.x + 130;
                 directionsText.y = panelBG.y + 155;
 
@@ -455,30 +490,53 @@ var Game = Game || (function (createjs) {
                 logo.regX = 180;
                 logo.regY = 60;
                 logo.x = panelBG.x + 220;
-                logo.y = panelBG.y + 275;
-                logo.scaleX = logo.scaleY = 0.40;
+                logo.y = panelBG.y + 300;
+                logo.scaleX = logo.scaleY = 0.30;
 
 
-                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
-
-                createjs.Tween.get(playButton, {
-                    loop: false
-                }).to({
-                    rotation: 360,
-                    scaleX: .4,
-                    scaleY: .4
-                }, 2000);
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo);
 
                 var soundContain = createSoundContainer();
-
                 self.stage.addChild(instructionsScreen);
                 self.stage.addChild(soundContain);
-                playButton.addEventListener("click", handleClick);
 
-                function handleClick(event) {
-                    self.stage.removeChild(instructionsScreen);
-                    StartInteraction();
-                };
+                if (isGameRunning = true) {
+                    var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
+
+                    playButton.regX = 93;
+                    playButton.regY = 95;
+                    playButton.x = panelBG.x + 600;
+                    playButton.y = panelBG.y + 400;
+                    playButton.scaleX = playButton.scaleY = 0.20;
+
+                    instructionsScreen.addChild(playButton);
+
+                    createjs.Tween.get(playButton, {
+                        loop: false
+                    }).to({
+                        rotation: 360,
+                        scaleX: .4,
+                        scaleY: .4
+                    }, 2000);
+
+
+                    playButton.addEventListener("click", handleClick);
+
+                    function handleClick(event) {
+                        self.stage.removeChild(instructionsScreen);
+                        StartInteraction();
+                    };
+                }
+
+
+                if (isGameRunning = true) {
+                    //create a backbutton to remove the instructions screen
+
+                }
+
+
+
+               
             }
 
             function moveRight() {
@@ -508,6 +566,9 @@ var Game = Game || (function (createjs) {
             }
 
             function StartInteraction() {
+
+
+
 
                 //if isMobile true, add directional arrows
                 if (isMobile == true) {
@@ -622,6 +683,32 @@ var Game = Game || (function (createjs) {
                         spawnEnemy();
                     }, i * 1000);
                 }
+
+                //load help icon/background
+                var questionMark = new createjs.Bitmap(queue.getResult("instructions_question"));
+
+                var helpContainer = new createjs.Container();
+                helpContainer.x = 0;
+                helpContainer.y = 550;
+                helpContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 50, 50));
+                helpContainer.cursor = 'pointer';
+
+                helpContainer.addChild(new createjs.Bitmap(queue.getResult("instructions_background")));
+                helpContainer.addChild(questionMark);
+
+                helpContainer.addEventListener("click", handleClick);
+
+                function handleClick(event) {
+                    if (isMobile) {
+                        self.stage.addChild(mobileIntroScreen);
+                    } else {
+                        self.stage.addChild(introductionScreen);
+                    }
+                };
+
+
+
+                self.stage.addChild(helpContainer);
 
                 //load score label
                 scoreLabel = new createjs.Text(Score, "Bold 20px Alegreya", "#FFFFFF");
