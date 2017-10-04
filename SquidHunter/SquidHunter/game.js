@@ -83,14 +83,14 @@ var Game = Game || (function (createjs) {
                 { id: "ink", src: assetsPath + "ink.png" },
                 { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
                 { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
-                { id: "redx", src: assetsPath + "redx.png" },
+                { id: "redx", src: assetsPath + "continuechk.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
                 { id: "logo", src: assetsPath + "logo.png" },
                 { id: "treasure", src: assetsPath + "treasure.png" },
                 { id: "piratesprite", src: assetsPath + "newpirate.png" },
                 { id: "splat", src: assetsPath + "splat.png" },
                 { id: "squidsprite", src: assetsPath + "squidsprite2.png" },
-                { id: "gameover", src: assetsPath + "GameOver.mp3" },
+                { id: "gameover", src: assetsPath + "gameover.wav" },
                 { id: "harpoonsound", src: assetsPath + "harpoonsound.wav" },
                 { id: "oceanwave", src: assetsPath + "oceanwave.mp3" },
                 { id: "chime", src: assetsPath + "chime.mp3" },
@@ -110,6 +110,7 @@ var Game = Game || (function (createjs) {
                 { id: "splash", src: assetsPath + "splash.wav" }
 
             ];
+
 
             var queue = new createjs.LoadQueue(false);
             queue.installPlugin(createjs.Sound);
@@ -257,7 +258,6 @@ var Game = Game || (function (createjs) {
                         evt.currentTarget.addChild(sound);
                         createjs.Sound.setMute(false);
                     }
-
 
                 }
                 );
@@ -457,9 +457,6 @@ var Game = Game || (function (createjs) {
                 logo.x = panelBG.x + 220;
                 logo.y = panelBG.y + 275;
                 logo.scaleX = logo.scaleY = 0.40;
-
-
-
 
 
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
@@ -695,7 +692,6 @@ var Game = Game || (function (createjs) {
                             Score = Score - 20;
                             printScore();
                         }
-                        //  isQuestionDisplayed = false
 
                     }
                 }
@@ -780,13 +776,6 @@ var Game = Game || (function (createjs) {
                         .call(function (evt) {
 
                             var theThingBeingTweened = evt.target;
-
-                            //self.stage.removeChild(theThingBeingTweened);
-
-                            //ink sound goes 
-                            //sound should only trigger on initial hit and freeze screen 
-                            //no more splats after qpanel is up
-
                             var theContainer = theThingBeingTweened.parent;
 
                             if (theContainer != null) {
@@ -802,8 +791,6 @@ var Game = Game || (function (createjs) {
                                     theContainer.addChild(splatContainer);
                                 }
                                 var inksplat = createjs.Sound.createInstance("inksplat", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-
-
                                 createjs.Sound.play("inksplat");
 
 
@@ -812,14 +799,9 @@ var Game = Game || (function (createjs) {
                                     createjs.Tween.get(splatContainer).to({ alpha: 0 }, 1000).call(function () {
                                         theContainer.removeChild(splatContainer);
                                     })
-
                                 }, 3000);
                             }
-                          
-
                         });
-
-
                     madeInk = true;
                 }
 
@@ -830,9 +812,7 @@ var Game = Game || (function (createjs) {
 
                         if (canEnemyFire && theenemy) {
                             makeInk(theenemy);
-                        } else {
-                            console.log("wtf?");
-                        }
+                        } 
                     }
                 }
 
@@ -859,7 +839,6 @@ var Game = Game || (function (createjs) {
                             else
                                 deliverQuestion(gameData.Questions[currentQuestionNumber]);
                         }
-
                     }
                 }
 
@@ -935,7 +914,6 @@ var Game = Game || (function (createjs) {
                             makeHarpoonOrAskQuestion();
                             event.preventDefault();
                             break;
-
                     }
                 }
 
@@ -997,7 +975,6 @@ var Game = Game || (function (createjs) {
 
                 //return container;
 
-
                 var spriteSheet = new createjs.SpriteSheet(data);
                 var sprite = new createjs.Sprite(spriteSheet, "pegleg");
                 squidContainer.addChild(sprite);
@@ -1005,14 +982,12 @@ var Game = Game || (function (createjs) {
                 squidContainer.x = 300;
                 squidContainer.y = 233;
 
-
                 //makeEnemy();
                 enemyContainer.scaleX = 0;
                 enemyContainer.scaleY = 0;
                 enemyContainer.alpha = 1;
                 enemyContainer.regX = 50;
                 enemyContainer.regY = 125 / 2;
-
 
 
                 //enemy functionality
@@ -1055,11 +1030,9 @@ var Game = Game || (function (createjs) {
 
             //load enemy
             function makeEnemy() {
-                //  var container = new createjs.Container();
                 squidContainer = new createjs.Container();
 
                 var speed = .02;
-                // var enemy = new createjs.Bitmap(queue.getResult("enemy"));
                 var data = {
                     images: [queue.getResult("squidsprite")],
                     frames: {
@@ -1116,8 +1089,6 @@ var Game = Game || (function (createjs) {
                 }
                 submittedScoreAlready = true;
             }
-
-
 
             //deliver questions when player is by ink
             function deliverQuestion(question) {
@@ -1233,25 +1204,23 @@ var Game = Game || (function (createjs) {
                 // <0 otherwise <1
 
                 if (answerstatus == "correct") {
-                    feedbackText = new createjs.Text("Correct. Click the what ever to continue", "20px Alegreya", "#000000");
+                    feedbackText = new createjs.Text("Correct. Click the red x to continue", "20px Alegreya", "#000000");
                     harpoonCount = 10;
                 } else {
 
                     for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++) {
                         if (gameData.Questions[currentQuestionNumber].Answers[i].IsCorrect == true) {
-                            feedbackText = new createjs.Text("I'm sorry the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
+                            feedbackText = new createjs.Text("I'm sorry, the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
                             harpoonCount = 5;
                         }
                     }
-                    //need another if for end of game game over screen call
-
 
                     //  feedbackText = new createjs.Text("InCorrect:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
                 }
 
 
-                feedbackText.x = feedbackPanel.x + 100
-                feedbackText.y = feedbackPanel.y + 40
+                feedbackText.x = feedbackPanel.x + 90
+                feedbackText.y = feedbackPanel.y + 30
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
                 redx.x = feedbackPanel.x + 580;
@@ -1273,21 +1242,10 @@ var Game = Game || (function (createjs) {
                     isEnemySpawnEnabled = true;
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
-                    // if questions array over ->
-                    //    gameOverScreen();
                     printHarpoonCount(); 
 
-                    //self.stage.removeChild(answerContainer
-                    //if (currentQuestionNumber >= gameData.Questions.length) {
-                    //    gameOverScreen();
-                    //}
 
                 }
-
-
-                //turn off feedback panel if it is true
-                //if (isFeedbackDisplayed == true) {
-                //}
 
                 feedbackContainer.addChild(feedbackPanel, feedbackText, redx)
                 self.stage.addChild(feedbackContainer);
@@ -1300,6 +1258,12 @@ var Game = Game || (function (createjs) {
             }
 
             function gameOverScreen() {
+
+                //playsound
+                var gameover = createjs.Sound.createInstance("gameover");
+                gameover.volume = gameover.volume * 1.5;
+                gameover.play();
+
 
                 gameoverContainer = new createjs.Container();
                 gameoverPanel = new createjs.Bitmap(queue.getResult("logo"));
@@ -1323,7 +1287,6 @@ var Game = Game || (function (createjs) {
 
 
                 exitText.addEventListener("click", handleClicks);
-
                 replayText.addEventListener("click", handleClick);
 
 
@@ -1345,14 +1308,11 @@ var Game = Game || (function (createjs) {
                 function handleClicks(event) {
                     //    replay();
 
-
                 }
 
                 function handleClick(event) {
                 //    self.stage.removeChild(gameoverContainer);
-                    replay();
-
-                   
+                    replay();            
                 }
 
                 gameoverContainer.addChild(gameoverPanel, gameoverText, replayText, exitText);
@@ -1376,9 +1336,10 @@ var Game = Game || (function (createjs) {
 
 
             function replay() {
-                gameBoard = null;
-
-                //initializeGame();
+                
+                inkContainer.removeAllChildren();
+                enemyContainer.removeAllChildren();
+               
                 StartitALL(); 
 
             }
