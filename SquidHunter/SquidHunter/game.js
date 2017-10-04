@@ -169,9 +169,15 @@ var Game = Game || (function (createjs) {
 
             var isBassPlaying = false;
             var isGameRunning = false;
+            var isGamePaused = false;
+
             var playButton;
 
+            var inkContainerTweens = [];
+
             var instructionsScreen;
+
+            var backText;
 
             //loads background image
             function addBackground() {
@@ -204,6 +210,42 @@ var Game = Game || (function (createjs) {
 
             }
 
+            function pauseTheGame() {
+                // hide the player
+                playerContainer.alpha = 0;
+                // hide the squids
+                squidAquarium.alpha = 0;
+                // prevent ink from being spawned
+                canEnemyFire = false;
+                // pause the ink animations
+                for (var i = 0; i < inkContainerTweens.length; ++i) {
+                    inkContainerTweens[i].setPaused(true);
+                }
+                // prevent player from shooting
+                isGameRunning = false;
+
+                //add the back button
+            //    backText.alpha = 1;
+
+            }
+
+            function resumeTheGame() {
+                // show the player
+                playerContainer.alpha = 1;
+                // show the squids
+                squidAquarium.alpha = 1;
+                // allow ink from being spawned
+                canEnemyFire = true;
+                // resume the ink animations
+                for (var i = 0; i < inkContainerTweens.length; ++i) {
+                    inkContainerTweens[i].setPaused(false);
+                }
+                // allow player from shooting
+                isGameRunning = true;
+            }
+
+
+
             //scales the current target on mouseover and mouse out with a tween 
             //used for volume on/off switch
             function handleButtonHover(event) {
@@ -229,8 +271,6 @@ var Game = Game || (function (createjs) {
                     createjs.Tween.get(questionMark, { loop: false }).to({ scaleX: 1.0, scaleY: 1.0 }, 50);
                 }
             }
-
-
 
             //loads volume on/off switch
             function createSoundContainer() {
@@ -282,6 +322,10 @@ var Game = Game || (function (createjs) {
                 soundContainer.on("mouseout", handleButtonHover);
                 return soundContainer;
             }
+
+
+
+           
 
             //define bass sound in beginning on load
             var bassSound = createjs.Sound.createInstance("bass");
@@ -386,7 +430,7 @@ var Game = Game || (function (createjs) {
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
 
-                var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship." + 
+                var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship." +
                    "\nHarpoons will fire every 2 seconds.\nEliminate squids for treasure." +
                     "\nIf the pirate gets hit by the ink, you will need to answer a question." +
                     "\nIf the pirate runs out of harpoons, you will need to answer a question.", "20px Alegreya", "#000000");
@@ -407,48 +451,70 @@ var Game = Game || (function (createjs) {
                 logo.scaleX = logo.scaleY = 0.30;
 
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo);
-               
+
 
                 var soundContain = createSoundContainer();
 
                 self.stage.addChild(instructionsScreen);
                 self.stage.addChild(soundContain);
 
-                    var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
+                var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
 
-                    playButton.regX = 93;
-                    playButton.regY = 95;
-                    playButton.x = panelBG.x + 600;
-                    playButton.y = panelBG.y + 400;
-                    playButton.scaleX = playButton.scaleY = 0.20;
+                playButton.regX = 93;
+                playButton.regY = 95;
+                playButton.x = panelBG.x + 600;
+                playButton.y = panelBG.y + 400;
+                playButton.scaleX = playButton.scaleY = 0.20;
 
-                    createjs.Tween.get(playButton, {
-                        loop: false
-                    }).to({
-                        rotation: 360,
-                        scaleX: .4,
-                        scaleY: .4
-                    }, 2000);
+                createjs.Tween.get(playButton, {
+                    loop: false
+                }).to({
+                    rotation: 360,
+                    scaleX: .4,
+                    scaleY: .4
+                }, 2000);
 
-                    instructionsScreen.addChild(playButton);
+                instructionsScreen.addChild(playButton);
 
-                    playButton.addEventListener("click", handleClick);
+                playButton.addEventListener("click", handleClickPlay);
+
+                function handleClickPlay(event) {
+                    instructionsScreen.removeChild(playButton);
+                    self.stage.removeChild(instructionsScreen);
+                    isMobile = true;
+                    playBass();
+                    StartInteraction();
+                };
+
+
+                    
+            //    if (isGamePaused == true) {
+                    backText = new createjs.Text("Back", "Bold 23px Alegreya", "#000000");
+                    backText.x = instructionsScreen.x + 450;
+                    backText.y = instructionsScreen.y + 450;
+                    backText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#FFF").drawRoundRect(0, 0, 100, 40, 50));
+               //     self.stage.addChild(backText);
+                 //   backText.alpha = 0;
+
+                    backText.addEventListener("click", handleClick);
+
+                    backText.on("mouseover", handleButtonHover);
+                    backText.on("mouseover", function (evt) {
+                        evt.currentTarget.color = "white";
+                    });
+
+                    backText.on("mouseout", handleButtonHover);
+                    backText.on("mouseout", function (evt) {
+                        evt.currentTarget.color = "black";
+                    })
+
 
                     function handleClick(event) {
-                        instructionsScreen.removeChild(playButton);
+                        //self.stage.removeChild(backText);
                         self.stage.removeChild(instructionsScreen);
-                        isMobile = true;
-                        playBass();
-                        StartInteraction();
-                    };
-
-
-                    if (isGameRunning) {
-                        //create a backbutton to remove the instructions screen
-
+                        resumeTheGame();
                     }
-
-            
+         //       }
 
 
             }
@@ -466,9 +532,6 @@ var Game = Game || (function (createjs) {
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
 
-              
-
-
                 var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#000000");
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
@@ -485,7 +548,7 @@ var Game = Game || (function (createjs) {
 
                 createjs.Tween.get(logo).wait(500).to({ alpha: 1, visible: true }, 1000).call(handleComplete);
                 function handleComplete() {
-               }
+                }
 
                 logo.regX = 180;
                 logo.regY = 60;
@@ -500,43 +563,63 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(instructionsScreen);
                 self.stage.addChild(soundContain);
 
-                    var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
+                var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
 
-                    playButton.regX = 93;
-                    playButton.regY = 95;
-                    playButton.x = panelBG.x + 600;
-                    playButton.y = panelBG.y + 400;
-                    playButton.scaleX = playButton.scaleY = 0.20;
+                playButton.regX = 93;
+                playButton.regY = 95;
+                playButton.x = panelBG.x + 600;
+                playButton.y = panelBG.y + 400;
+                playButton.scaleX = playButton.scaleY = 0.20;
 
-                    instructionsScreen.addChild(playButton);
+                instructionsScreen.addChild(playButton);
 
-                    createjs.Tween.get(playButton, {
-                        loop: false
-                    }).to({
-                        rotation: 360,
-                        scaleX: .4,
-                        scaleY: .4
-                    }, 2000);
-
-
-                    playButton.addEventListener("click", handleClick);
-
-                    function handleClick(event) {
-                        instructionsScreen.removeChild(playButton);
-                        self.stage.removeChild(instructionsScreen);
-                        StartInteraction();
-                    };
-              
+                createjs.Tween.get(playButton, {
+                    loop: false
+                }).to({
+                    rotation: 360,
+                    scaleX: .4,
+                    scaleY: .4
+                }, 2000);
 
 
-                if (isGameRunning = true) {
-                    //create a backbutton to remove the instructions screen
+                playButton.addEventListener("click", handleClickPlay);
 
+                function handleClickPlay(event) {
+                    instructionsScreen.removeChild(playButton);
+                    self.stage.removeChild(instructionsScreen);
+                    StartInteraction();
+                };
+
+                //    if (isGamePaused == true) {
+                backText = new createjs.Text("Back", "Bold 23px Alegreya", "#000000");
+                backText.x = instructionsScreen.x + 450;
+                backText.y = instructionsScreen.y + 450;
+                backText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#FFF").drawRoundRect(0, 0, 100, 40, 50));
+                //     self.stage.addChild(backText);
+                //   backText.alpha = 0;
+
+                backText.addEventListener("click", handleClick);
+
+                backText.on("mouseover", handleButtonHover);
+                backText.on("mouseover", function (evt) {
+                    evt.currentTarget.color = "white";
+                });
+
+                backText.on("mouseout", handleButtonHover);
+                backText.on("mouseout", function (evt) {
+                    evt.currentTarget.color = "black";
+                })
+
+
+                function handleClick(event) {
+                    //self.stage.removeChild(backText);
+                    self.stage.removeChild(instructionsScreen);
+                    resumeTheGame();
                 }
+                //       }
 
 
 
-               
             }
 
             function moveRight() {
@@ -566,7 +649,6 @@ var Game = Game || (function (createjs) {
             }
 
             function StartInteraction() {
-
 
 
 
@@ -699,11 +781,25 @@ var Game = Game || (function (createjs) {
                 helpContainer.addEventListener("click", handleClick);
 
                 function handleClick(event) {
+                    
+                   // isGamePaused = true;
+                    pauseTheGame();
+
+
+
                     if (isMobile) {
+                        // self.stage.removeChild(squidAquarium);
+
                         self.stage.addChild(instructionsScreen);
-                        
+                        instructionsScreen.addChild(backText)
+                        instructionsScreen.alpha = 0.45;
                     } else {
+                        // self.stage.removeChild(squidAquarium);
+
                         self.stage.addChild(instructionsScreen);
+                        instructionsScreen.addChild(backText)
+
+                        instructionsScreen.alpha = 0.45;
                     }
                 };
 
@@ -840,6 +936,9 @@ var Game = Game || (function (createjs) {
                 function makeInk(theenemy) {
                     console.log("making ink")
                     inkContainer = new createjs.Container();
+
+                    
+
                     inkContainer.x = theenemy.x;
                     inkContainer.y = theenemy.y;
                     ink = new createjs.Bitmap(queue.getResult("ink"));
@@ -851,8 +950,10 @@ var Game = Game || (function (createjs) {
 
                     createjs.Tween.get(inkContainer).to({ scaleX: 1, scaleY: 1 }, 250);
 
+                    
+
                     //when ink hits the player
-                    createjs.Tween.get(inkContainer, {
+                    var theTween = createjs.Tween.get(inkContainer, {
                         onChange: onInkContainerTweenChange
                     })
 
@@ -865,6 +966,12 @@ var Game = Game || (function (createjs) {
 
                             var theThingBeingTweened = evt.target;
                             var theContainer = theThingBeingTweened.parent;
+
+                            var containerIndex = inkContainerTweens.indexOf(evt);
+
+                            if (containerIndex > -1) {
+                                inkContainerTweens.splice(containerIndex, 1);
+                            }
 
                             if (theContainer != null) {
                                 theContainer.removeChild(theThingBeingTweened);
@@ -891,6 +998,8 @@ var Game = Game || (function (createjs) {
                             }
                         });
                     madeInk = true;
+
+                    inkContainerTweens.push(theTween);
                 }
 
                 function enemyShootInk() {
@@ -900,7 +1009,7 @@ var Game = Game || (function (createjs) {
 
                         if (canEnemyFire && theenemy) {
                             makeInk(theenemy);
-                        } 
+                        }
                     }
                 }
 
@@ -909,8 +1018,10 @@ var Game = Game || (function (createjs) {
                         harpoondelay = 30
 
                         if (harpoonCount >= 0 && !isQuestionDisplayed) {
-                            makeHarpoon();
-                            harpoonCount--;
+                            if (isGameRunning) {
+                                makeHarpoon();
+                                harpoonCount--;
+                            }
                             console.log(harpoonCount);
 
                             var harpoonsound = createjs.Sound.createInstance("harpoonsound");
@@ -950,7 +1061,6 @@ var Game = Game || (function (createjs) {
 
                 //only called when enough harpoon available
                 function makeHarpoon() {
-
                     console.log("making harpoon")
                     harpoonContainer = new createjs.Container();
                     harpoon = new createjs.Bitmap(queue.getResult("harpoon"));
@@ -975,7 +1085,6 @@ var Game = Game || (function (createjs) {
                             var theThingBeingTweened = evt.target;
                             self.stage.removeChild(theThingBeingTweened);
                         });
-
                 }
 
                 function keyPressed(event) {
@@ -1330,7 +1439,7 @@ var Game = Game || (function (createjs) {
                     isEnemySpawnEnabled = true;
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
-                    printHarpoonCount(); 
+                    printHarpoonCount();
 
 
                 }
@@ -1346,18 +1455,19 @@ var Game = Game || (function (createjs) {
             }
 
             function gameOverScreen() {
+                pauseTheGame();
 
                 //playsound
                 var gameover = createjs.Sound.createInstance("gameover");
                 gameover.volume = gameover.volume * 1.5;
                 gameover.play();
 
-
                 gameoverContainer = new createjs.Container();
                 gameoverPanel = new createjs.Bitmap(queue.getResult("logo"));
                 isQuestionDisplayed = true;
                 gameoverPanel.x = 50;
                 gameoverPanel.y = 32;
+
 
                 var gameoverText = new createjs.Text("Game Over!", "Bold 55px Alegreya", "#FFFFFF");
                 gameoverText.x = gameoverPanel.x + 300;
@@ -1366,15 +1476,15 @@ var Game = Game || (function (createjs) {
                 var replayText = new createjs.Text("Replay", "Bold 23px Alegreya", "#FFFFFF");
                 replayText.x = gameoverPanel.x + 265;
                 replayText.y = gameoverPanel.y + 145;
-                replayText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0,0,100,40,50));
+                replayText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0, 0, 100, 40, 50));
 
                 var exitText = new createjs.Text("Exit", "Bold 23px Alegreya", "#FFFFFF");
                 exitText.x = gameoverPanel.x + 385;
                 exitText.y = gameoverPanel.y + 145;
-                exitText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0,0,100,50,50));
-
+                exitText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0, 0, 100, 50, 50));
 
                 exitText.addEventListener("click", handleClicks);
+
                 replayText.addEventListener("click", handleClick);
 
 
@@ -1399,8 +1509,8 @@ var Game = Game || (function (createjs) {
                 }
 
                 function handleClick(event) {
-                //    self.stage.removeChild(gameoverContainer);
-                    replay();            
+                    //    self.stage.removeChild(gameoverContainer);
+                    replay();
                 }
 
                 gameoverContainer.addChild(gameoverPanel, gameoverText, replayText, exitText);
@@ -1424,11 +1534,11 @@ var Game = Game || (function (createjs) {
 
 
             function replay() {
-                
+
                 inkContainer.removeAllChildren();
                 enemyContainer.removeAllChildren();
-               
-                StartitALL(); 
+
+                StartitALL();
 
             }
             var fps = 45;
