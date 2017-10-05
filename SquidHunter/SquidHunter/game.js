@@ -83,14 +83,14 @@ var Game = Game || (function (createjs) {
                 { id: "ink", src: assetsPath + "ink.png" },
                 { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
                 { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
-                { id: "redx", src: assetsPath + "redx.png" },
+                { id: "redx", src: assetsPath + "continuechk.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
                 { id: "logo", src: assetsPath + "logo.png" },
                 { id: "treasure", src: assetsPath + "treasure.png" },
                 { id: "piratesprite", src: assetsPath + "newpirate.png" },
                 { id: "splat", src: assetsPath + "splat.png" },
                 { id: "squidsprite", src: assetsPath + "squidsprite2.png" },
-                { id: "gameover", src: assetsPath + "GameOver.mp3" },
+                { id: "gameover", src: assetsPath + "gameover.wav" },
                 { id: "harpoonsound", src: assetsPath + "harpoonsound.wav" },
                 { id: "oceanwave", src: assetsPath + "oceanwave.mp3" },
                 { id: "chime", src: assetsPath + "chime.mp3" },
@@ -107,9 +107,12 @@ var Game = Game || (function (createjs) {
                 { id: "level-up", src: assetsPath + "level-up.mp3" },
                 { id: "page", src: assetsPath + "page.wav" },
                 { id: "coin", src: assetsPath + "coin.wav" },
-                { id: "splash", src: assetsPath + "splash.wav" }
+                { id: "splash", src: assetsPath + "splash.wav" },
+                { id: "instructions_question", src: assetsPath + "instructions_question.png" },
+                { id: "instructions_background", src: assetsPath + "instructions_background.png" }
 
             ];
+
 
             var queue = new createjs.LoadQueue(false);
             queue.installPlugin(createjs.Sound);
@@ -165,7 +168,16 @@ var Game = Game || (function (createjs) {
             var touchContainer;
 
             var isBassPlaying = false;
+            var isGameRunning = false;
+            var isGamePaused = false;
 
+            var playButton;
+
+            var inkContainerTweens = [];
+
+            var instructionsScreen;
+
+            var backText;
 
             //loads background image
             function addBackground() {
@@ -198,6 +210,42 @@ var Game = Game || (function (createjs) {
 
             }
 
+            function pauseTheGame() {
+                // hide the player
+                playerContainer.alpha = 0;
+                // hide the squids
+                squidAquarium.alpha = 0;
+                // prevent ink from being spawned
+                canEnemyFire = false;
+                // pause the ink animations
+                for (var i = 0; i < inkContainerTweens.length; ++i) {
+                    inkContainerTweens[i].setPaused(true);
+                }
+                // prevent player from shooting
+                isGameRunning = false;
+
+                //add the back button
+            //    backText.alpha = 1;
+
+            }
+
+            function resumeTheGame() {
+                // show the player
+                playerContainer.alpha = 1;
+                // show the squids
+                squidAquarium.alpha = 1;
+                // allow ink from being spawned
+                canEnemyFire = true;
+                // resume the ink animations
+                for (var i = 0; i < inkContainerTweens.length; ++i) {
+                    inkContainerTweens[i].setPaused(false);
+                }
+                // allow player from shooting
+                isGameRunning = true;
+            }
+
+
+
             //scales the current target on mouseover and mouse out with a tween 
             //used for volume on/off switch
             function handleButtonHover(event) {
@@ -214,6 +262,15 @@ var Game = Game || (function (createjs) {
                 }
             }
 
+            //used for scaling the question mark on mouseover
+            function handleInstructionsMouseOver(event) {
+                if (event.type == "mouseover") {
+                    createjs.Tween.get(questionMark, { loop: false }).to({ scaleX: 1.0625, scaleY: 1.0625 }, 50);
+                }
+                else {
+                    createjs.Tween.get(questionMark, { loop: false }).to({ scaleX: 1.0, scaleY: 1.0 }, 50);
+                }
+            }
 
             //loads volume on/off switch
             function createSoundContainer() {
@@ -258,7 +315,6 @@ var Game = Game || (function (createjs) {
                         createjs.Sound.setMute(false);
                     }
 
-
                 }
                 );
 
@@ -266,6 +322,10 @@ var Game = Game || (function (createjs) {
                 soundContainer.on("mouseout", handleButtonHover);
                 return soundContainer;
             }
+
+
+
+           
 
             //define bass sound in beginning on load
             var bassSound = createjs.Sound.createInstance("bass");
@@ -290,13 +350,26 @@ var Game = Game || (function (createjs) {
                 panelBG.x = 0;
                 panelBG.y = 50;
 
+
                 var titleText = new createjs.Text(gameData.Title, " Bold 35px Alegreya", "#000000");
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
+                titleText.alpha = 0;
+
+                createjs.Tween.get(titleText)
+                    .wait(600)
+                    .to({ alpha: 1, visible: true }, 1000)
+                    .to({ scaleX: 2, scaleY: 2 }, 2000, createjs.Ease.ElasticOut)
+                    .to({color:"red"}, 500)
 
                 var mobileText = new createjs.Text("Are you on mobile?", "28px Alegreya", "#000000");
                 mobileText.x = panelBG.x + 130;
-                mobileText.y = panelBG.y + 155;
+                mobileText.y = panelBG.y + 170;
+                //add a tween
+                createjs.Tween.get(mobileText)
+                    .to({ x: 200, y: 250}, 2000 , createjs.Ease.ElasticOut)
+                    
+
 
                 var yesButton = new createjs.Bitmap(queue.getResult("yesbutton"))
 
@@ -343,18 +416,20 @@ var Game = Game || (function (createjs) {
                     playBass();
                     self.stage.removeChild(instructionsScreen);
                     mobileIntroScreen();
+                    isGameRunning = true;
                 }
 
                 function noClick(event) {
                     self.stage.removeChild(instructionsScreen);
                     introductionScreen();
+                    isGameRunning = true;
                 }
             }
 
             //call the mobile version of the instructions screen
             function mobileIntroScreen() {
 
-                var instructionsScreen = new createjs.Container();
+                instructionsScreen = new createjs.Container();
 
                 var panelBG = new createjs.Bitmap(queue.getResult("panel"));
                 panelBG.x = 0;
@@ -364,19 +439,14 @@ var Game = Game || (function (createjs) {
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
 
-                var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
-
-                playButton.regX = 93;
-                playButton.regY = 95;
-                playButton.x = panelBG.x + 600;
-                playButton.y = panelBG.y + 400;
-                playButton.scaleX = playButton.scaleY = 0.20;
-
                 var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#000000");
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
 
-                var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship\nHarpoons will fire every 2 seconds\nEliminate Squids for points", "20px Alegreya", "#000000");
+                var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship." +
+                   "\nHarpoons will fire every 2 seconds.\nEliminate squids for treasure." +
+                    "\nIf the pirate gets hit by the ink, you will need to answer a question." +
+                    "\nIf the pirate runs out of harpoons, you will need to answer a question.", "20px Alegreya", "#000000");
                 directionsText.x = panelBG.x + 130;
                 directionsText.y = panelBG.y + 155;
 
@@ -390,44 +460,16 @@ var Game = Game || (function (createjs) {
                 logo.regX = 180;
                 logo.regY = 60;
                 logo.x = panelBG.x + 220;
-                logo.y = panelBG.y + 275;
-                logo.scaleX = logo.scaleY = 0.40;
+                logo.y = panelBG.y + 305;
+                logo.scaleX = logo.scaleY = 0.30;
 
-                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
-                createjs.Tween.get(playButton, {
-                    loop: false
-                }).to({
-                    rotation: 360,
-                    scaleX: .4,
-                    scaleY: .4
-                }, 2000);
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo);
+
 
                 var soundContain = createSoundContainer();
 
                 self.stage.addChild(instructionsScreen);
                 self.stage.addChild(soundContain);
-                playButton.addEventListener("click", handleClick);
-
-                function handleClick(event) {
-                    self.stage.removeChild(instructionsScreen);
-                    isMobile = true;
-                    playBass();
-                    StartInteraction();
-                };
-            }
-
-            //load introduction screen/play button
-            function introductionScreen() {
-
-                var instructionsScreen = new createjs.Container();
-
-                var panelBG = new createjs.Bitmap(queue.getResult("panel"));
-                panelBG.x = 0;
-                panelBG.y = 50;
-
-                var titleText = new createjs.Text(gameData.Title, " Bold 35px Alegreya", "#000000");
-                titleText.x = panelBG.x + 130;
-                titleText.y = panelBG.y + 75;
 
                 var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
 
@@ -437,11 +479,80 @@ var Game = Game || (function (createjs) {
                 playButton.y = panelBG.y + 400;
                 playButton.scaleX = playButton.scaleY = 0.20;
 
+                createjs.Tween.get(playButton, {
+                    loop: false
+                }).to({
+                    rotation: 360,
+                    scaleX: .4,
+                    scaleY: .4
+                }, 2000);
+
+                instructionsScreen.addChild(playButton);
+
+                playButton.addEventListener("click", handleClickPlay);
+
+                function handleClickPlay(event) {
+                    instructionsScreen.removeChild(playButton);
+                    self.stage.removeChild(instructionsScreen);
+                    isMobile = true;
+                    playBass();
+                    StartInteraction();
+                };
+
+
+                    
+            //    if (isGamePaused == true) {
+                    backText = new createjs.Text("Back", "Bold 23px Alegreya", "#000000");
+                    backText.x = instructionsScreen.x + 450;
+                    backText.y = instructionsScreen.y + 450;
+                    backText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#FFF").drawRoundRect(0, 0, 100, 40, 50));
+               //     self.stage.addChild(backText);
+                 //   backText.alpha = 0;
+
+                    backText.addEventListener("click", handleClick);
+
+                    backText.on("mouseover", handleButtonHover);
+                    backText.on("mouseover", function (evt) {
+                        evt.currentTarget.color = "white";
+                    });
+
+                    backText.on("mouseout", handleButtonHover);
+                    backText.on("mouseout", function (evt) {
+                        evt.currentTarget.color = "black";
+                    })
+
+
+                    function handleClick(event) {
+                        //self.stage.removeChild(backText);
+                        self.stage.removeChild(instructionsScreen);
+                        resumeTheGame();
+                    }
+         //       }
+
+
+            }
+
+            //load introduction screen/play button
+            function introductionScreen() {
+
+                instructionsScreen = new createjs.Container();
+
+                var panelBG = new createjs.Bitmap(queue.getResult("panel"));
+                panelBG.x = 0;
+                panelBG.y = 50;
+
+                var titleText = new createjs.Text(gameData.Title, " Bold 35px Alegreya", "#000000");
+                titleText.x = panelBG.x + 130;
+                titleText.y = panelBG.y + 75;
+
                 var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#000000");
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
 
-                var directionsText = new createjs.Text("Directions: Use 'SPACEBAR' Key to Fire Harpoons\nUse Directional Arrow Keys to move along the ship\nEliminate Squids for points ", "20px Alegreya", "#000000");
+                var directionsText = new createjs.Text("Directions: Use 'Spacebar' key to fire harpoons.\nUse 'Directional Arrow' keys to move along the ship." +
+                   "\nEliminate squids for treasure." +
+                    "\nIf the pirate gets hit by the ink, you will need to answer a question." +
+                    "\nIf the pirate runs out of harpoons, you will need to answer a question.", "20px Alegreya", "#000000");
                 directionsText.x = panelBG.x + 130;
                 directionsText.y = panelBG.y + 155;
 
@@ -450,19 +561,30 @@ var Game = Game || (function (createjs) {
 
                 createjs.Tween.get(logo).wait(500).to({ alpha: 1, visible: true }, 1000).call(handleComplete);
                 function handleComplete() {
-               }
+                }
 
                 logo.regX = 180;
                 logo.regY = 60;
                 logo.x = panelBG.x + 220;
-                logo.y = panelBG.y + 275;
-                logo.scaleX = logo.scaleY = 0.40;
+                logo.y = panelBG.y + 300;
+                logo.scaleX = logo.scaleY = 0.30;
 
 
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo);
 
+                var soundContain = createSoundContainer();
+                self.stage.addChild(instructionsScreen);
+                self.stage.addChild(soundContain);
 
+                var playButton = new createjs.Bitmap(queue.getResult("playbutton"))
 
-                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo, playButton);
+                playButton.regX = 93;
+                playButton.regY = 95;
+                playButton.x = panelBG.x + 600;
+                playButton.y = panelBG.y + 400;
+                playButton.scaleX = playButton.scaleY = 0.20;
+
+                instructionsScreen.addChild(playButton);
 
                 createjs.Tween.get(playButton, {
                     loop: false
@@ -472,16 +594,45 @@ var Game = Game || (function (createjs) {
                     scaleY: .4
                 }, 2000);
 
-                var soundContain = createSoundContainer();
 
-                self.stage.addChild(instructionsScreen);
-                self.stage.addChild(soundContain);
-                playButton.addEventListener("click", handleClick);
+                playButton.addEventListener("click", handleClickPlay);
 
-                function handleClick(event) {
+                function handleClickPlay(event) {
+                    instructionsScreen.removeChild(playButton);
                     self.stage.removeChild(instructionsScreen);
                     StartInteraction();
                 };
+
+                //    if (isGamePaused == true) {
+                backText = new createjs.Text("Back", "Bold 23px Alegreya", "#000000");
+                backText.x = instructionsScreen.x + 450;
+                backText.y = instructionsScreen.y + 450;
+                backText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#FFF").drawRoundRect(0, 0, 100, 40, 50));
+                //     self.stage.addChild(backText);
+                //   backText.alpha = 0;
+
+                backText.addEventListener("click", handleClick);
+
+                backText.on("mouseover", handleButtonHover);
+                backText.on("mouseover", function (evt) {
+                    evt.currentTarget.color = "white";
+                });
+
+                backText.on("mouseout", handleButtonHover);
+                backText.on("mouseout", function (evt) {
+                    evt.currentTarget.color = "black";
+                })
+
+
+                function handleClick(event) {
+                    //self.stage.removeChild(backText);
+                    self.stage.removeChild(instructionsScreen);
+                    resumeTheGame();
+                }
+                //       }
+
+
+
             }
 
             function moveRight() {
@@ -511,6 +662,8 @@ var Game = Game || (function (createjs) {
             }
 
             function StartInteraction() {
+
+
 
                 //if isMobile true, add directional arrows
                 if (isMobile == true) {
@@ -626,6 +779,47 @@ var Game = Game || (function (createjs) {
                     }, i * 1000);
                 }
 
+                //load help icon/background
+                var questionMark = new createjs.Bitmap(queue.getResult("instructions_question"));
+
+                var helpContainer = new createjs.Container();
+                helpContainer.x = 0;
+                helpContainer.y = 550;
+                helpContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 50, 50));
+                helpContainer.cursor = 'pointer';
+
+                helpContainer.addChild(new createjs.Bitmap(queue.getResult("instructions_background")));
+                helpContainer.addChild(questionMark);
+
+                helpContainer.addEventListener("click", handleClick);
+
+                function handleClick(event) {
+                    
+                   // isGamePaused = true;
+                    pauseTheGame();
+
+
+
+                    if (isMobile) {
+                        // self.stage.removeChild(squidAquarium);
+
+                        self.stage.addChild(instructionsScreen);
+                        instructionsScreen.addChild(backText)
+                        instructionsScreen.alpha = 0.45;
+                    } else {
+                        // self.stage.removeChild(squidAquarium);
+
+                        self.stage.addChild(instructionsScreen);
+                        instructionsScreen.addChild(backText)
+
+                        instructionsScreen.alpha = 0.45;
+                    }
+                };
+
+
+
+                self.stage.addChild(helpContainer);
+
                 //load score label
                 scoreLabel = new createjs.Text(Score, "Bold 20px Alegreya", "#FFFFFF");
                 scoreLabel.textAlign = "center";
@@ -695,7 +889,6 @@ var Game = Game || (function (createjs) {
                             Score = Score - 20;
                             printScore();
                         }
-                        //  isQuestionDisplayed = false
 
                     }
                 }
@@ -756,6 +949,9 @@ var Game = Game || (function (createjs) {
                 function makeInk(theenemy) {
                     console.log("making ink")
                     inkContainer = new createjs.Container();
+
+                    
+
                     inkContainer.x = theenemy.x;
                     inkContainer.y = theenemy.y;
                     ink = new createjs.Bitmap(queue.getResult("ink"));
@@ -767,8 +963,10 @@ var Game = Game || (function (createjs) {
 
                     createjs.Tween.get(inkContainer).to({ scaleX: 1, scaleY: 1 }, 250);
 
+                    
+
                     //when ink hits the player
-                    createjs.Tween.get(inkContainer, {
+                    var theTween = createjs.Tween.get(inkContainer, {
                         onChange: onInkContainerTweenChange
                     })
 
@@ -780,14 +978,13 @@ var Game = Game || (function (createjs) {
                         .call(function (evt) {
 
                             var theThingBeingTweened = evt.target;
-
-                            //self.stage.removeChild(theThingBeingTweened);
-
-                            //ink sound goes 
-                            //sound should only trigger on initial hit and freeze screen 
-                            //no more splats after qpanel is up
-
                             var theContainer = theThingBeingTweened.parent;
+
+                            var containerIndex = inkContainerTweens.indexOf(evt);
+
+                            if (containerIndex > -1) {
+                                inkContainerTweens.splice(containerIndex, 1);
+                            }
 
                             if (theContainer != null) {
                                 theContainer.removeChild(theThingBeingTweened);
@@ -802,8 +999,6 @@ var Game = Game || (function (createjs) {
                                     theContainer.addChild(splatContainer);
                                 }
                                 var inksplat = createjs.Sound.createInstance("inksplat", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
-
-
                                 createjs.Sound.play("inksplat");
 
 
@@ -812,15 +1007,12 @@ var Game = Game || (function (createjs) {
                                     createjs.Tween.get(splatContainer).to({ alpha: 0 }, 1000).call(function () {
                                         theContainer.removeChild(splatContainer);
                                     })
-
                                 }, 3000);
                             }
-                          
-
                         });
-
-
                     madeInk = true;
+
+                    inkContainerTweens.push(theTween);
                 }
 
                 function enemyShootInk() {
@@ -830,8 +1022,6 @@ var Game = Game || (function (createjs) {
 
                         if (canEnemyFire && theenemy) {
                             makeInk(theenemy);
-                        } else {
-                            console.log("wtf?");
                         }
                     }
                 }
@@ -841,8 +1031,10 @@ var Game = Game || (function (createjs) {
                         harpoondelay = 30
 
                         if (harpoonCount >= 0 && !isQuestionDisplayed) {
-                            makeHarpoon();
-                            harpoonCount--;
+                            if (isGameRunning) {
+                                makeHarpoon();
+                                harpoonCount--;
+                            }
                             console.log(harpoonCount);
 
                             var harpoonsound = createjs.Sound.createInstance("harpoonsound");
@@ -859,7 +1051,6 @@ var Game = Game || (function (createjs) {
                             else
                                 deliverQuestion(gameData.Questions[currentQuestionNumber]);
                         }
-
                     }
                 }
 
@@ -883,7 +1074,6 @@ var Game = Game || (function (createjs) {
 
                 //only called when enough harpoon available
                 function makeHarpoon() {
-
                     console.log("making harpoon")
                     harpoonContainer = new createjs.Container();
                     harpoon = new createjs.Bitmap(queue.getResult("harpoon"));
@@ -908,7 +1098,6 @@ var Game = Game || (function (createjs) {
                             var theThingBeingTweened = evt.target;
                             self.stage.removeChild(theThingBeingTweened);
                         });
-
                 }
 
                 function keyPressed(event) {
@@ -935,7 +1124,6 @@ var Game = Game || (function (createjs) {
                             makeHarpoonOrAskQuestion();
                             event.preventDefault();
                             break;
-
                     }
                 }
 
@@ -997,7 +1185,6 @@ var Game = Game || (function (createjs) {
 
                 //return container;
 
-
                 var spriteSheet = new createjs.SpriteSheet(data);
                 var sprite = new createjs.Sprite(spriteSheet, "pegleg");
                 squidContainer.addChild(sprite);
@@ -1005,14 +1192,12 @@ var Game = Game || (function (createjs) {
                 squidContainer.x = 300;
                 squidContainer.y = 233;
 
-
                 //makeEnemy();
                 enemyContainer.scaleX = 0;
                 enemyContainer.scaleY = 0;
                 enemyContainer.alpha = 1;
                 enemyContainer.regX = 50;
                 enemyContainer.regY = 125 / 2;
-
 
 
                 //enemy functionality
@@ -1055,11 +1240,9 @@ var Game = Game || (function (createjs) {
 
             //load enemy
             function makeEnemy() {
-                //  var container = new createjs.Container();
                 squidContainer = new createjs.Container();
 
                 var speed = .02;
-                // var enemy = new createjs.Bitmap(queue.getResult("enemy"));
                 var data = {
                     images: [queue.getResult("squidsprite")],
                     frames: {
@@ -1116,8 +1299,6 @@ var Game = Game || (function (createjs) {
                 }
                 submittedScoreAlready = true;
             }
-
-
 
             //deliver questions when player is by ink
             function deliverQuestion(question) {
@@ -1233,25 +1414,23 @@ var Game = Game || (function (createjs) {
                 // <0 otherwise <1
 
                 if (answerstatus == "correct") {
-                    feedbackText = new createjs.Text("Correct. Click the what ever to continue", "20px Alegreya", "#000000");
+                    feedbackText = new createjs.Text("Correct. Click the red x to continue", "20px Alegreya", "#000000");
                     harpoonCount = 10;
                 } else {
 
                     for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++) {
                         if (gameData.Questions[currentQuestionNumber].Answers[i].IsCorrect == true) {
-                            feedbackText = new createjs.Text("I'm sorry the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
+                            feedbackText = new createjs.Text("I'm sorry, the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
                             harpoonCount = 5;
                         }
                     }
-                    //need another if for end of game game over screen call
-
 
                     //  feedbackText = new createjs.Text("InCorrect:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
                 }
 
 
-                feedbackText.x = feedbackPanel.x + 100
-                feedbackText.y = feedbackPanel.y + 40
+                feedbackText.x = feedbackPanel.x + 90
+                feedbackText.y = feedbackPanel.y + 30
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
                 redx.x = feedbackPanel.x + 580;
@@ -1273,21 +1452,10 @@ var Game = Game || (function (createjs) {
                     isEnemySpawnEnabled = true;
                     self.stage.removeChild(questionContainer);
                     self.stage.removeChild(answerContainersParent);
-                    // if questions array over ->
-                    //    gameOverScreen();
-                    printHarpoonCount(); 
+                    printHarpoonCount();
 
-                    //self.stage.removeChild(answerContainer
-                    //if (currentQuestionNumber >= gameData.Questions.length) {
-                    //    gameOverScreen();
-                    //}
 
                 }
-
-
-                //turn off feedback panel if it is true
-                //if (isFeedbackDisplayed == true) {
-                //}
 
                 feedbackContainer.addChild(feedbackPanel, feedbackText, redx)
                 self.stage.addChild(feedbackContainer);
@@ -1300,12 +1468,19 @@ var Game = Game || (function (createjs) {
             }
 
             function gameOverScreen() {
+                pauseTheGame();
+
+                //playsound
+                var gameover = createjs.Sound.createInstance("gameover");
+                gameover.volume = gameover.volume * 1.5;
+                gameover.play();
 
                 gameoverContainer = new createjs.Container();
                 gameoverPanel = new createjs.Bitmap(queue.getResult("logo"));
                 isQuestionDisplayed = true;
                 gameoverPanel.x = 50;
                 gameoverPanel.y = 32;
+
 
                 var gameoverText = new createjs.Text("Game Over!", "Bold 55px Alegreya", "#FFFFFF");
                 gameoverText.x = gameoverPanel.x + 300;
@@ -1314,13 +1489,12 @@ var Game = Game || (function (createjs) {
                 var replayText = new createjs.Text("Replay", "Bold 23px Alegreya", "#FFFFFF");
                 replayText.x = gameoverPanel.x + 265;
                 replayText.y = gameoverPanel.y + 145;
-                replayText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0,0,100,40,50));
+                replayText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0, 0, 100, 40, 50));
 
                 var exitText = new createjs.Text("Exit", "Bold 23px Alegreya", "#FFFFFF");
                 exitText.x = gameoverPanel.x + 385;
                 exitText.y = gameoverPanel.y + 145;
-                exitText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0,0,100,50,50));
-
+                exitText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0, 0, 100, 50, 50));
 
                 exitText.addEventListener("click", handleClicks);
 
@@ -1345,14 +1519,11 @@ var Game = Game || (function (createjs) {
                 function handleClicks(event) {
                     //    replay();
 
-
                 }
 
                 function handleClick(event) {
-                //    self.stage.removeChild(gameoverContainer);
+                    //    self.stage.removeChild(gameoverContainer);
                     replay();
-
-                   
                 }
 
                 gameoverContainer.addChild(gameoverPanel, gameoverText, replayText, exitText);
@@ -1376,10 +1547,11 @@ var Game = Game || (function (createjs) {
 
 
             function replay() {
-                gameBoard = null;
 
-                //initializeGame();
-                StartitALL(); 
+                inkContainer.removeAllChildren();
+                enemyContainer.removeAllChildren();
+
+                StartitALL();
 
             }
             var fps = 45;
