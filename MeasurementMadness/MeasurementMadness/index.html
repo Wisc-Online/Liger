@@ -9,6 +9,29 @@
 
 </head>
 <body style="background-color: #ffffff">
+    <script>
+        var score = 20;
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '521292917958053',
+                autoLogAppEvents: true,
+                xfbml: true,
+                version: 'v2.10'
+            });
+         
+
+            FB.AppEvents.logPageView();
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+           // js.src = "//connect.facebook.net/en_US/sdk.js";
+            js.src = "//connect.facebook.net/en_US/sdk/debug.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
     <canvas id="myCanvas" width="800" height="600" style="background-color: lightgray;">
         <p>Your browser does not support HTML5!</p>
     </canvas>
