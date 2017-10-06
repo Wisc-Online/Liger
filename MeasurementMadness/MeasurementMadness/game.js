@@ -23,7 +23,7 @@ var Game = Game || (function (createjs) {
             { id: "button", src: assetsPath + "button.png" },
             { id: "selectedButton", src: assetsPath + "SelectedButton.png" },
             { id: "dirPanel", src: assetsPath + "PanelBG.png" },
-            { id: "ButtonSprite", src: assetsPath + "spritesheet1.png" },
+            { id: "ButtonSprite", src: assetsPath + "spritesheetnomargin.png" },
             { id: "facebookShare", src: assetsPath + "FBShareIcon.png" },
             { id: "TitleImage", src: assetsPath + "measurementMadnessTitle.png" }
         ];
@@ -171,7 +171,7 @@ var Game = Game || (function (createjs) {
             var ButtonY = 100;
             var data = {
                 images: [queue.getResult("ButtonSprite")],
-                frames: { width: 200, height: 90, count: 2, margin: 5 },
+                frames: { width: 200, height: 90, count: 2 },
                 animations: {
                     selected: 0,
                     original: 1
