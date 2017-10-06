@@ -88,8 +88,8 @@
     <Content Include="images\SequencePlayButton.png" />
     <Content Include="images\buttonblue.png" />
     <Content Include="images\spritesheet %281%29.png" />
-    <Content Include="images\spritesheet.png" />
     <Content Include="images\spritesheet2.png" />
+    <Content Include="images\spritesheet3.png" />
     <Content Include="images\WrongBuzzer.mp3" />
     <Content Include="images\X.png" />
     <Content Include="index.html" />
