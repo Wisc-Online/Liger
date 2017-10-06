@@ -23,7 +23,8 @@ var Game = Game || (function (createjs) {
             { id: "button", src: assetsPath + "button.png" },
             { id: "selectedButton", src: assetsPath + "SelectedButton.png" },
             { id: "dirPanel", src: assetsPath + "PanelBG.png" },
-            { id: "ButtonSprite", src: assetsPath + "spritesheet2.png" },
+            { id: "ButtonSprite", src: assetsPath + "spritesheet1.png" },
+            { id: "facebookShare", src: assetsPath + "FBShareIcon.png" },
             { id: "TitleImage", src: assetsPath + "measurementMadnessTitle.png" }
         ];
 
@@ -131,7 +132,14 @@ var Game = Game || (function (createjs) {
 
             stage.addChild(titleImage);
         }
+        function DirectionsPanel() {
+            var directionsPanel = new createjs.Bitmap(queue.getResult("dirPanel"));
+            directionsPanel.scaleX = .26;
+            directionsPanel.scaleY = .25;
 
+
+            return directionsPanel;
+        }
         function createIntroductionPage() {
 
             var page = new createjs.Container();
@@ -145,16 +153,16 @@ var Game = Game || (function (createjs) {
             backgroundImage.y = 0;
             page.addChild(backgroundImage);
 
-            var directionsPanel = new createjs.Bitmap(queue.getResult("dirPanel"));
-
-            directionsPanel.scaleX = .26;
-            directionsPanel.scaleY = .25;
+            var directionsPanel = DirectionsPanel();
             directionsPanel.x = -30;
             directionsPanel.y = 60;
+
             page.addChild(directionsPanel);
+
             var directionsPanelText = new createjs.Text("Welcome to Measurement Madness. \n\n This game will test you speed and finding measurements on a ruler.", "15px Arial bold", "White");
             directionsPanelText.x = directionsPanel.x + 80;
             directionsPanelText.y = directionsPanel.y + 80;
+
             page.addChild(directionsPanelText);
 
             var buttonContainer = new createjs.Container();
@@ -254,7 +262,7 @@ var Game = Game || (function (createjs) {
                     selectEights.gotoAndStop("selected")
                 }
 
-            
+
 
             });
             selectSixteenths.addEventListener("click", function () {
@@ -736,37 +744,47 @@ var Game = Game || (function (createjs) {
         function GameOverScreen() {
             var page = new createjs.Container();
 
-            var background = new createjs.Shape();
-            background.graphics.beginStroke("Red").beginFill("Red").drawRect(0, 0, 800, 600);
-            page.addChild(background);
+            var backgroundImage = new createjs.Bitmap(queue.getResult("backgroundImage"));
+            backgroundImage.x = 0;
+            backgroundImage.y = 0;
+            page.addChild(backgroundImage);
 
-            var Title = new createjs.Text("Measurement Madness", "24px Arial", "black");
-            Title.x = 5;
-            Title.y = 5
-            page.addChild(Title);
 
-            // do the stuff on the page, setup click handlers, etc...
-            var startButton = new createjs.Bitmap(queue.getResult("start_button"));
+            var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
+            titleImage.x = 5;
+            titleImage.y = 5;
 
-            startButton.regX = 93;
-            startButton.regY = 95;
-            startButton.x = 650;
-            startButton.y = 350;
-            // startButton.scaleX = startButton.scaleY = 0.20;
-            page.addChild(startButton);
+            page.addChild(titleImage);
 
-            startButton.addEventListener("click", function () {
-                resetGameVariables();
-                showPage(createGamePage());
+            var directionsPanel = DirectionsPanel();
+            directionsPanel.x = -30;
+            directionsPanel.y = 60;
+
+            page.addChild(directionsPanel);
+            var directionsPanelText = new createjs.Text("Way to go!", "15px Arial bold", "White");
+            directionsPanelText.x = directionsPanel.x + 80;
+            directionsPanelText.y = directionsPanel.y + 80;
+
+            page.addChild(directionsPanelText);
+
+            var FbShareButton = new createjs.Bitmap(queue.getResult("facebookShare"));
+            FbShareButton.scaleX = .10;
+            FbShareButton.scaleY = .10;
+            FbShareButton.x = 100;
+            FbShareButton.y = 300;
+            page.addChild(FbShareButton);
+
+            FbShareButton.addEventListener("click", function () {
+                FB.ui(
+                    {
+                        method: 'share',
+                        href: 'https://www.wisc-online.com/learn/technical/core-skills/ccs13617/measurement-madness',
+                        quote: 'I got a score of ' + score + ' on Measurement Madness. Can you beat my high score?'
+                    }, function (response) { }
+                );
             });
 
-            //FB.ui(
-            //    {
-            //        method: 'share',
-            //        href: 'https://www.wisc-online.com/learn/technical/core-skills/ccs13617/measurement-madness',
-            //        quote: 'I got a score of ' + score + ' on Measurement Madness. Can you beat my high sch'
-            //    }, function (response) { }
-            //);
+
 
 
             return page;
