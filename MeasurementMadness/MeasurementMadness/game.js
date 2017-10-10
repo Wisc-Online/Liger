@@ -16,14 +16,15 @@ var Game = Game || (function (createjs) {
         var assets = [
 
             { id: "start_button", src: assetsPath + "SequencePlayButton.png" },
-            { id: "RedXXX", src: assetsPath + "cross-34976_960_720.png" },
+            { id: "RedXXX", src: assetsPath + "X.png" },
             { id: "Buzzer", src: assetsPath + "WrongBuzzer.mp3" },
             { id: "Correct", src: assetsPath + "Correct.mp3" },
             { id: "backgroundImage", src: assetsPath + "background.jpg" },
             { id: "button", src: assetsPath + "button.png" },
             { id: "selectedButton", src: assetsPath + "SelectedButton.png" },
-            { id: "dirPanel", src: assetsPath + "Picture1.png" },
-            { id: "ButtonSprite", src: assetsPath + "spritesheet.png" },
+            { id: "dirPanel", src: assetsPath + "PanelBG.png" },
+            { id: "ButtonSprite", src: assetsPath + "spritesheet1.png" },
+            { id: "facebookShare", src: assetsPath + "FBShareIcon.png" },
             { id: "TitleImage", src: assetsPath + "measurementMadnessTitle.png" }
         ];
 
@@ -40,16 +41,6 @@ var Game = Game || (function (createjs) {
             });
             queue.loadManifest(assets);
         }
-        var data = {
-            images: ["spritesheet.png"],
-            frames: { width: 50, height: 50, count:2, margin:5 },
-            animations: {
-                selected: 0,
-                original: 1
-            }
-        };
-        var spriteSheet = new createjs.SpriteSheet(data);
-        var animation = new createjs.Sprite(spriteSheet, "original");
 
 
         createjs.Ticker.setFPS(40);
@@ -68,7 +59,11 @@ var Game = Game || (function (createjs) {
         var strikes = 0;
         var level = 1;
         var timer = 10;
-
+        var quartersSelected = false;
+        var eightsSelected = false;
+        var sixteenthsSelected = false;
+        var thirtySecondsSelected = false;
+        var highScoreGameType = false;
 
 
         questionsArray = gameData.questions;
@@ -129,7 +124,7 @@ var Game = Game || (function (createjs) {
         }
 
         function createTitle() {
-           
+
 
             var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
             titleImage.x = 5;
@@ -137,9 +132,16 @@ var Game = Game || (function (createjs) {
 
             stage.addChild(titleImage);
         }
+        function DirectionsPanel() {
+            var directionsPanel = new createjs.Bitmap(queue.getResult("dirPanel"));
+            directionsPanel.scaleX = .26;
+            directionsPanel.scaleY = .25;
 
+
+            return directionsPanel;
+        }
         function createIntroductionPage() {
-            
+
             var page = new createjs.Container();
 
             //var Title = new createjs.Text("Measurement Madness", "24px Arial", "black");
@@ -151,98 +153,165 @@ var Game = Game || (function (createjs) {
             backgroundImage.y = 0;
             page.addChild(backgroundImage);
 
-            var directionsPanel = new createjs.Bitmap(queue.getResult("dirPanel"));
-            directionsPanel.x = 20;
-            directionsPanel.y = 150;
+            var directionsPanel = DirectionsPanel();
+            directionsPanel.x = -30;
+            directionsPanel.y = 60;
+
             page.addChild(directionsPanel);
 
+            var directionsPanelText = new createjs.Text("Welcome to Measurement Madness. \n\n This game will test you speed and finding measurements on a ruler.", "15px Arial bold", "White");
+            directionsPanelText.x = directionsPanel.x + 80;
+            directionsPanelText.y = directionsPanel.y + 80;
+
+            page.addChild(directionsPanelText);
+
             var buttonContainer = new createjs.Container();
+
             var ButtonX = 500;
-            var selectQuarters = new createjs.Bitmap(queue.getResult("button"));
-            selectQuarters.x = ButtonX ;
-            selectQuarters.y = 150;
+            var ButtonY = 100;
+            var data = {
+                images: [queue.getResult("ButtonSprite")],
+                frames: { width: 200, height: 90, count: 2, margin: 5 },
+                animations: {
+                    selected: 0,
+                    original: 1
+                }
+            };
+
+            var spriteSheet = new createjs.SpriteSheet(data);
+
+            var selectQuarters = new createjs.Sprite(spriteSheet, "original");
+            selectQuarters.x = ButtonX;
+            selectQuarters.y = ButtonY;
             buttonContainer.addChild(selectQuarters);
             var selectQuartersText = new createjs.Text("Quarters", "26px Arial bold", "yellow");
             selectQuartersText.x = ButtonX + 50;
             selectQuartersText.y = selectQuarters.y + 20;
             buttonContainer.addChild(selectQuartersText);
 
-            var selectEights = new createjs.Bitmap(queue.getResult("button"));
+            var selectEights = new createjs.Sprite(spriteSheet, "original");
             selectEights.x = ButtonX;
-            selectEights.y = 220;
+            selectEights.y = ButtonY + 70;
             buttonContainer.addChild(selectEights);
             var selectEightsText = new createjs.Text("Eights", "26px Arial bold", "yellow");
             selectEightsText.x = ButtonX + 65;
             selectEightsText.y = selectEights.y + 20;
             buttonContainer.addChild(selectEightsText);
 
-            var selectSixteenths = new createjs.Bitmap(queue.getResult("button"));
+
+            var selectSixteenths = new createjs.Sprite(spriteSheet, "original");
             selectSixteenths.x = ButtonX;
-            selectSixteenths.y = 290;
+            selectSixteenths.y = ButtonY + 140;
             buttonContainer.addChild(selectSixteenths);
             var selectselectSixteenthsText = new createjs.Text("Sixteenths", "26px Arial bold", "yellow");
             selectselectSixteenthsText.x = ButtonX + 50;
             selectselectSixteenthsText.y = selectSixteenths.y + 20;
             buttonContainer.addChild(selectselectSixteenthsText);
 
-            var selectSixteenths = new createjs.Bitmap(queue.getResult("button"));
-            selectSixteenths.x = ButtonX;
-            selectSixteenths.y = 290;
-            buttonContainer.addChild(selectSixteenths);
-            var selectSixteenthsText = new createjs.Text("Sixteenths", "26px Arial bold", "yellow");
-            selectSixteenthsText.x = ButtonX + 50;
-            selectSixteenthsText.y = selectSixteenths.y + 20;
-            buttonContainer.addChild(selectSixteenthsText);
-
-            var selectThirtySeconds = new createjs.Bitmap(queue.getResult("button"));
+            var selectThirtySeconds = new createjs.Sprite(spriteSheet, "original");
             selectThirtySeconds.x = ButtonX;
-            selectThirtySeconds.y = 360;
+            selectThirtySeconds.y = ButtonY + 210;
             buttonContainer.addChild(selectThirtySeconds);
             var selectThirtySecondsText = new createjs.Text("Thirty Seconds", "26px Arial bold", "yellow");
             selectThirtySecondsText.x = ButtonX + 20;
             selectThirtySecondsText.y = selectThirtySeconds.y + 20;
             buttonContainer.addChild(selectThirtySecondsText);
 
-            var highScore = new createjs.Bitmap(queue.getResult("button"));
+            var highScore = new createjs.Sprite(spriteSheet, "original");
             highScore.x = ButtonX;
-            highScore.y = 430;
+            highScore.y = ButtonY + 280;
             buttonContainer.addChild(highScore);
             var highScoreText = new createjs.Text("High Score", "26px Arial bold", "yellow");
             highScoreText.x = ButtonX + 40;
             highScoreText.y = highScore.y + 20;
             buttonContainer.addChild(highScoreText);
-            animation.x = 50;
-            animation.y = 50;
 
-            buttonContainer.addChild(animation);
+
+            var playbtn = new createjs.Sprite(spriteSheet, "original");
+            playbtn.x = ButtonX + 100;
+            playbtn.y = ButtonY + 400;
+            buttonContainer.addChild(playbtn);
+            var playbtnText = new createjs.Text("Start", "26px Arial bold", "yellow");
+            playbtnText.x = playbtn.x + 80;
+            playbtnText.y = playbtn.y + 30;
+            buttonContainer.addChild(playbtnText);
 
             page.addChild(buttonContainer);
-            // do the stuff on the page, setup click handlers, etc...
-            //var startButton = new createjs.Bitmap(queue.getResult("start_button"));
-
-            //startButton.regX = 93;
-            //startButton.regY = 95;
-            //startButton.x = 650;
-            //startButton.y = 350;
-            //// startButton.scaleX = startButton.scaleY = 0.20;
-            //page.addChild(startButton);
 
             selectQuarters.addEventListener("click", function () {
-                //send quarters
+
+                if (selectQuarters.currentFrame == 0) {
+                    selectQuarters.gotoAndStop("original")
+                    quartersSelected = true;
+
+                } else {
+                    quartersSelected = false;
+                    selectQuarters.gotoAndStop("selected")
+
+                }
+
+            });
+
+            selectEights.addEventListener("click", function () {
+
+                if (selectEights.currentFrame == 0) {
+                    selectEights.gotoAndStop("original")
+                    eightsSelected = true;
+                } else {
+                    eightsSelected = false;
+                    selectEights.gotoAndStop("selected")
+                }
+
+
+
+            });
+            selectSixteenths.addEventListener("click", function () {
+                if (selectSixteenths.currentFrame == 0) {
+                    selectSixteenths.gotoAndStop("original")
+                    sixteenthsSelected = true;
+
+                } else {
+                    selectSixteenths.gotoAndStop("selected")
+                    sixteenthsSelected = false;
+                }
+
+            });
+            selectThirtySeconds.addEventListener("click", function () {
+                if (selectThirtySeconds.currentFrame == 0) {
+                    selectThirtySeconds.gotoAndStop("original")
+                    thirtySecondsSelected = true;
+                } else {
+                    selectThirtySeconds.gotoAndStop("selected")
+                    thirtySecondsSelected = false;
+                }
+
+            });
+            highScore.addEventListener("click", function () {
+
+                if (highScore.currentFrame == 0) {
+                    highScore.gotoAndStop("original")
+                    highScoreGameType = false;
+                } else {
+                    highScore.gotoAndStop("selected")
+                    highScoreGameType = true;
+                }
+
+            });
+            playbtn.addEventListener("click", function () {
                 showPage(createGamePage());
             });
-            
             return page;
         }
         var timerTween;
         function createGamePage() {
-        
+
 
             var page = new createjs.Container();
 
-            var background = new createjs.Shape();
-            background.graphics.beginStroke("Green").beginFill("Green").drawRect(0, 0, 800, 600);
-            page.addChild(background);
+            var backgroundImage = new createjs.Bitmap(queue.getResult("backgroundImage"));
+            backgroundImage.x = 0;
+            backgroundImage.y = 0;
+            page.addChild(backgroundImage);
 
 
             var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
@@ -260,18 +329,20 @@ var Game = Game || (function (createjs) {
             var scoreTextDisplay = displayScoreText();
             page.addChild(scoreTextDisplay);
 
-            var strikesDisplay = new createjs.Text("Strikes: " + strikes, "18px Arial", "black");
+            var strikesDisplay = new createjs.Text("Strikes: " + strikes, "18px Arial", "White");
             strikesDisplay.x = 110;
             strikesDisplay.y = 150
             page.addChild(strikesDisplay);
 
-            var levelDisplay = new createjs.Text("Level: " + level, "18px Arial", "black");
+            var levelDisplay = new createjs.Text("Level: " + level, "18px Arial", "White");
             levelDisplay.x = 210;
             levelDisplay.y = 150
             page.addChild(levelDisplay);
+            if (highScoreGameType == true) {
+                var timerDisplay = displayTimerText()
+                page.addChild(timerDisplay);
+            }
 
-            var timerDisplay = displayTimerText()
-            page.addChild(timerDisplay);
 
             var questionDisplay = displayQuestionText();
             page.addChild(questionDisplay);
@@ -302,46 +373,53 @@ var Game = Game || (function (createjs) {
 
             createjs.Ticker.on("tick", stage);
 
-            //Create a shape
-            var bar = new createjs.Shape()
-                .set({ x: 380, y: 140 }); // Move away from the top left.
-            page.addChild(bar);
+            if (highScoreGameType == true) {
 
-            // Draw the outline
-            bar.graphics.setStrokeStyle(2)
-                .beginStroke("black")
-                .drawRect(-1, -1, 302, 26)
-                .endStroke();
+                //Create a shape
+                var bar = new createjs.Shape()
+                    .set({ x: 380, y: 140 }); // Move away from the top left.
+                page.addChild(bar);
 
-            // Draw the fill. Only set the style here
-            var fill = new createjs.Shape().set({ x: 380, y: 140, scaleX: 0 });
-            fill.graphics.beginFill("orange").drawRect(0, 0, 300, 24);
-            page.addChild(fill);
+                // Draw the outline
+                bar.graphics.setStrokeStyle(2)
+                    .beginStroke("black")
+                    .drawRect(-1, -1, 302, 26)
+                    .endStroke();
 
+                // Draw the fill. Only set the style here
+                var fill = new createjs.Shape().set({ x: 380, y: 140, scaleX: 0 });
+                fill.graphics.beginFill("orange").drawRect(0, 0, 300, 24);
+                page.addChild(fill);
+            }
 
             if (questionIndex > 0) {
-                timerTween.setPosition(0, 0);
-                timerTween = createjs.Tween.get(fill, { override: true })
-                    .to({ scaleX: 1 }, timer * 1000, createjs.Ease.quadIn).wait(.01).call(function () {
-                        strikes += 1;
-                        timerTween.paused = true;
-                        timerTween.setPaused(true);
-                        displayXXX_YourWrong();
-                    });
-            } else {
+                if (highScoreGameType == true) {
 
-                timerTween = createjs.Tween.get(fill, { override: true })
-                    .wait(3000)
-                    .to({ scaleX: 1 }, timer * 1000, createjs.Ease.quadIn).wait(.01).call(function () {
-                        strikes += 1;
-                        timerTween.paused = true;
-                        timerTween.setPaused(true);
-                        displayXXX_YourWrong();
-                    });
+                    timerTween.setPosition(0, 0);
+                    timerTween = createjs.Tween.get(fill, { override: true })
+                        .to({ scaleX: 1 }, timer * 1000, createjs.Ease.quadIn).wait(.01).call(function () {
+                            strikes += 1;
+                            timerTween.paused = true;
+                            timerTween.setPaused(true);
+                            displayXXX_YourWrong();
+                        });
+                }
+            } else {
+                if (highScoreGameType == true) {
+
+                    timerTween = createjs.Tween.get(fill, { override: true })
+                        .wait(3000)
+                        .to({ scaleX: 1 }, timer * 1000, createjs.Ease.quadIn).wait(.01).call(function () {
+                            strikes += 1;
+                            timerTween.paused = true;
+                            timerTween.setPaused(true);
+                            displayXXX_YourWrong();
+                        });
+                }
             }
-    
+
             return page;
-           
+
         }
         function displayQuestionText() {
             var questionDisplay = new createjs.Text(questionsArray[questionIndex].text, "26px Arial bold", "yellow");
@@ -353,7 +431,7 @@ var Game = Game || (function (createjs) {
         var scoreTextDisplay;
         function displayScoreText() {
 
-            scoreTextDisplay = new createjs.Text("Score: " + score, "18px Arial", "black");
+            scoreTextDisplay = new createjs.Text("Score: " + score, "18px Arial", "White");
             scoreTextDisplay.x = 10;
             scoreTextDisplay.y = 150
             //page.addChild(scoreTextDisplay);
@@ -361,7 +439,7 @@ var Game = Game || (function (createjs) {
         }
         var timerDisplay;
         function displayTimerText() {
-            timerDisplay = new createjs.Text("Timer: ", "18px Arial", "black");
+            timerDisplay = new createjs.Text("Timer: ", "18px Arial", "White");
             timerDisplay.x = 310;
             timerDisplay.y = 150
             return timerDisplay
@@ -369,9 +447,10 @@ var Game = Game || (function (createjs) {
         }
         function CheckAnswer(answerValue) {
             // timerTween.setPaused(true);
-            timerTween.paused = true;
-            timerTween.setPaused(true);
-
+            if (highScoreGameType == true) {
+                timerTween.paused = true;
+                timerTween.setPaused(true);
+            }
             if (answerValue == questionsArray[questionIndex].value) {
                 givePoints();
                 createjs.Sound.play("Correct");
@@ -665,29 +744,48 @@ var Game = Game || (function (createjs) {
         function GameOverScreen() {
             var page = new createjs.Container();
 
-            var background = new createjs.Shape();
-            background.graphics.beginStroke("Red").beginFill("Red").drawRect(0, 0, 800, 600);
-            page.addChild(background);
+            var backgroundImage = new createjs.Bitmap(queue.getResult("backgroundImage"));
+            backgroundImage.x = 0;
+            backgroundImage.y = 0;
+            page.addChild(backgroundImage);
 
-            var Title = new createjs.Text("Measurement Madness", "24px Arial", "black");
-            Title.x = 5;
-            Title.y = 5
-            page.addChild(Title);
 
-            // do the stuff on the page, setup click handlers, etc...
-            var startButton = new createjs.Bitmap(queue.getResult("start_button"));
+            var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
+            titleImage.x = 5;
+            titleImage.y = 5;
 
-            startButton.regX = 93;
-            startButton.regY = 95;
-            startButton.x = 650;
-            startButton.y = 350;
-            // startButton.scaleX = startButton.scaleY = 0.20;
-            page.addChild(startButton);
+            page.addChild(titleImage);
 
-            startButton.addEventListener("click", function () {
-                resetGameVariables();
-                showPage(createGamePage());
+            var directionsPanel = DirectionsPanel();
+            directionsPanel.x = -30;
+            directionsPanel.y = 60;
+
+            page.addChild(directionsPanel);
+            var directionsPanelText = new createjs.Text("Way to go!", "15px Arial bold", "White");
+            directionsPanelText.x = directionsPanel.x + 80;
+            directionsPanelText.y = directionsPanel.y + 80;
+
+            page.addChild(directionsPanelText);
+
+            var FbShareButton = new createjs.Bitmap(queue.getResult("facebookShare"));
+            FbShareButton.scaleX = .10;
+            FbShareButton.scaleY = .10;
+            FbShareButton.x = 100;
+            FbShareButton.y = 300;
+            page.addChild(FbShareButton);
+
+            FbShareButton.addEventListener("click", function () {
+                FB.ui(
+                    {
+                        method: 'share',
+                        href: 'https://www.wisc-online.com/learn/technical/core-skills/ccs13617/measurement-madness',
+                        quote: 'I got a score of ' + score + ' on Measurement Madness. Can you beat my high score?'
+                    }, function (response) { }
+                );
             });
+
+
+
 
             return page;
 
