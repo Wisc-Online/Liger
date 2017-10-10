@@ -1414,7 +1414,7 @@ var Game = Game || (function (createjs) {
                 // <0 otherwise <1
 
                 if (answerstatus == "correct") {
-                    feedbackText = new createjs.Text("Correct. Click the red x to continue", "20px Alegreya", "#000000");
+                    feedbackText = new createjs.Text("Correct. Click the green arrow to continue", "20px Alegreya", "#000000");
                     harpoonCount = 10;
                 } else {
 
@@ -1586,10 +1586,10 @@ var Game = Game || (function (createjs) {
                     else if (playerContainer.x > 730)
                         playerContainer.x = 730;
 
-                    if (playerContainer.y < 300)
-                        playerContainer.y = 300;
-                    else if (playerContainer.y > 480)
-                        playerContainer.y = 480;
+                    if (playerContainer.y < 320)
+                        playerContainer.y = 320;
+                    else if (playerContainer.y > 500)
+                        playerContainer.y = 500;
                 }
             }
 
