@@ -370,7 +370,6 @@ var Game = Game || (function (createjs) {
                     .to({ x: 150, y: 250}, 2000 , createjs.Ease.ElasticOut)
                     
 
-
                 var yesButton = new createjs.Bitmap(queue.getResult("yesbutton"))
 
                 yesButton.regX = 93;
@@ -382,7 +381,7 @@ var Game = Game || (function (createjs) {
                 var noButton = new createjs.Bitmap(queue.getResult("nobutton"))
                 noButton.regX = 93;
                 noButton.regY = 95;
-                noButton.x = panelBG.x + 330;
+                noButton.x = panelBG.x + 400;
                 noButton.y = panelBG.y + 300;
                 noButton.scaleX = noButton.scaleY = 0.20;
 
@@ -395,11 +394,13 @@ var Game = Game || (function (createjs) {
                 function handleComplete() {
                 }
 
-                logo.regX = 180;
+                logo.regX = 200;
                 logo.regY = 60;
-                logo.x = panelBG.x + 480;
+                logo.x = panelBG.x + 450;
                 logo.y = panelBG.y + 300;
                 logo.scaleX = logo.scaleY = 0.35;
+
+
 
 
                 instructionsScreen.addChild(panelBG, titleText, mobileText, yesButton, noButton, logo);
