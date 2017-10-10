@@ -381,7 +381,7 @@ var Game = Game || (function (createjs) {
                 var noButton = new createjs.Bitmap(queue.getResult("nobutton"))
                 noButton.regX = 93;
                 noButton.regY = 95;
-                noButton.x = panelBG.x + 400;
+                noButton.x = panelBG.x + 310;
                 noButton.y = panelBG.y + 300;
                 noButton.scaleX = noButton.scaleY = 0.20;
 
@@ -392,14 +392,14 @@ var Game = Game || (function (createjs) {
 
                 createjs.Tween.get(logo).wait(500).to({ alpha: 1, visible: true }, 2000).call(handleComplete);
                 function handleComplete() {
+                
                 }
 
                 logo.regX = 200;
                 logo.regY = 60;
-                logo.x = panelBG.x + 450;
+                logo.x = panelBG.x + 480;
                 logo.y = panelBG.y + 300;
                 logo.scaleX = logo.scaleY = 0.35;
-
 
 
 
