@@ -19,6 +19,7 @@ var Game = Game || (function (createjs) {
             { id: "RedXXX", src: assetsPath + "X.png" },
             { id: "Buzzer", src: assetsPath + "WrongBuzzer.mp3" },
             { id: "Correct", src: assetsPath + "Correct.mp3" },
+            { id: "btnClick", src: assetsPath + "btnClick.mp3" },
             { id: "backgroundImage", src: assetsPath + "background.jpg" },
             { id: "button", src: assetsPath + "button.png" },
             { id: "selectedButton", src: assetsPath + "SelectedButton.png" },
@@ -120,7 +121,9 @@ var Game = Game || (function (createjs) {
                 createjs.Tween.get(currentPage).to({ alpha: 1 }, 250);
             }
         }
-
+        function btnClick() {
+            createjs.Sound.play("btnClick");
+        }
         function createTitle() {
             var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
             titleImage.x = 5;
@@ -145,9 +148,9 @@ var Game = Game || (function (createjs) {
             levelsDisplayPanel.addChild(directionsPanel)
 
             var levelsTextImagedisplay = new createjs.Bitmap(queue.getResult("LevelsTextImage"));
-            levelsTextImagedisplay.scaleX = levelsTextImagedisplay.scaleY =.20;
+            levelsTextImagedisplay.scaleX = levelsTextImagedisplay.scaleY = .20;
             //levelsTextImagedisplay.scaleY = .25;
-            levelsTextImagedisplay.x =50
+            levelsTextImagedisplay.x = 50
             levelsTextImagedisplay.y = 150
             levelsDisplayPanel.addChild(levelsTextImagedisplay);
 
@@ -167,6 +170,7 @@ var Game = Game || (function (createjs) {
             stage.addChild(levelsDisplayPanel);
 
             closeBtn.addEventListener("click", function () {
+                btnClick();
                 stage.removeChild(levelsDisplayPanel);
             });
         }
@@ -206,6 +210,7 @@ var Game = Game || (function (createjs) {
 
             levelsbtn.addEventListener("click", function () {
                 //Display Level
+                btnClick();
                 createLevelsDisplay()
             });
 
@@ -231,19 +236,21 @@ var Game = Game || (function (createjs) {
             titleImage.y = 5;
 
             page.addChild(titleImage);
-            //if (highScoreGameType == true) {
-            var scoreTextDisplay = displayScoreText();
-            page.addChild(scoreTextDisplay);
+            if (highScoreGameType == true) {
+                var scoreTextDisplay = displayScoreText();
+                page.addChild(scoreTextDisplay);
 
-            var strikesDisplay = new createjs.Text("Strikes: " + strikes, "18px Arial", "White");
-            strikesDisplay.x = 10;
-            strikesDisplay.y = 100
-            page.addChild(strikesDisplay);
 
-            var levelDisplay = new createjs.Text("Level: " + level, "18px Arial", "White");
-            levelDisplay.x = 10;
-            levelDisplay.y = 130
-            page.addChild(levelDisplay);
+                var strikesDisplay = new createjs.Text("Strikes: " + strikes, "18px Arial", "White");
+                strikesDisplay.x = 10;
+                strikesDisplay.y = 100
+                page.addChild(strikesDisplay);
+
+                var levelDisplay = new createjs.Text("Level: " + level, "18px Arial", "White");
+                levelDisplay.x = 10;
+                levelDisplay.y = 130
+                page.addChild(levelDisplay);
+            }
             //}
             if (highScoreGameType == true) {
                 var timerDisplay = displayTimerText()
@@ -341,7 +348,7 @@ var Game = Game || (function (createjs) {
 
             while (iGotAValidQuestion == false) {
                 whatKindOfQuestionIsThis = [];
-                if (questionIndex >= 79) {
+                if (questionIndex >= questionsArray.length) {
                     iGotAValidQuestion = false;
 
                     break;
@@ -387,7 +394,7 @@ var Game = Game || (function (createjs) {
                 }
             }
             if (iGotAValidQuestion == true) {
-                if (questionIndex <= 79) {
+                if (questionIndex <= questionsArray.length) {
 
                     var questionDisplay = new createjs.Text(questionsArray[questionIndex].text, "22px Arial bold", "yellow");
                     questionDisplay.x = 10;
@@ -420,48 +427,88 @@ var Game = Game || (function (createjs) {
                 timerTween.paused = true;
                 timerTween.setPaused(true);
             }
-            if (answerValue == questionsArray[questionIndex].value) {
+            if (answerValue.value == questionsArray[questionIndex].value && answerValue.unit.toString() == questionsArray[questionIndex].unit) {
                 givePoints();
                 createjs.Sound.play("Correct");
                 incrementQuestion();
-                if (questionIndex <= 79) {
+                if (questionIndex <= questionsArray.length) {
                     clickedAnswerNowWait = false;
                     showPage(createGamePage());
                 } else {
                     showPage(GameOverScreen())
                 }
             } else {
-
                 strikes += 1;
                 displayXXX_YourWrong();
+
             }
         }
-        function displayXXX_YourWrong() {
+        function displayXXX_YourWrong(answerValue) {
             //deliver X image.
-            var redXXX = new createjs.Bitmap(queue.getResult("RedXXX"));
-            redXXX.x = 150
-            redXXX.y = 10
-            redXXX.scaleX = 0.3;
-            redXXX.scaleY = 0.3;
+            if (highScoreGameType == true) {
+                var redXXX = new createjs.Bitmap(queue.getResult("RedXXX"));
+                redXXX.x = 150
+                redXXX.y = 10
+                redXXX.scaleX = 0.3;
+                redXXX.scaleY = 0.3;
 
-            stage.addChild(redXXX);
-            createjs.Sound.play("Buzzer");
+                stage.addChild(redXXX);
+                createjs.Sound.play("Buzzer");
 
-
-            setTimeout(function () {
-                stage.removeChild(redXXX)
-                if (strikes >= 3) {
-                    showPage(GameOverScreen());
-                } else {
-                    incrementQuestion();
-                    if (questionIndex <= 79) {
-                        showPage(createGamePage());
+                setTimeout(function () {
+                    stage.removeChild(redXXX)
+                    if (strikes >= 3) {
+                        showPage(GameOverScreen());
                     } else {
-                        showPage(GameOverScreen())
+                        // incrementQuestion();
+                        if (questionIndex <= questionsArray.length) {
+                            //got the question wrong display correct answer and message and continue button.
+                            highLightTheCorrectAnswer(answerValue);
+                            showPage(createGamePage());
+                        } else {
+                            showPage(GameOverScreen())
+                        }
                     }
+                }, 1500);
+            } else {
+                highLightTheCorrectAnswer(answerValue);
+            }
+        }
+        function highLightTheCorrectAnswer(answerValue) {
+            allTheDivisions.forEach(function (element) {
+                if (element.value == questionsArray[questionIndex].value) {
+                    console.log(element.value);
+                    createjs.Tween.get(element.backgroundOfDivision).to({ alpha: 1.0 }, 500);
                 }
-            }, 1500);
+            });
+            ShowContinueButton()
+            incrementQuestion();
+        }
+        function ShowContinueButton() {
+            var feedbackContainer = new createjs.Container();
+            var directionsPanel = DirectionsPanel();
+            directionsPanel.x = 180;
+            directionsPanel.y = 20;
+            feedbackContainer.addChild(directionsPanel);
 
+
+            var spriteSheet = createSpriteSheet();
+            var closeBtn = new createjs.Sprite(spriteSheet, "original");
+            closeBtn.x = 150;
+            closeBtn.y = 460
+            feedbackContainer.addChild(closeBtn);
+
+            var DirectionsPanelText = new createjs.Text("Close", "18px Arial bold", "yellow");
+            levelsText.x = levelsbtn.x + 100;
+            levelsText.y = levelsbtn.y + 25;
+            levelsText.textAlign = "center";
+            btnContainer.addChild(levelsText);
+            page.addChild(btnContainer);
+            stage.addChild(feedbackContainer);
+
+            feedbackContainer.addEventListener("click", function () {
+                stage.removeChild(feedbackContainer);
+            });
         }
         function incrementQuestion() {
             questionIndex += 1;
@@ -540,6 +587,7 @@ var Game = Game || (function (createjs) {
 
         }
         var clickedAnswerNowWait = false;
+        var allTheDivisions = [];
         function createRuler(lengthInInches) {
             var ruler = new createjs.Container();
 
@@ -559,12 +607,14 @@ var Game = Game || (function (createjs) {
             var backgroundOfDivision;
 
             var division, divisionHeight, numberText;
+
+
             //Paint Standard Ruler
             for (var i = 0; i < totalDivisions; ++i) {
 
                 divisionContainer = new createjs.Container();
                 divisionContainer.value = i * (1 / settings.ruler.divisionsPerInch);
-
+                divisionContainer.unit = "in";
                 backgroundOfDivision = new createjs.Shape();
 
                 division = new createjs.Shape();
@@ -615,13 +665,16 @@ var Game = Game || (function (createjs) {
 
                 divisionContainer.addChild(backgroundOfDivision);
                 divisionContainer.addEventListener("rollover", function (e) {
+
                     createjs.Tween.get(e.currentTarget.backgroundOfDivision).to({ alpha: 1.0 }, 500);
                 });
                 divisionContainer.addEventListener("rollout", function (e) {
+
                     createjs.Tween.get(e.currentTarget.backgroundOfDivision, { override: true }).to({ alpha: 0.0 }, 250);
                 });
                 divisionContainer.addEventListener("mousedown", function (e) {
                     if (clickedAnswerNowWait == false) {
+                        btnClick();
                         clickedAnswerNowWait = true;
                         CheckAnswer(e.currentTarget.value.toString())
                     }
@@ -629,6 +682,7 @@ var Game = Game || (function (createjs) {
 
                 divisionContainer.addChild(division);
                 ruler.addChild(divisionContainer);
+                allTheDivisions.push(divisionContainer);
             }
 
 
@@ -644,7 +698,7 @@ var Game = Game || (function (createjs) {
                 mmDivision = new createjs.Shape();
                 divisionContainer = new createjs.Container();
                 divisionContainer.value = m * (10 / settings.ruler.divisionsPerCentimenter);
-
+                divisionContainer.unit = "mm";
                 divisionContainer.y = rulerHeight;
                 divisionContainer.x = m * mmPixelsPerDivision;
 
@@ -703,11 +757,13 @@ var Game = Game || (function (createjs) {
                     if (clickedAnswerNowWait == false) {
                         // alert("Clicked Value: " + e.currentTarget.value.toString());
                         clickedAnswerNowWait = true;
-                        CheckAnswer(e.currentTarget.value.toString());
+                        CheckAnswer(e.currentTarget);
+                        // CheckAnswer(e.currentTarget.value.toString());
                     }
                 });
                 ruler.addChild(divisionContainer);
                 mmLengthInches += mmInches;
+                allTheDivisions.push(divisionContainer);
             }
             return ruler;
         }
@@ -766,7 +822,7 @@ var Game = Game || (function (createjs) {
             selectEights.x = ButtonX;
             selectEights.y = ButtonY + 70;
             buttonContainer.addChild(selectEights);
-            var selectEightsText = new createjs.Text("Eights", "22px Arial bold", "yellow");
+            var selectEightsText = new createjs.Text("Eighths", "22px Arial bold", "yellow");
             selectEightsText.x = ButtonX + 65;
             selectEightsText.y = selectEights.y + 20;
             buttonContainer.addChild(selectEightsText);
@@ -808,8 +864,6 @@ var Game = Game || (function (createjs) {
             highScoreText.y = highScore.y + 20;
             buttonContainer.addChild(highScoreText);
 
-
-
             var playbtn = new createjs.Sprite(spriteSheet, "original");
             playbtn.x = ButtonX + 100;
             playbtn.y = ButtonY + 420;
@@ -821,12 +875,15 @@ var Game = Game || (function (createjs) {
 
             selectQuarters.addEventListener("click", function () {
                 if (selectQuarters.currentFrame == 0) {
+
                     quartersSelected = true;
                     selectQuarters.gotoAndStop("selected")
                 } else {
+
                     selectQuarters.gotoAndStop("original")
                     quartersSelected = false;
                 }
+                btnClick();
             });
 
             selectEights.addEventListener("click", function () {
@@ -837,6 +894,7 @@ var Game = Game || (function (createjs) {
                     selectEights.gotoAndStop("original")
                     eightsSelected = false;
                 }
+                btnClick();
             });
             selectSixteenths.addEventListener("click", function () {
                 if (selectSixteenths.currentFrame == 0) {
@@ -846,7 +904,7 @@ var Game = Game || (function (createjs) {
                     selectSixteenths.gotoAndStop("original")
                     sixteenthsSelected = false;
                 }
-
+                btnClick();
             });
             selectThirtySeconds.addEventListener("click", function () {
                 if (selectThirtySeconds.currentFrame == 0) {
@@ -856,6 +914,7 @@ var Game = Game || (function (createjs) {
                     selectThirtySeconds.gotoAndStop("original")
                     thirtySecondsSelected = false;
                 }
+                btnClick();
             });
             selectMillemeters.addEventListener("click", function () {
                 if (selectMillemeters.currentFrame == 0) {
@@ -865,6 +924,7 @@ var Game = Game || (function (createjs) {
                     selectMillemeters.gotoAndStop("original")
                     millemetersSelected = false;
                 }
+                btnClick();
             });
             highScore.addEventListener("click", function () {
 
@@ -875,8 +935,10 @@ var Game = Game || (function (createjs) {
                     highScore.gotoAndStop("original")
                     highScoreGameType = false;
                 }
+                btnClick();
             });
             playbtn.addEventListener("click", function () {
+                btnClick();
                 questionIndex = 0;
 
                 strikes = 0;
@@ -946,6 +1008,7 @@ var Game = Game || (function (createjs) {
 
 
             FbShareButton.addEventListener("click", function () {
+                btnClick();
                 FB.ui(
                     {
                         method: 'share',
@@ -965,6 +1028,7 @@ var Game = Game || (function (createjs) {
             page.addChild(tweetscore);
 
             tweetscore.addEventListener("click", function () {
+                btnClick();
                 //href: 'https://twitter.com/intent/tweet'
                 // window.open("https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fdev.twitter.com%2Fweb%2Foverview&amp;ref_src=twsrc%5Etfw&amp;related=twitterapi%2Ctwitter&amp;text=Twitter%20for%20Websites%20%E2%80%94%20Twitter%20Developers&amp;tw_p=tweetbutton&amp;url=https%3A%2F%2Fdev.twitter.com%2Fweb%2Foverview&amp;via=twitterdev");
                 window.open("https://twitter.com/intent/tweet?text=Can you beat my high score of " + score + " in Measurement Madness. https://www.wisc-online.com/learn/technical/core-skills/ccs13617/measurement-madness");
