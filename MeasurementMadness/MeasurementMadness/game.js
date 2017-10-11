@@ -24,6 +24,7 @@ var Game = Game || (function (createjs) {
             { id: "selectedButton", src: assetsPath + "SelectedButton.png" },
             { id: "dirPanel", src: assetsPath + "PanelBG.png" },
             { id: "ButtonSprite", src: assetsPath + "spritesheetnomargin.png" },
+            { id: "LevelsTextImage", src: assetsPath + "levelstext.png" },
             { id: "facebookShare", src: assetsPath + "FBShareIcon.png" },
             { id: "tweetscore", src: assetsPath + "Twitter.png" },
             { id: "TitleImage", src: assetsPath + "measurementMadnessTitle.png" }
@@ -50,9 +51,7 @@ var Game = Game || (function (createjs) {
             stage.update();
         }
 
-        //for (var d = 0; d < gameData.Questions.length; d++) {
-        //    gameData.Questions[d].OrderId = d;
-        //}
+
         var questionsArray = [];
         var usedQuestions = [];
         var score = 0;
@@ -92,9 +91,6 @@ var Game = Game || (function (createjs) {
             //alert("ran it")
             return array;
         }
-
-
-
 
         var settings = {
             ruler: {
@@ -139,14 +135,45 @@ var Game = Game || (function (createjs) {
 
             return directionsPanel;
         }
-        function createIntroductionPage() {
+        function createLevelsDisplay() {
 
+            var levelsDisplayPanel = new createjs.Container();
+
+            var directionsPanel = DirectionsPanel();
+            directionsPanel.x = -30;
+            directionsPanel.y = 60;
+            levelsDisplayPanel.addChild(directionsPanel)
+
+            var levelsTextImagedisplay = new createjs.Bitmap(queue.getResult("LevelsTextImage"));
+            levelsTextImagedisplay.scaleX = levelsTextImagedisplay.scaleY =.20;
+            //levelsTextImagedisplay.scaleY = .25;
+            levelsTextImagedisplay.x =50
+            levelsTextImagedisplay.y = 150
+            levelsDisplayPanel.addChild(levelsTextImagedisplay);
+
+            var spriteSheet = createSpriteSheet();
+
+            var closeBtn = new createjs.Sprite(spriteSheet, "original");
+            closeBtn.x = 150;
+            closeBtn.y = 460
+            levelsDisplayPanel.addChild(closeBtn);
+
+            var closeText = new createjs.Text("Close", "18px Arial bold", "yellow");
+            closeText.x = closeBtn.x + 100;
+            closeText.y = closeBtn.y + 25;
+            closeText.textAlign = "center";
+            levelsDisplayPanel.addChild(closeText);
+
+            stage.addChild(levelsDisplayPanel);
+
+            closeBtn.addEventListener("click", function () {
+                stage.removeChild(levelsDisplayPanel);
+            });
+        }
+        function createIntroductionPage() {
+            clickedAnswerNowWait = false;
             var page = new createjs.Container();
 
-            //var Title = new createjs.Text("Measurement Madness", "24px Arial", "black");
-            //Title.x = 5;
-            //Title.y = 5
-            //page.addChild(Title);
             var backgroundImage = new createjs.Bitmap(queue.getResult("backgroundImage"));
             backgroundImage.x = 0;
             backgroundImage.y = 0;
@@ -158,11 +185,29 @@ var Game = Game || (function (createjs) {
 
             page.addChild(directionsPanel);
 
-            var directionsPanelText = new createjs.Text("Welcome to Measurement Madness. \n\nThis game will test you speed and finding measurements on a ruler. \n\nSelect the unit(s) that you want to test your knowledge with.", "15px Arial bold", "White");
+            var directionsPanelText = new createjs.Text("Welcome to Measurement Madness. \n\nThis game will test your speed on finding measurements on a ruler. \n\nSelect the unit(s) that you want to test your knowledge with. \n\nHigh Score: \nSelecting this will keep your score and be timed. Each level the amount of time given will decrease. Challange friends on Twitter and Facebook to beat your score.", "15px Arial bold", "White");
             directionsPanelText.x = directionsPanel.x + 80;
             directionsPanelText.y = directionsPanel.y + 80;
             directionsPanelText.lineWidth = 300;
             page.addChild(directionsPanelText);
+
+            var btnContainer = new createjs.Container();
+            var spriteSheet = createSpriteSheet();
+            var levelsbtn = new createjs.Sprite(spriteSheet, "original");
+            levelsbtn.x = 150;
+            levelsbtn.y = 460
+            btnContainer.addChild(levelsbtn);
+            var levelsText = new createjs.Text("Level \nInformation", "18px Arial bold", "yellow");
+            levelsText.x = levelsbtn.x + 100;
+            levelsText.y = levelsbtn.y + 25;
+            levelsText.textAlign = "center";
+            btnContainer.addChild(levelsText);
+            page.addChild(btnContainer);
+
+            levelsbtn.addEventListener("click", function () {
+                //Display Level
+                createLevelsDisplay()
+            });
 
             var buttonContainer = createAllButtons();
             page.addChild(buttonContainer);
@@ -171,7 +216,7 @@ var Game = Game || (function (createjs) {
         }
         var timerTween;
         function createGamePage() {
-
+            clickedAnswerNowWait = false;
 
             var page = new createjs.Container();
 
@@ -186,31 +231,29 @@ var Game = Game || (function (createjs) {
             titleImage.y = 5;
 
             page.addChild(titleImage);
-
+            //if (highScoreGameType == true) {
             var scoreTextDisplay = displayScoreText();
             page.addChild(scoreTextDisplay);
 
             var strikesDisplay = new createjs.Text("Strikes: " + strikes, "18px Arial", "White");
-            strikesDisplay.x = 110;
-            strikesDisplay.y = 150
+            strikesDisplay.x = 10;
+            strikesDisplay.y = 100
             page.addChild(strikesDisplay);
 
             var levelDisplay = new createjs.Text("Level: " + level, "18px Arial", "White");
-            levelDisplay.x = 210;
-            levelDisplay.y = 150
+            levelDisplay.x = 10;
+            levelDisplay.y = 130
             page.addChild(levelDisplay);
+            //}
             if (highScoreGameType == true) {
                 var timerDisplay = displayTimerText()
                 page.addChild(timerDisplay);
             }
 
-
             var questionDisplay = displayQuestionText();
             if (questionDisplay != null) {
                 page.addChild(questionDisplay);
             }
-
-
 
             var rulerLength = 6.25;
             var ruler = createRuler(rulerLength);
@@ -218,7 +261,6 @@ var Game = Game || (function (createjs) {
             var rulerWidthPixels = rulerLength * settings.ruler.pixelsPerDivision * settings.ruler.divisionsPerInch;
 
             var targetRulerWidthOfCanvasPercent = 1.0;
-
 
             ruler.x = 0
             ruler.y = 0;
@@ -241,18 +283,18 @@ var Game = Game || (function (createjs) {
 
                 //Create a shape
                 var bar = new createjs.Shape()
-                    .set({ x: 380, y: 140 }); // Move away from the top left.
+                    .set({ x: 70, y: 160 }); // Move away from the top left.
                 page.addChild(bar);
 
                 // Draw the outline
                 bar.graphics.setStrokeStyle(2)
-                    .beginStroke("black")
+                    .beginStroke("Green")
                     .drawRect(-1, -1, 302, 22)
                     .endStroke();
 
                 // Draw the fill. Only set the style here
-                var fill = new createjs.Shape().set({ x: 380, y: 140, scaleX: 0 });
-                fill.graphics.beginFill("orange").drawRect(0, 0, 300, 24);
+                var fill = new createjs.Shape().set({ x: 70, y: 160, scaleX: 0 });
+                fill.graphics.beginFill("orange").drawRect(0, 0, 300, 20);
                 page.addChild(fill);
             }
 
@@ -262,6 +304,7 @@ var Game = Game || (function (createjs) {
                     timerTween.setPosition(0, 0);
                     timerTween = createjs.Tween.get(fill, { override: true })
                         .to({ scaleX: 1 }, timer * 1000, createjs.Ease.quadIn).wait(.01).call(function () {
+                            clickedAnswerNowWait = true;
                             strikes += 1;
                             timerTween.paused = true;
                             timerTween.setPaused(true);
@@ -274,6 +317,7 @@ var Game = Game || (function (createjs) {
                     timerTween = createjs.Tween.get(fill, { override: true })
                         .wait(3000)
                         .to({ scaleX: 1 }, timer * 1000, createjs.Ease.quadIn).wait(.01).call(function () {
+                            clickedAnswerNowWait = true;
                             strikes += 1;
                             timerTween.paused = true;
                             timerTween.setPaused(true);
@@ -359,20 +403,19 @@ var Game = Game || (function (createjs) {
 
             scoreTextDisplay = new createjs.Text("Score: " + score, "18px Arial", "White");
             scoreTextDisplay.x = 10;
-            scoreTextDisplay.y = 150
+            scoreTextDisplay.y = 70
             //page.addChild(scoreTextDisplay);
             return scoreTextDisplay;
         }
         var timerDisplay;
         function displayTimerText() {
             timerDisplay = new createjs.Text("Timer: ", "18px Arial", "White");
-            timerDisplay.x = 310;
-            timerDisplay.y = 150
+            timerDisplay.x = 10;
+            timerDisplay.y = 160
             return timerDisplay
 
         }
         function CheckAnswer(answerValue) {
-            // timerTween.setPaused(true);
             if (highScoreGameType == true) {
                 timerTween.paused = true;
                 timerTween.setPaused(true);
@@ -382,21 +425,16 @@ var Game = Game || (function (createjs) {
                 createjs.Sound.play("Correct");
                 incrementQuestion();
                 if (questionIndex <= 79) {
+                    clickedAnswerNowWait = false;
                     showPage(createGamePage());
                 } else {
                     showPage(GameOverScreen())
                 }
-
-
             } else {
 
                 strikes += 1;
                 displayXXX_YourWrong();
             }
-            //Check if its correct
-
-
-
         }
         function displayXXX_YourWrong() {
             //deliver X image.
@@ -430,28 +468,39 @@ var Game = Game || (function (createjs) {
         }
 
         function givePoints() {
-            if (score > 0 && score < 20) {
+            if (score > 0 && score < 100) {
                 level = 1;
-            } else if (score > 20 && score < 40) {
+                timer = 10;
+            } else if (score > 100 && score < 200) {
                 level = 2;
-            } else if (score > 40 && score < 60) {
+                timer = 9.5;
+            } else if (score > 200 && score < 400) {
                 level = 3;
-            } else if (score > 60 && score < 80) {
+                timer = 9;
+            } else if (score > 400 && score < 600) {
                 level = 4;
-            } else if (score > 300 && score < 400) {
+                timer = 8.5;
+            } else if (score > 600 && score < 900) {
                 level = 5;
-            } else if (score > 400 && score < 500) {
+                timer = 8.0;
+            } else if (score > 900 && score < 1500) {
                 level = 6;
-            } else if (score > 500 && score < 600) {
+                timer = 7.5;
+            } else if (score > 1500 && score < 3000) {
                 level = 7;
-            } else if (score > 600 && score < 700) {
+                timer = 7.0;
+            } else if (score > 3000 && score < 4500) {
                 level = 8;
-            } else if (score > 700 && score < 800) {
+                timer = 6.5;
+            } else if (score > 4500 && score < 6000) {
                 level = 9;
-            } else if (score > 800 && score < 900) {
+                timer = 6.0;
+            } else if (score > 6000 && score < 9000) {
                 level = 10;
-            } else if (score > 900) {
+                timer = 5.5;
+            } else if (score > 9001) {
                 level = 10;
+                timer = 5.0;
             }
 
 
@@ -490,7 +539,7 @@ var Game = Game || (function (createjs) {
             }
 
         }
-
+        var clickedAnswerNowWait = false;
         function createRuler(lengthInInches) {
             var ruler = new createjs.Container();
 
@@ -572,11 +621,10 @@ var Game = Game || (function (createjs) {
                     createjs.Tween.get(e.currentTarget.backgroundOfDivision, { override: true }).to({ alpha: 0.0 }, 250);
                 });
                 divisionContainer.addEventListener("mousedown", function (e) {
-
-                    // alert("Clicked Value: " + e.currentTarget.value.toString());
-                    // var isAnswerCorrect = CheckAnswer(e.currentTarget.value.toString());
-                    CheckAnswer(e.currentTarget.value.toString())
-
+                    if (clickedAnswerNowWait == false) {
+                        clickedAnswerNowWait = true;
+                        CheckAnswer(e.currentTarget.value.toString())
+                    }
                 });
 
                 divisionContainer.addChild(division);
@@ -584,12 +632,10 @@ var Game = Game || (function (createjs) {
             }
 
 
-
             //set up metric ruler
             var mmPixelsPerDivision = (pixelsPerDivision * settings.ruler.divisionsPerInch) / 25.4
             var mmLengthInches = 0;
             var mmInches = 0.0254;
-
 
             //Paint Metric Ruler
 
@@ -654,16 +700,15 @@ var Game = Game || (function (createjs) {
                     createjs.Tween.get(e.currentTarget.backgroundOfDivision, { override: true }).to({ alpha: 0.0 }, 250);
                 });
                 divisionContainer.addEventListener("mousedown", function (e) {
-
-                    // alert("Clicked Value: " + e.currentTarget.value.toString());
-                    CheckAnswer(e.currentTarget.value.toString())
+                    if (clickedAnswerNowWait == false) {
+                        // alert("Clicked Value: " + e.currentTarget.value.toString());
+                        clickedAnswerNowWait = true;
+                        CheckAnswer(e.currentTarget.value.toString());
+                    }
                 });
-
                 ruler.addChild(divisionContainer);
-
                 mmLengthInches += mmInches;
             }
-
             return ruler;
         }
 
@@ -675,6 +720,21 @@ var Game = Game || (function (createjs) {
             timer = 10;
             shuffle(questionsArray);
         }
+
+        function createSpriteSheet() {
+            var data = {
+                images: [queue.getResult("ButtonSprite")],
+                frames: { width: 200, height: 90, count: 2 },
+                animations: {
+                    original: 0,
+                    selected: 1
+                }
+            };
+
+            var spriteSheet = new createjs.SpriteSheet(data);
+            return spriteSheet;
+        }
+
         function createAllButtons() {
             var buttonContainer = new createjs.Container();
 
@@ -823,7 +883,7 @@ var Game = Game || (function (createjs) {
                 level = 1;
                 timer = 10;
                 score = 0;
-                
+
                 if (quartersSelected == true || eightsSelected == true || sixteenthsSelected == true || thirtySecondsSelected == true || millemetersSelected == true) {
                     showPage(createGamePage());
                 } else {
@@ -876,10 +936,10 @@ var Game = Game || (function (createjs) {
             page.addChild(directionsPanelText);
 
             var FbShareButton = new createjs.Bitmap(queue.getResult("facebookShare"));
-            //FbShareButton.scaleX = .10;
-            //FbShareButton.scaleY = .10;
-            FbShareButton.width = 209;
-            FbShareButton.height = 209;
+            FbShareButton.scaleX = .51;
+            FbShareButton.scaleY = .51;
+            //FbShareButton.width = 209;
+            //FbShareButton.height = 209;
             FbShareButton.x = 200;
             FbShareButton.y = 400;
             page.addChild(FbShareButton);
@@ -896,16 +956,19 @@ var Game = Game || (function (createjs) {
             });
 
             var tweetscore = new createjs.Bitmap(queue.getResult("tweetscore"));
-            //tweetscore.scaleX = .51;
-            //tweetscore.scaleY = .51;
-            tweetscore.width = 209;
-            tweetscore.height = 209;
+            tweetscore.scaleX = .51;
+            tweetscore.scaleY = .51;
+            //tweetscore.width = 209;
+            //tweetscore.height = 209;
             tweetscore.x = 50;
             tweetscore.y = 400;
             page.addChild(tweetscore);
 
             tweetscore.addEventListener("click", function () {
-                href:'https://twitter.com/intent/tweet'
+                //href: 'https://twitter.com/intent/tweet'
+                // window.open("https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fdev.twitter.com%2Fweb%2Foverview&amp;ref_src=twsrc%5Etfw&amp;related=twitterapi%2Ctwitter&amp;text=Twitter%20for%20Websites%20%E2%80%94%20Twitter%20Developers&amp;tw_p=tweetbutton&amp;url=https%3A%2F%2Fdev.twitter.com%2Fweb%2Foverview&amp;via=twitterdev");
+                window.open("https://twitter.com/intent/tweet?text=Can you beat my high score of " + score + " in Measurement Madness. https://www.wisc-online.com/learn/technical/core-skills/ccs13617/measurement-madness");
+
             });
 
 

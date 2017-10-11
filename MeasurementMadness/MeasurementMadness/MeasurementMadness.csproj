@@ -78,9 +78,11 @@
     <Content Include="createjs.min.js" />
     <Content Include="game.js" />
     <Content Include="images\background.jpg" />
+    <Content Include="images\btnClick.mp3" />
     <Content Include="images\button.png" />
     <Content Include="images\Correct.mp3" />
     <Content Include="images\FBShareIcon.png" />
+    <Content Include="images\levelstext.png" />
     <Content Include="images\measurementMadnessTitle.png" />
     <Content Include="images\PanelBG.png" />
     <Content Include="images\SelectedButton.png" />
