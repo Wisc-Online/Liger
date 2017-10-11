@@ -363,13 +363,12 @@ var Game = Game || (function (createjs) {
                     .to({color:"red"}, 500)
 
                 var mobileText = new createjs.Text("Are you on mobile?", "28px Alegreya", "#000000");
-                mobileText.x = panelBG.x + 130;
+                mobileText.x = panelBG.x + 150;
                 mobileText.y = panelBG.y + 170;
                 //add a tween
                 createjs.Tween.get(mobileText)
-                    .to({ x: 200, y: 250}, 2000 , createjs.Ease.ElasticOut)
+                    .to({ x: 150, y: 250}, 2000 , createjs.Ease.ElasticOut)
                     
-
 
                 var yesButton = new createjs.Bitmap(queue.getResult("yesbutton"))
 
@@ -382,11 +381,29 @@ var Game = Game || (function (createjs) {
                 var noButton = new createjs.Bitmap(queue.getResult("nobutton"))
                 noButton.regX = 93;
                 noButton.regY = 95;
-                noButton.x = panelBG.x + 400;
+                noButton.x = panelBG.x + 310;
                 noButton.y = panelBG.y + 300;
                 noButton.scaleX = noButton.scaleY = 0.20;
 
-                instructionsScreen.addChild(panelBG, titleText, mobileText, yesButton, noButton);
+
+                //create a tween for the logo
+                var logo = new createjs.Bitmap(queue.getResult("logo"))
+                logo.alpha = 0;
+
+                createjs.Tween.get(logo).wait(500).to({ alpha: 1, visible: true }, 2000).call(handleComplete);
+                function handleComplete() {
+                
+                }
+
+                logo.regX = 200;
+                logo.regY = 60;
+                logo.x = panelBG.x + 480;
+                logo.y = panelBG.y + 300;
+                logo.scaleX = logo.scaleY = 0.35;
+
+
+
+                instructionsScreen.addChild(panelBG, titleText, mobileText, yesButton, noButton, logo);
 
                 //create a tween and pass in the yes/no buttons
                 createjs.Tween.get(yesButton, {
@@ -1414,7 +1431,7 @@ var Game = Game || (function (createjs) {
                 // <0 otherwise <1
 
                 if (answerstatus == "correct") {
-                    feedbackText = new createjs.Text("Correct. Click the red x to continue", "20px Alegreya", "#000000");
+                    feedbackText = new createjs.Text("Correct. Click the green arrow to continue", "20px Alegreya", "#000000");
                     harpoonCount = 10;
                 } else {
 
@@ -1586,10 +1603,10 @@ var Game = Game || (function (createjs) {
                     else if (playerContainer.x > 730)
                         playerContainer.x = 730;
 
-                    if (playerContainer.y < 300)
-                        playerContainer.y = 300;
-                    else if (playerContainer.y > 480)
-                        playerContainer.y = 480;
+                    if (playerContainer.y < 320)
+                        playerContainer.y = 320;
+                    else if (playerContainer.y > 500)
+                        playerContainer.y = 500;
                 }
             }
 
