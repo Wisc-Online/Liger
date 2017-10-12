@@ -18,7 +18,7 @@ var Game = Game || (function (createjs) {
 
             { id: "RedXXX", src: assetsPath + "X.png" },
             { id: "Buzzer", src: assetsPath + "WrongBuzzer.mp3" },
-            { id: "NiceWrong", src: assetsPath + "wrong.wav" },
+            { id: "NiceWrong", src: assetsPath + "nicewrong.wav" },
             { id: "Correct", src: assetsPath + "Correct.mp3" },
             { id: "btnClick", src: assetsPath + "btnClick.mp3" },
             { id: "backgroundImage", src: assetsPath + "background.jpg" },
