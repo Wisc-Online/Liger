@@ -90,6 +90,7 @@
     <Content Include="images\buttonblue.png" />
     <Content Include="images\spritesheetnomargin.png" />
     <Content Include="images\Twitter.png" />
+    <Content Include="images\wrong.wav" />
     <Content Include="images\WrongBuzzer.mp3" />
     <Content Include="images\X.png" />
     <Content Include="index.html" />
