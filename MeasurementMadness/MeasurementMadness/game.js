@@ -1096,8 +1096,8 @@ var Game = Game || (function (createjs) {
             page.addChild(directionsPanelText);
 
             var FbShareButton = new createjs.Bitmap(queue.getResult("facebookShare"));
-            FbShareButton.scaleX = .51;
-            FbShareButton.scaleY = .51;
+            //FbShareButton.scaleX = .51;
+            //FbShareButton.scaleY = .51;
             //FbShareButton.width = 209;
             //FbShareButton.height = 209;
             FbShareButton.x = 200;
@@ -1117,8 +1117,8 @@ var Game = Game || (function (createjs) {
             });
 
             var tweetscore = new createjs.Bitmap(queue.getResult("tweetscore"));
-            tweetscore.scaleX = .51;
-            tweetscore.scaleY = .51;
+            //tweetscore.scaleX = .51;
+            //tweetscore.scaleY = .51;
             //tweetscore.width = 209;
             //tweetscore.height = 209;
             tweetscore.x = 50;
