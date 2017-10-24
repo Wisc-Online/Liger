@@ -28,7 +28,7 @@ var Game = Game || (function (createjs) {
             { id: "smallpanel", src: assetsPath + "panelBG_400x300.png" },
             { id: "ButtonSprite", src: assetsPath + "spritesheetnomargin.png" },
             { id: "LevelsTextImage", src: assetsPath + "levelstext.png" },
-            { id: "facebookShare", src: assetsPath + "FBShareIcon.png" },
+            { id: "facebookShare", src: assetsPath + "FBShareIconSmall.png" },
             { id: "tweetscore", src: assetsPath + "Twitter.png" },
             { id: "TitleImage", src: assetsPath + "measurementMadnessTitle.png" }
         ];

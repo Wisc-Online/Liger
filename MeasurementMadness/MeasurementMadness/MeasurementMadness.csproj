@@ -82,6 +82,7 @@
     <Content Include="images\button.png" />
     <Content Include="images\Correct.mp3" />
     <Content Include="images\FBShareIcon.png" />
+    <Content Include="images\FBShareIconSmall.png" />
     <Content Include="images\levelstext.png" />
     <Content Include="images\measurementMadnessTitle.png" />
     <Content Include="images\nicewrong.mp3" />
