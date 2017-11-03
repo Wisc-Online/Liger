@@ -9,13 +9,35 @@ var Game = Game || (function (createjs) {
         var stage = new createjs.Stage(canvas);
         stage.enableMouseOver(10);
         var currentPage = null;
+
+
+        var isLmsConnected = false;
+        var currentLmsInteraction = null;
+
+        if (typeof ScormHelper !== 'undefined') {
+            isLmsConnected = ScormHelper.initialize();
+        }
+
+        var quit;
+
+        if (isLmsConnected) {
+            quit = function () {
+                ScormHelper.cmi.exit("");
+                ScormHelper.adl.nav.request("exitAll");
+                ScormHelper.terminate();
+            }
+        }
+        else {
+            quit = function () {
+                window.location = "http://www.wisc-online.com";
+            }
+        }
+
         var assetsPath = gameData.assetsPath || "";
 
         assetsPath += "images/"
 
         var assets = [
-
-
             { id: "RedXXX", src: assetsPath + "X.png" },
             { id: "Buzzer", src: assetsPath + "WrongBuzzer.mp3" },
             { id: "NiceWrong", src: assetsPath + "nicewrong.mp3" },
@@ -144,7 +166,7 @@ var Game = Game || (function (createjs) {
                 directionsPanel.scaleY = .25;
             } else {
                 directionsPanel = new createjs.Bitmap(queue.getResult("smallpanel"));
-                 directionsPanel.scaleX = .95;
+                directionsPanel.scaleX = .95;
                 directionsPanel.scaleY = .80;
             }
             return directionsPanel;
@@ -251,7 +273,6 @@ var Game = Game || (function (createjs) {
                 var scoreTextDisplay = displayScoreText();
                 page.addChild(scoreTextDisplay);
 
-
                 var strikesDisplay = new createjs.Text("Strikes: " + strikes, "18px Arial", "White");
                 strikesDisplay.x = 10;
                 strikesDisplay.y = 100
@@ -286,7 +307,7 @@ var Game = Game || (function (createjs) {
             }
             if (highScoreGameType == false) {
                 //Create quit button
-                
+
                 var spriteSheet = createSpriteSheet();
                 var exitBtn = new createjs.Sprite(spriteSheet, "original");
                 exitBtn.x = 600;
@@ -299,9 +320,9 @@ var Game = Game || (function (createjs) {
                 page.addChild(exitText);
 
                 exitBtn.addEventListener("click", function () {
-                    
+
                     showPage(GameOverScreen());
-              
+
                 });
                 //keep correct and incorrect count
             }
@@ -311,9 +332,9 @@ var Game = Game || (function (createjs) {
                 page.addChild(questionDisplay);
             }
 
-
+            var start =0;
             var rulerLength = 6.25;
-            var ruler = createRuler(rulerLength);
+            var ruler = createRuler(rulerLength, start);
 
             var rulerWidthPixels = rulerLength * settings.ruler.pixelsPerDivision * settings.ruler.divisionsPerInch;
 
@@ -392,28 +413,39 @@ var Game = Game || (function (createjs) {
         }
         function GetTotalQuestionCount() {
             var validSelection;
-            for (var i = 0; questionsArray.length > i; i++){
+            for (var i = 0; questionsArray.length > i; i++) {
                 validSelection = false;
+                console.log(questionsArray[i].text)
                 if (((questionsArray[i].value * 4) % 1 === 0) && questionsArray[i].unit != "mm") {
                     if (quartersSelected == true) {
                         validSelection = true;
+                        console.log("..................Quarters True")
                     }
-                }else if (((questionsArray[i].value * 8) % 1 === 0) && questionsArray[i].unit != "mm") {
-                    if (eightsSelected == true) {
+                }
+                if ((questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0) {
+                    if (eightsSelected == true && questionsArray[i].unit != "mm") {
                         validSelection = true;
+                        console.log(".................Eighths True")
                     }
-                }else if (((questionsArray[i].value * 16) % 1 === 0) && questionsArray[i].unit != "mm") {
+                }
+                if (((questionsArray[i].value * 16) % 1 === 0 || (questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0)) {
 
-                    if (sixteenthsSelected == true) {
+                    if (sixteenthsSelected == true && questionsArray[i].unit != "mm") {
                         validSelection = true;
+                        console.log(".................Sixteenths True")
                     }
-                }else if (((questionsArray[i].value * 32) % 1 === 0) && questionsArray[i].unit != "mm") {
-                    if (thirtySecondsSelected == true) {
+                }
+                if ((questionsArray[i].value * 16) % 1 === 0 || (questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0 || (questionsArray[i].value * 32) % 1 === 0) {
+                    if (thirtySecondsSelected == true && questionsArray[i].unit != "mm") {
                         validSelection = true;
+                        console.log(".................ThirtySeconds True")
                     }
-                }else if (questionsArray[i].unit == "mm") {
+                }
+                if (questionsArray[i].unit == "mm") {
+                    console.log("..................unity == mm")
                     if (millemetersSelected == true) {
                         validSelection = true;
+                        console.log("..................MM True")
                     }
                 }
                 if (validSelection == true) {
@@ -480,6 +512,7 @@ var Game = Game || (function (createjs) {
                     var questionDisplay = new createjs.Text(questionsArray[questionIndex].text, "22px Arial bold", "yellow");
                     questionDisplay.x = 10;
                     questionDisplay.y = 250
+                    questionDisplay.value = questionsArray[questionIndex].value;
                 }
             }
 
@@ -521,7 +554,7 @@ var Game = Game || (function (createjs) {
                 }
             } else {
                 strikes += 1;
-              
+
                 displayXXX_YourWrong();
 
             }
@@ -548,7 +581,7 @@ var Game = Game || (function (createjs) {
                         if (questionIndex <= questionsArray.length) {
                             //got the question wrong display correct answer and message and continue button.
                             highLightTheCorrectAnswer(answerValue);
-                           
+
                         } else {
                             showPage(GameOverScreen())
                         }
@@ -585,8 +618,8 @@ var Game = Game || (function (createjs) {
 
             var spriteSheet = createSpriteSheet();
             var closeBtn = new createjs.Sprite(spriteSheet, "original");
-            closeBtn.x = directionsPanel.x+85;
-            closeBtn.y = directionsPanel.y+130;
+            closeBtn.x = directionsPanel.x + 85;
+            closeBtn.y = directionsPanel.y + 130;
             feedbackContainer.addChild(closeBtn);
 
             var closebtnText = new createjs.Text("Close", "24px Arial bold", "yellow");
@@ -682,7 +715,10 @@ var Game = Game || (function (createjs) {
         }
         var clickedAnswerNowWait = false;
         var allTheDivisions = [];
-        function createRuler(lengthInInches) {
+        function createRuler(lengthInInches, start) {
+            if (!start) {
+                start = 0;
+            }
             var ruler = new createjs.Container();
 
             var pixelsPerDivision = settings.ruler.pixelsPerDivision;
@@ -690,6 +726,7 @@ var Game = Game || (function (createjs) {
             var totalDivisions = settings.ruler.divisionsPerInch * (lengthInInches);
 
             var cmPerInch = 2.54;
+            var mmPerInch = cmPerInch * 10;
 
             var rectangle = new createjs.Shape();
             var rulerHeight = 200;
@@ -702,12 +739,18 @@ var Game = Game || (function (createjs) {
 
             var division, divisionHeight, numberText;
 
+            var end = start + totalDivisions;
+
+            var startDivision = start * settings.ruler.divisionsPerInch;
+
+            
+                
 
             //Paint Standard Ruler
-            for (var i = 0; i < totalDivisions; ++i) {
+            for (var i = 0; i <= totalDivisions; ++i) {
 
                 divisionContainer = new createjs.Container();
-                divisionContainer.value = i * (1 / settings.ruler.divisionsPerInch);
+                divisionContainer.value = i * (1 / settings.ruler.divisionsPerInch) + start;
                 divisionContainer.unit = "in";
                 backgroundOfDivision = new createjs.Shape();
 
@@ -715,12 +758,12 @@ var Game = Game || (function (createjs) {
                 division.x = i * pixelsPerDivision
                 division.graphics.setStrokeStyle(0.5).beginStroke("black");
 
-                if (i % 32 == 0) {
+                if ((i + startDivision) % 32 == 0) {
                     // make big line
                     divisionHeight = 70;
 
-                    if (i > 0) {
-                        var numberText = new createjs.Text((i / 32).toString(), "32px Arial", "black");
+                    if ((i + startDivision) > 0) {
+                        var numberText = new createjs.Text(((i + startDivision) / 32).toString(), "32px Arial", "black");
 
                         numberText.x = division.x;
                         numberText.y = divisionHeight + 200;
@@ -730,15 +773,15 @@ var Game = Game || (function (createjs) {
                     }
 
                 }
-                else if (i % 8 == 0) {
+                else if ((i + startDivision) % 8 == 0) {
                     // make 1/4 inch line
                     divisionHeight = 60;
                 }
-                else if (i % 4 == 0) {
+                else if ((i + startDivision) % 4 == 0) {
                     // make 1/8 inch line
                     divisionHeight = 45;
                 }
-                else if (i % 2 == 0) {
+                else if ((i + startDivision) % 2 == 0) {
                     // make 1/16 inch line
                     divisionHeight = 30;
                 }
@@ -781,29 +824,36 @@ var Game = Game || (function (createjs) {
 
 
             //set up metric ruler
-            var mmPixelsPerDivision = (pixelsPerDivision * settings.ruler.divisionsPerInch) / 25.4
+            var mmPixelsPerDivision = (pixelsPerDivision * settings.ruler.divisionsPerInch) / mmPerInch;
             var mmLengthInches = 0;
             var mmInches = 0.0254;
+            var mmStartDivision = startDivision * mmPerInch;
+            var mmStart = start * mmPerInch;
+            var howManyMillimeters = lengthInInches * mmPerInch;
 
             //Paint Metric Ruler
 
-            for (var m = 0; m < 160; ++m) {
+            var firstMmDrawn = Math.ceil(start * mmPerInch);
+            var mmOffset = firstMmDrawn - (start * mmPerInch);
+            
+
+            for (var m = 0; m <= howManyMillimeters; ++m) {
                 // for (var m = 0; mmLengthInches <= lengthInInches; ++m) {
                 mmDivision = new createjs.Shape();
                 divisionContainer = new createjs.Container();
-                divisionContainer.value = m * (10 / settings.ruler.divisionsPerCentimenter);
+                divisionContainer.value = m * (10 / settings.ruler.divisionsPerCentimenter) + firstMmDrawn;
                 divisionContainer.unit = "mm";
                 divisionContainer.y = rulerHeight;
-                divisionContainer.x = m * mmPixelsPerDivision;
+                divisionContainer.x = ( (m + mmOffset) * mmPixelsPerDivision);
 
                 mmDivision.graphics.setStrokeStyle(0.5).beginStroke("Black");
 
-                if (m % 10 == 0) {
+                if ((m + firstMmDrawn) % 10 == 0) {
                     //make big line
                     divisionHeight = 45;
 
                     if (m > 0) {
-                        var mmNumberText = new createjs.Text((m).toString(), "32px Arial", "black");
+                        var mmNumberText = new createjs.Text((m + firstMmDrawn).toString(), "32px Arial", "black");
                         mmNumberText.textAlign = "center";
                         mmNumberText.y = -divisionHeight + 170;
 
@@ -831,8 +881,7 @@ var Game = Game || (function (createjs) {
                 divisionContainer.addChild(backgroundOfDivision);
 
                 mmDivision.graphics.drawRect(0, 200, 0, -divisionHeight).endStroke();
-
-                divisionContainer.x = m * mmPixelsPerDivision
+                
                 divisionContainer.y = 200;
 
                 divisionContainer.divisionHeight = -divisionHeight;
@@ -1034,15 +1083,17 @@ var Game = Game || (function (createjs) {
                 btnClick();
             });
             playbtn.addEventListener("click", function () {
-               GetTotalQuestionCount();
-                
+                GetTotalQuestionCount();
+
                 btnClick();
                 questionIndex = 0;
-
                 strikes = 0;
                 level = 1;
                 timer = 10;
                 score = 0;
+                incorrectCount = 0;
+                correctCount = 0;
+
 
                 if (quartersSelected == true || eightsSelected == true || sixteenthsSelected == true || thirtySecondsSelected == true || millemetersSelected == true) {
                     showPage(createGamePage());
@@ -1066,10 +1117,17 @@ var Game = Game || (function (createjs) {
             thirtySecondsSelected = false;
             millemetersSelected = false;
             highScoreGameType = false;
+            questionsCount = 0;
         }
         function GameOverScreen() {
-            resetSelections()
 
+            if (isLmsConnected) {
+                ScormHelper.cmi.successStatus(ScormHelper.successStatus.passed);
+                ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.completed);
+            }
+
+
+            resetSelections();
             var page = new createjs.Container();
 
             var backgroundImage = new createjs.Bitmap(queue.getResult("backgroundImage"));
@@ -1087,9 +1145,14 @@ var Game = Game || (function (createjs) {
             var directionsPanel = DirectionsPanel("large");
             directionsPanel.x = -30;
             directionsPanel.y = 60;
-
             page.addChild(directionsPanel);
-            var directionsPanelText = new createjs.Text("Way to go! \n\nYour Score was: " + score + "\n\nTry again or Share you score and challange \na friend.", "18px Arial bold", "White");
+
+            var directionsPanelText
+            if (highScoreGameType == true) {
+                directionsPanelText = new createjs.Text("Way to go! \n\nYour Score was: " + score + "\n\nTry again or Share you score and challange \na friend.", "18px Arial bold", "White");
+            } else {
+                directionsPanelText = new createjs.Text("Way to go! \n\nYou answered  \n\nCorrect: " + correctCount + " \n\nIncorrect: " + incorrectCount, "18px Arial bold", "White");
+            }
             directionsPanelText.x = directionsPanel.x + 80;
             directionsPanelText.y = directionsPanel.y + 80;
 
