@@ -80,6 +80,7 @@
     <Content Include="images\background.jpg" />
     <Content Include="images\btnClick.mp3" />
     <Content Include="images\button.png" />
+    <Content Include="images\buttonGreen.png" />
     <Content Include="images\Correct.mp3" />
     <Content Include="images\FBShareIcon.png" />
     <Content Include="images\FBShareIconSmall.png" />
@@ -90,6 +91,8 @@
     <Content Include="images\panelBG_400x300.png" />
     <Content Include="images\SelectedButton.png" />
     <Content Include="images\buttonblue.png" />
+    <Content Include="images\SelectedButton_green.png" />
+    <Content Include="images\spritesheetGreen.png" />
     <Content Include="images\spritesheetnomargin.png" />
     <Content Include="images\Twitter.png" />
     <Content Include="images\wrong.wav" />

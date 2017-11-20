@@ -46,6 +46,11 @@ var Game = Game || (function (createjs) {
             { id: "backgroundImage", src: assetsPath + "background.jpg" },
             { id: "button", src: assetsPath + "button.png" },
             { id: "selectedButton", src: assetsPath + "SelectedButton.png" },
+
+            { id: "buttonGreen", src: assetsPath + "buttonGreen.png" },
+            { id: "selectedButtonGreen", src: assetsPath + "SelectedButton_green.png" },
+            { id: "ButtonSpriteGreen", src: assetsPath + "spritesheetGreen.png" },
+
             { id: "dirPanel", src: assetsPath + "PanelBG.png" },
             { id: "smallpanel", src: assetsPath + "panelBG_400x300.png" },
             { id: "ButtonSprite", src: assetsPath + "spritesheetnomargin.png" },
@@ -153,7 +158,7 @@ var Game = Game || (function (createjs) {
         }
         function createTitle() {
             var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
-            titleImage.x = 5;
+            titleImage.x = 25;
             titleImage.y = 5;
 
             stage.addChild(titleImage);
@@ -221,11 +226,19 @@ var Game = Game || (function (createjs) {
             directionsPanel.y = 60;
 
             page.addChild(directionsPanel);
+            var topText = new createjs.Text("Welcome to Measurement Madness.", "18px Arial bold", "white")
+            var directionsPanelText = new createjs.Text("\n\nThis game tests how quickly you can find measurements on a ruler. \n\nBegin by selecting your unit(s).Then, get ready to race through the questions. \n\nSelecting the High Score button keeps your score and your time.The amount of time per round decreases every round.So keep your wits about you and don’t let time run out! \n\nChallenge your friends, family, and classmates on Twitter and Facebook to beat your score. \n\nSelect your units to begin.", "15px Arial bold", "White");
 
-            var directionsPanelText = new createjs.Text("Welcome to Measurement Madness. \n\nThis game will test your speed on finding measurements on a ruler. \n\nSelect the unit(s) that you want to test your knowledge with. \n\nHigh Score: \nSelecting this will keep your score and be timed. Each level the amount of time given will decrease. Challange friends on Twitter and Facebook to beat your score.", "15px Arial bold", "White");
+            // var directionsPanelText = new createjs.Text("Welcome to Measurement Madness. \n\nThis game will test your speed on finding measurements on a ruler. \n\nSelect the unit(s) that you want to test your knowledge with. \n\nHigh Score: \nSelecting this will keep your score and be timed. Each level the amount of time given will decrease. Challange friends on Twitter and Facebook to beat your score.", "15px Arial bold", "White");
+            topText.x = directionsPanel.x + 80;
+            topText.y = directionsPanel.y + 80;
+            topText.lineWidth = 300;
+            page.addChild(topText);
             directionsPanelText.x = directionsPanel.x + 80;
-            directionsPanelText.y = directionsPanel.y + 80;
+            directionsPanelText.y = directionsPanel.y + 100;
             directionsPanelText.lineWidth = 300;
+
+
             page.addChild(directionsPanelText);
 
             var btnContainer = new createjs.Container();
@@ -265,7 +278,7 @@ var Game = Game || (function (createjs) {
 
 
             var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
-            titleImage.x = 5;
+            titleImage.x = 25;
             titleImage.y = 5;
 
             page.addChild(titleImage);
@@ -331,9 +344,21 @@ var Game = Game || (function (createjs) {
             if (questionDisplay != null) {
                 page.addChild(questionDisplay);
             }
+            var end = 0;
+            var start = 0;
+            var rulerLength = 4.00;
+            start = GetStartlength();//number of 32s returns 
 
-            var start =0;
-            var rulerLength = 6.25;
+
+
+            end = start + (4*32);
+            if (end > (6*32)) {
+                end = 6
+                start = 2
+            } else {
+                start = start/32
+            }
+
             var ruler = createRuler(rulerLength, start);
 
             var rulerWidthPixels = rulerLength * settings.ruler.pixelsPerDivision * settings.ruler.divisionsPerInch;
@@ -411,6 +436,42 @@ var Game = Game || (function (createjs) {
 
 
         }
+
+        function GetStartlength() {
+            var start, end = 0;
+            var measuremment = questionsArray[questionIndex].value;
+            var questionType = questionsArray[questionIndex].unit;
+
+            if (questionType == "mm") {
+                //Convert this to the nearest 32 measurement's floor value'
+                //make this value the measurement variable
+
+                var cmPerInch = 2.54;
+                var mmPerInch = cmPerInch * 10;
+            }
+
+            start = 6 * 32 * Math.random();
+            start = Math.round(start);
+
+            var m32s = measuremment * 32;
+
+            if (m32s <= 32) {
+                start = 0;
+            }
+
+            if (start > m32s) {
+                start = m32s - 9;
+            }
+
+
+            // var measuremment = questionsArray[questionIndex].value;
+
+
+
+
+            return start;
+        }
+
         function GetTotalQuestionCount() {
             var validSelection;
             for (var i = 0; questionsArray.length > i; i++) {
@@ -419,33 +480,33 @@ var Game = Game || (function (createjs) {
                 if (((questionsArray[i].value * 4) % 1 === 0) && questionsArray[i].unit != "mm") {
                     if (quartersSelected == true) {
                         validSelection = true;
-                        console.log("..................Quarters True")
+                        //console.log("..................Quarters True")
                     }
                 }
                 if ((questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0) {
                     if (eightsSelected == true && questionsArray[i].unit != "mm") {
                         validSelection = true;
-                        console.log(".................Eighths True")
+                        // console.log(".................Eighths True")
                     }
                 }
                 if (((questionsArray[i].value * 16) % 1 === 0 || (questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0)) {
 
                     if (sixteenthsSelected == true && questionsArray[i].unit != "mm") {
                         validSelection = true;
-                        console.log(".................Sixteenths True")
+                        // console.log(".................Sixteenths True")
                     }
                 }
                 if ((questionsArray[i].value * 16) % 1 === 0 || (questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0 || (questionsArray[i].value * 32) % 1 === 0) {
                     if (thirtySecondsSelected == true && questionsArray[i].unit != "mm") {
                         validSelection = true;
-                        console.log(".................ThirtySeconds True")
+                        /// console.log(".................ThirtySeconds True")
                     }
                 }
                 if (questionsArray[i].unit == "mm") {
-                    console.log("..................unity == mm")
+                    // console.log("..................unity == mm")
                     if (millemetersSelected == true) {
                         validSelection = true;
-                        console.log("..................MM True")
+                        // console.log("..................MM True")
                     }
                 }
                 if (validSelection == true) {
@@ -509,7 +570,7 @@ var Game = Game || (function (createjs) {
             if (iGotAValidQuestion == true) {
                 if (questionIndex <= questionsArray.length) {
 
-                    var questionDisplay = new createjs.Text(questionsArray[questionIndex].text, "22px Arial bold", "yellow");
+                    var questionDisplay = new createjs.Text(questionsArray[questionIndex].text, "26px Arial bold", "Yellow");
                     questionDisplay.x = 10;
                     questionDisplay.y = 250
                     questionDisplay.value = questionsArray[questionIndex].value;
@@ -575,7 +636,13 @@ var Game = Game || (function (createjs) {
                 setTimeout(function () {
                     stage.removeChild(redXXX)
                     if (strikes >= 3) {
-                        showPage(GameOverScreen());
+                        highLightTheCorrectAnswer(answerValue);
+                        setTimeout(function () {
+
+                            showPage(GameOverScreen());
+
+                        }, 3000);
+
                     } else {
                         // incrementQuestion();
                         if (questionIndex <= questionsArray.length) {
@@ -743,8 +810,8 @@ var Game = Game || (function (createjs) {
 
             var startDivision = start * settings.ruler.divisionsPerInch;
 
-            
-                
+
+
 
             //Paint Standard Ruler
             for (var i = 0; i <= totalDivisions; ++i) {
@@ -835,7 +902,7 @@ var Game = Game || (function (createjs) {
 
             var firstMmDrawn = Math.ceil(start * mmPerInch);
             var mmOffset = firstMmDrawn - (start * mmPerInch);
-            
+
 
             for (var m = 0; m <= howManyMillimeters; ++m) {
                 // for (var m = 0; mmLengthInches <= lengthInInches; ++m) {
@@ -844,7 +911,7 @@ var Game = Game || (function (createjs) {
                 divisionContainer.value = m * (10 / settings.ruler.divisionsPerCentimenter) + firstMmDrawn;
                 divisionContainer.unit = "mm";
                 divisionContainer.y = rulerHeight;
-                divisionContainer.x = ( (m + mmOffset) * mmPixelsPerDivision);
+                divisionContainer.x = ((m + mmOffset) * mmPixelsPerDivision);
 
                 mmDivision.graphics.setStrokeStyle(0.5).beginStroke("Black");
 
@@ -853,7 +920,7 @@ var Game = Game || (function (createjs) {
                     divisionHeight = 45;
 
                     if (m > 0) {
-                        var mmNumberText = new createjs.Text((m + firstMmDrawn).toString(), "32px Arial", "black");
+                        var mmNumberText = new createjs.Text(((m + firstMmDrawn) / 10).toString(), "32px Arial", "black");
                         mmNumberText.textAlign = "center";
                         mmNumberText.y = -divisionHeight + 170;
 
@@ -881,7 +948,7 @@ var Game = Game || (function (createjs) {
                 divisionContainer.addChild(backgroundOfDivision);
 
                 mmDivision.graphics.drawRect(0, 200, 0, -divisionHeight).endStroke();
-                
+
                 divisionContainer.y = 200;
 
                 divisionContainer.divisionHeight = -divisionHeight;
@@ -937,10 +1004,22 @@ var Game = Game || (function (createjs) {
         }
 
         function createAllButtons() {
+
             var buttonContainer = new createjs.Container();
 
             var ButtonX = 500;
             var ButtonY = 100;
+
+            var Greendata = {
+                images: [queue.getResult("ButtonSpriteGreen")],
+                frames: { width: 200, height: 90, count: 2 },
+                animations: {
+                    original: 0,
+                    selected: 1
+                }
+            };
+            var spriteSheetGreen = new createjs.SpriteSheet(Greendata);
+
 
             var data = {
                 images: [queue.getResult("ButtonSprite")],
@@ -950,7 +1029,6 @@ var Game = Game || (function (createjs) {
                     selected: 1
                 }
             };
-
             var spriteSheet = new createjs.SpriteSheet(data);
 
             var selectQuarters = new createjs.Sprite(spriteSheet, "original");
@@ -1009,7 +1087,7 @@ var Game = Game || (function (createjs) {
             highScoreText.y = highScore.y + 30;
             buttonContainer.addChild(highScoreText);
 
-            var playbtn = new createjs.Sprite(spriteSheet, "original");
+            var playbtn = new createjs.Sprite(spriteSheetGreen, "original");
             playbtn.x = ButtonX + 100;
             playbtn.y = ButtonY + 420;
             buttonContainer.addChild(playbtn);
@@ -1017,6 +1095,9 @@ var Game = Game || (function (createjs) {
             playbtnText.x = playbtn.x + 80;
             playbtnText.y = playbtn.y + 30;
             buttonContainer.addChild(playbtnText);
+
+
+
 
             selectQuarters.addEventListener("click", function () {
                 if (selectQuarters.currentFrame == 0) {
