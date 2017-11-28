@@ -351,12 +351,12 @@ var Game = Game || (function (createjs) {
 
 
 
-            end = start + (4*32);
-            if (end > (6*32)) {
+            end = start + (4 * 32);
+            if (end > (6 * 32)) {
                 end = 6
                 start = 2
             } else {
-                start = start/32
+                start = start / 32
             }
 
             var ruler = createRuler(rulerLength, start);
@@ -443,25 +443,28 @@ var Game = Game || (function (createjs) {
             var questionType = questionsArray[questionIndex].unit;
 
             if (questionType == "mm") {
-                //Convert this to the nearest 32 measurement's floor value'
-                //make this value the measurement variable
-
                 var cmPerInch = 2.54;
                 var mmPerInch = cmPerInch * 10;
-            }
+                //Convert this to the nearest 32 measurement's floor value'
+                //make this value the measurement variable
+                measuremment = Math.round((measuremment / 25.4))
+               
+            } 
+                start = 6 * 32 * Math.random();
+                start = Math.round(start);
 
-            start = 6 * 32 * Math.random();
-            start = Math.round(start);
+                var m32s = measuremment * 32;
 
-            var m32s = measuremment * 32;
+                if (m32s <= 32) {
+                    start = 0;
+                }
 
-            if (m32s <= 32) {
-                start = 0;
-            }
+                if (start > m32s) {
+                    start = m32s - 9;
+                }
+            
 
-            if (start > m32s) {
-                start = m32s - 9;
-            }
+
 
 
             // var measuremment = questionsArray[questionIndex].value;
@@ -1014,8 +1017,8 @@ var Game = Game || (function (createjs) {
                 images: [queue.getResult("ButtonSpriteGreen")],
                 frames: { width: 200, height: 90, count: 2 },
                 animations: {
-                    original: 0,
-                    selected: 1
+                    original: 1,
+                    selected: 0
                 }
             };
             var spriteSheetGreen = new createjs.SpriteSheet(Greendata);
