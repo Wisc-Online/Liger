@@ -188,8 +188,8 @@ var Game = Game || (function (createjs) {
             var levelsTextImagedisplay = new createjs.Bitmap(queue.getResult("LevelsTextImage"));
             levelsTextImagedisplay.scaleX = levelsTextImagedisplay.scaleY = .20;
             //levelsTextImagedisplay.scaleY = .25;
-            levelsTextImagedisplay.x = 50
-            levelsTextImagedisplay.y = 150
+            levelsTextImagedisplay.x = -5
+            levelsTextImagedisplay.y = 80
             levelsDisplayPanel.addChild(levelsTextImagedisplay);
 
             var spriteSheet = createSpriteSheet();
@@ -714,72 +714,64 @@ var Game = Game || (function (createjs) {
             correctCount += 1;
             if (score > 0 && score < 100) {
                 level = 1;
-                timer = 10;
+                timer = 14;
             } else if (score > 100 && score < 200) {
                 level = 2;
-                timer = 9.5;
+                timer = 13;
             } else if (score > 200 && score < 400) {
                 level = 3;
-                timer = 9;
+                timer = 12;
             } else if (score > 400 && score < 600) {
                 level = 4;
-                timer = 8.5;
-            } else if (score > 600 && score < 900) {
+                timer = 11;
+            } else if (score > 600 && score < 800) {
                 level = 5;
-                timer = 8.0;
-            } else if (score > 900 && score < 1500) {
+                timer = 10;
+            } else if (score > 800 && score < 1000) {
                 level = 6;
-                timer = 7.5;
-            } else if (score > 1500 && score < 3000) {
+                timer = 9;
+            } else if (score > 1000 && score < 2000) {
                 level = 7;
-                timer = 7.0;
-            } else if (score > 3000 && score < 4500) {
+                timer = 8;
+            } else if (score > 2000 && score < 4000) {
                 level = 8;
-                timer = 6.5;
-            } else if (score > 4500 && score < 6000) {
+                timer = 7;
+            } else if (score > 4000 ) {
                 level = 9;
-                timer = 6.0;
-            } else if (score > 6000 && score < 9000) {
-                level = 10;
-                timer = 5.5;
-            } else if (score > 9001) {
-                level = 10;
-                timer = 5.0;
-            }
+                timer = 6;
+            } 
 
 
 
             switch (level) {
                 case 1:
-                    score += 10;
-                    break;
-                case 2:
                     score += 20;
                     break;
-                case 3:
+                case 2:
                     score += 30;
                     break;
-                case 4:
+                case 3:
                     score += 40;
                     break;
-                case 5:
+                case 4:
                     score += 50;
                     break;
-                case 6:
+                case 5:
                     score += 60;
                     break;
-                case 7:
+                case 6:
                     score += 70;
                     break;
-                case 8:
+                case 7:
                     score += 80;
                     break;
-                case 9:
+                case 8:
                     score += 90;
                     break;
-                case 10:
+                case 9:
                     score += 100;
                     break;
+           
             }
 
         }
