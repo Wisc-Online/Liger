@@ -355,6 +355,8 @@ var Game = Game || (function (createjs) {
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
                 titleText.alpha = 0;
+                titleText.outline = 1;
+
 
                 createjs.Tween.get(titleText)
                     .wait(600)
@@ -365,7 +367,19 @@ var Game = Game || (function (createjs) {
                 var mobileText = new createjs.Text("Are you on mobile?", "28px Alegreya", "#000000");
                 mobileText.x = panelBG.x + 150;
                 mobileText.y = panelBG.y + 170;
+
                 //add a tween
+                var shadow = new createjs.Shadow("#000", 0, 0, 3);
+                mobileText.shadow = shadow;
+
+                createjs.Tween.get(shadow, { loop: true })
+                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1000, createjs.Ease.quadInOut)
+                .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1000, createjs.Ease.quadInOut);
+
+
+
+
+
                 createjs.Tween.get(mobileText)
                     .to({ x: 150, y: 250}, 2000 , createjs.Ease.ElasticOut)
                     
@@ -455,6 +469,15 @@ var Game = Game || (function (createjs) {
                 titleText = new createjs.Text(gameData.Title, " Bold 35px Alegreya", "#000000");
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
+
+                var shadow = new createjs.Shadow("#000", 0, 0, 3);
+                titleText.shadow = shadow;
+
+                createjs.Tween.get(shadow, { loop: true })
+                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1000, createjs.Ease.quadInOut)
+                .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1000, createjs.Ease.quadInOut);
+
+
 
                 var descriptionText = new createjs.Text(gameData.Description, "20px Alegreya", "#000000");
                 descriptionText.x = panelBG.x + 130;
@@ -813,23 +836,33 @@ var Game = Game || (function (createjs) {
                 function handleClick(event) {
                     
                    // isGamePaused = true;
-                    pauseTheGame();
+                    
+
+                    if (isQuestionDisplayed == false)
+                    {
+
+                        pauseTheGame();
+
+                        if (isMobile) {
+                            // self.stage.removeChild(squidAquarium);
+
+                            //if question displayed, question displayed false;
+                            //or if question is displayed..the click don't work
+
+                            self.stage.addChild(instructionsScreen);
+                            instructionsScreen.addChild(backText)
+                            instructionsScreen.alpha = 0.70;
+
+                        } else {
+                            //    self.stage.removeChild(squidAquarium);
+
+                            self.stage.addChild(instructionsScreen);
+                            instructionsScreen.addChild(backText)
+
+                            instructionsScreen.alpha = 0.70;
+                        }
 
 
-
-                    if (isMobile) {
-                        // self.stage.removeChild(squidAquarium);
-
-                        self.stage.addChild(instructionsScreen);
-                        instructionsScreen.addChild(backText)
-                        instructionsScreen.alpha = 0.45;
-                    } else {
-                        // self.stage.removeChild(squidAquarium);
-
-                        self.stage.addChild(instructionsScreen);
-                        instructionsScreen.addChild(backText)
-
-                        instructionsScreen.alpha = 0.45;
                     }
                 };
 
