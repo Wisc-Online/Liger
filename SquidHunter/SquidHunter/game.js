@@ -537,6 +537,8 @@ var Game = Game || (function (createjs) {
                     isMobile = true;
                     playBass();
                     StartInteraction();
+
+                    
                 };
 
 
@@ -589,7 +591,7 @@ var Game = Game || (function (createjs) {
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
 
-                var directionsText = new createjs.Text("Directions: Use 'Spacebar' key to fire harpoons.\nUse 'Directional Arrow' keys to move along the ship." +
+                var directionsText = new createjs.Text("Directions: Use 'Spacebar' or 'Left Mouse Click' to fire harpoons.\nUse 'Directional Arrow' keys to move along the ship." +
                    "\nEliminate squids for treasure." +
                     "\nIf the pirate gets hit by the ink, you will need to answer a question." +
                     "\nIf the pirate runs out of harpoons, you will need to answer a question.", "20px Alegreya", "#000000");
@@ -641,6 +643,8 @@ var Game = Game || (function (createjs) {
                     instructionsScreen.removeChild(playButton);
                     self.stage.removeChild(instructionsScreen);
                     StartInteraction();
+
+                   
                 };
 
                 //    if (isGamePaused == true) {
@@ -767,6 +771,14 @@ var Game = Game || (function (createjs) {
 
 
                 }
+                else {
+                    setTimeout(function () {
+                        this.addEventListener("click", function () {
+                            makeHarpoonOrAskQuestion();
+                        });
+                    }, 0)
+
+                }
 
                 //create a container for the squids to live in (separate from the stage)
                 squidAquarium = new createjs.Container();
@@ -808,9 +820,12 @@ var Game = Game || (function (createjs) {
                 this.document.onkeydown = keyPressed;
                 var KEYCODE_LEFT = keyCodes.LEFT_ARROW,
                     KEYCODE_RIGHT = keyCodes.RIGHT_ARROW,
+                    //keycode fire 
                     KEYCODE_FIRE = keyCodes.SPACEBAR, // spacebar
                     KEYCODE_UP = keyCodes.UP_ARROW,
                     KEYCODE_DOWN = keyCodes.DOWN_ARROW;
+
+           
 
                 //load squid/s
                 for (var i = 0; i < maxEnemyCount; ++i) {
@@ -836,7 +851,6 @@ var Game = Game || (function (createjs) {
                 function handleClick(event) {
                     
                    // isGamePaused = true;
-                    
 
                     if (isQuestionDisplayed == false)
                     {
@@ -1174,6 +1188,7 @@ var Game = Game || (function (createjs) {
                             makeHarpoonOrAskQuestion();
                             event.preventDefault();
                             break;
+
                     }
                 }
 
@@ -1195,6 +1210,17 @@ var Game = Game || (function (createjs) {
 
                     stage.addChild(harpoonProgressBar);
                 }
+
+
+                
+
+      
+       
+
+
+
+
+
             }
 
             function isEnemyAtY(y) {
@@ -1370,6 +1396,7 @@ var Game = Game || (function (createjs) {
                 var questionsText = new createjs.Text("Question:" + " " + question.Text, "Bold 20px Alegreya", "#000000");
                 questionsText.x = questionPanel.x + 100;
                 questionsText.y = questionPanel.y + 70;
+                questionsText.lineWidth = 500;
 
                 questionContainer.name = "question";
                 questionContainer.addChild(questionPanel, questionsText)
@@ -1390,6 +1417,8 @@ var Game = Game || (function (createjs) {
                 for (var j = 0; j < gameData.Questions[0].Answers.length; j++) {
                     console.log("answers")
                     var answersText = new createjs.Text("Answer:" + " " + question.Answers[j].Text, "16px Alegreya", "#000000");
+                    answersText.lineWidth = 200;
+
                     var answerContainer = new createjs.Container();
 
                     var answerHolder = new createjs.Bitmap(queue.getResult("answerHolder"))
