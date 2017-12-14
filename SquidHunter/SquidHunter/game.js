@@ -185,7 +185,7 @@ var Game = Game || (function (createjs) {
 
                 var gameBackground = new createjs.Container();
                 //define background as a sprite
-                var speed = .02;
+                var speed = .006;
                 var data = {
                     images: [queue.getResult("background")],
                     frames: {
@@ -372,13 +372,12 @@ var Game = Game || (function (createjs) {
                 //add a tween
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
                 mobileText.shadow = shadow;
+                titleText.shadow = shadow;
+              
 
                 createjs.Tween.get(shadow, { loop: true })
-                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1000, createjs.Ease.quadInOut)
-                .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1000, createjs.Ease.quadInOut);
-
-
-
+                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
 
                 createjs.Tween.get(mobileText)
@@ -400,7 +399,8 @@ var Game = Game || (function (createjs) {
                 noButton.y = panelBG.y + 300;
                 noButton.scaleX = noButton.scaleY = 0.20;
 
-
+                yesButton.shadow = shadow;
+                noButton.shadow = shadow;
 
                 //load logo as a sprite
                 logoContainer = new createjs.Container();
@@ -433,7 +433,7 @@ var Game = Game || (function (createjs) {
                 logoContainer.x = panelBG.x + 480;
                 logoContainer.y = panelBG.y + 300;
                 logoContainer.scaleX = logoContainer.scaleY = 0.35;
-
+                logoContainer.shadow = shadow;
 
                 instructionsScreen.addChild(panelBG, titleText, mobileText, yesButton, noButton, logoContainer);
 
@@ -521,6 +521,14 @@ var Game = Game || (function (createjs) {
                 logoContainer.y = panelBG.y + 305;
                 logoContainer.scaleX = logoContainer.scaleY = 0.30;
 
+                //add a tween
+                var shadow = new createjs.Shadow("#000", 0, 0, 3);
+
+                createjs.Tween.get(shadow, { loop: true })
+                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+
+
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logoContainer);
 
 
@@ -559,6 +567,9 @@ var Game = Game || (function (createjs) {
                     
                 };
 
+                titleText.shadow = shadow;
+                playButton.shadow = shadow;
+                logoContainer.shadow = shadow;
 
                     
             //    if (isGamePaused == true) {
@@ -674,6 +685,17 @@ var Game = Game || (function (createjs) {
                     scaleY: .4
                 }, 2000);
 
+
+                //add a tween
+                var shadow = new createjs.Shadow("#000", 0, 0, 3);
+
+                createjs.Tween.get(shadow, { loop: true })
+                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+
+                playButton.shadow = shadow;
+                logoContainer.shadow = shadow;
+                titleText.shadow = shadow;
 
                 playButton.addEventListener("click", handleClickPlay);
 
@@ -1427,13 +1449,14 @@ var Game = Game || (function (createjs) {
                 questionPanel = new createjs.Bitmap(queue.getResult("questionPanel"));
                 isQuestionDisplayed = true;
                 questionPanel.scaleX = 2.2;
-                questionPanel.scaleY = 2;
+                questionPanel.scaleY = 2.2;
                 questionPanel.x = 10;
-                questionPanel.y = 32;
+                questionPanel.y = 12;
 
-                var questionsText = new createjs.Text("Question:" + " " + question.Text, "Bold 20px Alegreya", "#000000");
+                var questionsText = new createjs.Text("Question:" + " " + question.Text, "Bold 18px Alegreya", "#000000");
                 questionsText.x = questionPanel.x + 100;
                 questionsText.y = questionPanel.y + 70;
+
                 questionsText.lineWidth = 600;
 
                 questionContainer.name = "question";
@@ -1461,7 +1484,7 @@ var Game = Game || (function (createjs) {
 
                     var answerHolder = new createjs.Bitmap(queue.getResult("answerHolder"))
                     answersText.x = questionPanel.x + 100;
-                    answersText.y = questionPanel.y + 80 + stackIncrement;
+                    answersText.y = questionPanel.y + 130 + stackIncrement;
 
                     answerHolder.scaleX = 2.2;
                     answerHolder.scaleY = 1.3;
@@ -1526,7 +1549,7 @@ var Game = Game || (function (createjs) {
                 feedbackPanel.scaleX = .35;
                 feedbackPanel.scaleY = .20;
                 feedbackPanel.x = 50;
-                feedbackPanel.y = 420;
+                feedbackPanel.y = 440;
 
                 //add harpoon count
                 //this will be the correct answer
@@ -1539,7 +1562,7 @@ var Game = Game || (function (createjs) {
 
                     for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++) {
                         if (gameData.Questions[currentQuestionNumber].Answers[i].IsCorrect == true) {
-                            feedbackText = new createjs.Text("I'm sorry, the correct answer is, " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
+                            feedbackText = new createjs.Text("I'm sorry, the correct answer is: " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
                             harpoonCount = 5;
                         }
                     }
