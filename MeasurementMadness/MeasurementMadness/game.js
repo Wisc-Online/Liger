@@ -205,7 +205,7 @@ var Game = Game || (function (createjs) {
 
             var closeText = new createjs.Text("Close", "18px Arial bold", "yellow");
             closeText.x = closeBtn.x + 100;
-            closeText.y = closeBtn.y + 25;
+            closeText.y = closeBtn.y + 35;
             closeText.textAlign = "center";
             levelsDisplayPanel.addChild(closeText);
 
@@ -764,7 +764,6 @@ var Game = Game || (function (createjs) {
                 level = 9;
                 timer = 6;
             }
-
 
 
             switch (level) {
