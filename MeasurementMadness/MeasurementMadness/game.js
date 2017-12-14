@@ -162,7 +162,7 @@ var Game = Game || (function (createjs) {
         }
         function createTitle() {
             var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
-            titleImage.x = 25;
+            titleImage.x = 13;
             titleImage.y = 5;
 
             stage.addChild(titleImage);
@@ -282,7 +282,7 @@ var Game = Game || (function (createjs) {
 
 
             var titleImage = new createjs.Bitmap(queue.getResult("TitleImage"));
-            titleImage.x = 25;
+            titleImage.x = 13;
             titleImage.y = 5;
 
             page.addChild(titleImage);
