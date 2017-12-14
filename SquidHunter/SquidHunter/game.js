@@ -85,7 +85,8 @@ var Game = Game || (function (createjs) {
                 { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
                 { id: "redx", src: assetsPath + "continuechk.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
-                { id: "logo", src: assetsPath + "logo.png" },
+                { id: "logosprite", src: assetsPath + "logosprite.png" },
+                { id: "logo", src: assetsPath + "Logo.png" },
                 { id: "treasure", src: assetsPath + "treasure.png" },
                 { id: "piratesprite", src: assetsPath + "newpirate.png" },
                 { id: "splat", src: assetsPath + "splat.png" },
@@ -400,24 +401,41 @@ var Game = Game || (function (createjs) {
                 noButton.scaleX = noButton.scaleY = 0.20;
 
 
-                //create a tween for the logo
-                var logo = new createjs.Bitmap(queue.getResult("logo"))
-                logo.alpha = 0;
 
-                createjs.Tween.get(logo).wait(500).to({ alpha: 1, visible: true }, 2000).call(handleComplete);
+                //load logo as a sprite
+                logoContainer = new createjs.Container();
+                var speed = .02;
+                var data = {
+                    images: [queue.getResult("logosprite")],
+                    frames: {
+                        width: 700,
+                        height: 500,
+                        frames: 2,
+                    },
+                    animations: {
+                        tentacles: [0, 1, "tentacles", speed],
+                    },
+                };
+
+                var spriteSheet = new createjs.SpriteSheet(data);
+                var sprite = new createjs.Sprite(spriteSheet, "tentacles");
+                logoContainer.addChild(sprite);
+
+                //create a tween for the logo
+                logoContainer.alpha = 0;
+                createjs.Tween.get(logoContainer).wait(500).to({ alpha: 1, visible: true }, 2000).call(handleComplete);
                 function handleComplete() {
                 
                 }
 
-                logo.regX = 200;
-                logo.regY = 60;
-                logo.x = panelBG.x + 480;
-                logo.y = panelBG.y + 300;
-                logo.scaleX = logo.scaleY = 0.35;
+                logoContainer.regX = 200;
+                logoContainer.regY = 60;
+                logoContainer.x = panelBG.x + 480;
+                logoContainer.y = panelBG.y + 300;
+                logoContainer.scaleX = logoContainer.scaleY = 0.35;
 
 
-
-                instructionsScreen.addChild(panelBG, titleText, mobileText, yesButton, noButton, logo);
+                instructionsScreen.addChild(panelBG, titleText, mobileText, yesButton, noButton, logoContainer);
 
                 //create a tween and pass in the yes/no buttons
                 createjs.Tween.get(yesButton, {
@@ -490,20 +508,20 @@ var Game = Game || (function (createjs) {
                 directionsText.x = panelBG.x + 130;
                 directionsText.y = panelBG.y + 155;
 
-                var logo = new createjs.Bitmap(queue.getResult("logo"))
-                logo.alpha = 0;
-                createjs.Tween.get(logo).wait(500).to({ alpha: 1, visible: true }, 1000).call(handleComplete);
+                //var logo = new createjs.Bitmap(queue.getResult("logo"))
+                logoContainer.alpha = 0;
+                createjs.Tween.get(logoContainer).wait(500).to({ alpha: 1, visible: true }, 1000).call(handleComplete);
                 function handleComplete() {
-                    //self.stage.addChild(logo)
+                  //  self.stage.addChild(logoContainer)
                 }
 
-                logo.regX = 180;
-                logo.regY = 60;
-                logo.x = panelBG.x + 220;
-                logo.y = panelBG.y + 305;
-                logo.scaleX = logo.scaleY = 0.30;
+                logoContainer.regX = 180;
+                logoContainer.regY = 60;
+                logoContainer.x = panelBG.x + 220;
+                logoContainer.y = panelBG.y + 305;
+                logoContainer.scaleX = logoContainer.scaleY = 0.30;
 
-                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo);
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logoContainer);
 
 
                 var soundContain = createSoundContainer();
@@ -537,6 +555,8 @@ var Game = Game || (function (createjs) {
                     isMobile = true;
                     playBass();
                     StartInteraction();
+
+                    
                 };
 
 
@@ -589,28 +609,48 @@ var Game = Game || (function (createjs) {
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
 
-                var directionsText = new createjs.Text("Directions: Use 'Spacebar' key to fire harpoons.\nUse 'Directional Arrow' keys to move along the ship." +
+                var directionsText = new createjs.Text("Directions: Use 'Spacebar' or 'Left Mouse Click' to fire harpoons.\nUse 'Directional Arrow' keys to move along the ship." +
                    "\nEliminate squids for treasure." +
                     "\nIf the pirate gets hit by the ink, you will need to answer a question." +
                     "\nIf the pirate runs out of harpoons, you will need to answer a question.", "20px Alegreya", "#000000");
                 directionsText.x = panelBG.x + 130;
                 directionsText.y = panelBG.y + 155;
 
-                var logo = new createjs.Bitmap(queue.getResult("logo"))
-                logo.alpha = 0;
 
-                createjs.Tween.get(logo).wait(500).to({ alpha: 1, visible: true }, 1000).call(handleComplete);
+                //load logo as a sprite
+                logoContainer = new createjs.Container();
+                var speed = .02;
+                var data = {
+                    images: [queue.getResult("logosprite")],
+                    frames: {
+                        width: 700,
+                        height: 500,
+                        frames: 2,
+                    },
+                    animations: {
+                        tentacles: [0, 1, "tentacles", speed],
+                    },
+                };
+
+                var spriteSheet = new createjs.SpriteSheet(data);
+                var sprite = new createjs.Sprite(spriteSheet, "tentacles");
+                logoContainer.addChild(sprite);
+
+                //create a tween for the logo
+                logoContainer.alpha = 0;
+                createjs.Tween.get(logoContainer).wait(500).to({ alpha: 1, visible: true }, 2000).call(handleComplete);
                 function handleComplete() {
+
                 }
 
-                logo.regX = 180;
-                logo.regY = 60;
-                logo.x = panelBG.x + 220;
-                logo.y = panelBG.y + 300;
-                logo.scaleX = logo.scaleY = 0.30;
+                logoContainer.regX = 180;
+                logoContainer.regY = 60;
+                logoContainer.x = panelBG.x + 220;
+                logoContainer.y = panelBG.y + 300;
+                logoContainer.scaleX = logoContainer.scaleY = 0.30;
 
 
-                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logo);
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logoContainer);
 
                 var soundContain = createSoundContainer();
                 self.stage.addChild(instructionsScreen);
@@ -641,6 +681,8 @@ var Game = Game || (function (createjs) {
                     instructionsScreen.removeChild(playButton);
                     self.stage.removeChild(instructionsScreen);
                     StartInteraction();
+
+                   
                 };
 
                 //    if (isGamePaused == true) {
@@ -767,6 +809,14 @@ var Game = Game || (function (createjs) {
 
 
                 }
+                else {
+                    setTimeout(function () {
+                        this.addEventListener("click", function () {
+                            makeHarpoonOrAskQuestion();
+                        });
+                    }, 0)
+
+                }
 
                 //create a container for the squids to live in (separate from the stage)
                 squidAquarium = new createjs.Container();
@@ -808,9 +858,12 @@ var Game = Game || (function (createjs) {
                 this.document.onkeydown = keyPressed;
                 var KEYCODE_LEFT = keyCodes.LEFT_ARROW,
                     KEYCODE_RIGHT = keyCodes.RIGHT_ARROW,
+                    //keycode fire 
                     KEYCODE_FIRE = keyCodes.SPACEBAR, // spacebar
                     KEYCODE_UP = keyCodes.UP_ARROW,
                     KEYCODE_DOWN = keyCodes.DOWN_ARROW;
+
+           
 
                 //load squid/s
                 for (var i = 0; i < maxEnemyCount; ++i) {
@@ -836,7 +889,6 @@ var Game = Game || (function (createjs) {
                 function handleClick(event) {
                     
                    // isGamePaused = true;
-                    
 
                     if (isQuestionDisplayed == false)
                     {
@@ -1174,6 +1226,7 @@ var Game = Game || (function (createjs) {
                             makeHarpoonOrAskQuestion();
                             event.preventDefault();
                             break;
+
                     }
                 }
 
@@ -1195,6 +1248,17 @@ var Game = Game || (function (createjs) {
 
                     stage.addChild(harpoonProgressBar);
                 }
+
+
+                
+
+      
+       
+
+
+
+
+
             }
 
             function isEnemyAtY(y) {
@@ -1370,6 +1434,7 @@ var Game = Game || (function (createjs) {
                 var questionsText = new createjs.Text("Question:" + " " + question.Text, "Bold 20px Alegreya", "#000000");
                 questionsText.x = questionPanel.x + 100;
                 questionsText.y = questionPanel.y + 70;
+                questionsText.lineWidth = 600;
 
                 questionContainer.name = "question";
                 questionContainer.addChild(questionPanel, questionsText)
@@ -1390,13 +1455,18 @@ var Game = Game || (function (createjs) {
                 for (var j = 0; j < gameData.Questions[0].Answers.length; j++) {
                     console.log("answers")
                     var answersText = new createjs.Text("Answer:" + " " + question.Answers[j].Text, "16px Alegreya", "#000000");
+                    answersText.lineWidth = 600;
+
                     var answerContainer = new createjs.Container();
 
                     var answerHolder = new createjs.Bitmap(queue.getResult("answerHolder"))
                     answersText.x = questionPanel.x + 100;
                     answersText.y = questionPanel.y + 80 + stackIncrement;
 
-                    answerHolder.scaleX = 1.3;
+                    answerHolder.scaleX = 2.2;
+                    answerHolder.scaleY = 1.3;
+
+
                     answerHolder.x = answersText.x - 15;
                     answerHolder.y = answersText.y - 10;
 
@@ -1406,7 +1476,7 @@ var Game = Game || (function (createjs) {
 
                     answerContainer.addChild(answerHolder, answersText);
 
-                    stackIncrement += 60;
+                    stackIncrement += 50;
 
                     answerContainer.addEventListener("pressup", function (evt) {
                         //   alert(evt.target);
@@ -1414,7 +1484,6 @@ var Game = Game || (function (createjs) {
                         if (isFeedbackDisplayed != true) {
                             if (evt.currentTarget.IsCorrect) {
                                 // alert("correct")
-                                //this is where code goes to change color of holder container and display the answer
 
                                 var chime = createjs.Sound.createInstance("chime", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
 
@@ -1526,24 +1595,52 @@ var Game = Game || (function (createjs) {
                 gameover.play();
 
                 gameoverContainer = new createjs.Container();
-                gameoverPanel = new createjs.Bitmap(queue.getResult("logo"));
+            //    gameoverPanel = new createjs.Bitmap(queue.getResult("logo"));
                 isQuestionDisplayed = true;
-                gameoverPanel.x = 50;
-                gameoverPanel.y = 32;
+                gameoverContainer.x = 50;
+                gameoverContainer.y = 32;
+
+
+                //load logo as a sprite
+                logoContainer = new createjs.Container();
+                var speed = .02;
+                var data = {
+                    images: [queue.getResult("logosprite")],
+                    frames: {
+                        width: 700,
+                        height: 500,
+                        frames: 2,
+                    },
+                    animations: {
+                        tentacles: [0, 1, "tentacles", speed],
+                    },
+                };
+
+                var spriteSheet = new createjs.SpriteSheet(data);
+                var sprite = new createjs.Sprite(spriteSheet, "tentacles");
+                logoContainer.addChild(sprite);
+
+                //create a tween for the logo
+                logoContainer.alpha = 0;
+                createjs.Tween.get(logoContainer).wait(500).to({ alpha: 1, visible: true }, 2000).call(handleComplete);
+                function handleComplete() {
+
+                }
+
 
 
                 var gameoverText = new createjs.Text("Game Over!", "Bold 55px Alegreya", "#FFFFFF");
-                gameoverText.x = gameoverPanel.x + 300;
-                gameoverText.y = gameoverPanel.y + 390;
+                gameoverText.x = logoContainer.x + 300;
+                gameoverText.y = logoContainer.y + 390;
 
                 var replayText = new createjs.Text("Replay", "Bold 23px Alegreya", "#FFFFFF");
-                replayText.x = gameoverPanel.x + 265;
-                replayText.y = gameoverPanel.y + 145;
+                replayText.x = logoContainer.x + 265;
+                replayText.y = logoContainer.y + 145;
                 replayText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0, 0, 100, 40, 50));
 
                 var exitText = new createjs.Text("Exit", "Bold 23px Alegreya", "#FFFFFF");
-                exitText.x = gameoverPanel.x + 385;
-                exitText.y = gameoverPanel.y + 145;
+                exitText.x = logoContainer.x + 385;
+                exitText.y = logoContainer.y + 145;
                 exitText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0, 0, 100, 50, 50));
 
                 exitText.addEventListener("click", handleClicks);
@@ -1576,7 +1673,7 @@ var Game = Game || (function (createjs) {
                     replay();
                 }
 
-                gameoverContainer.addChild(gameoverPanel, gameoverText, replayText, exitText);
+                gameoverContainer.addChild(logoContainer, gameoverText, replayText, exitText);
 
                 self.stage.addChild(gameoverContainer);
                 self.stage.removeChild(squidAquarium, playerContainer, inkContainer);
