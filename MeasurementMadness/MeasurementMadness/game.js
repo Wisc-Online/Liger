@@ -5,6 +5,7 @@ var Game = Game || (function (createjs) {
     function Game(canvas, gameData) {
         // this is our constructor to the game
         var self = this;
+      //  self.Webview.mediaPlaybackRequiresUserAction = NO;
 
         var stage = new createjs.Stage(canvas);
         stage.enableMouseOver(10);
@@ -34,15 +35,18 @@ var Game = Game || (function (createjs) {
         }
 
         var assetsPath = gameData.assetsPath || "";
-
-        assetsPath += "images/"
+        var audioPath = gameData.assetsPath || "";
+        var audioExtension = ".mp3";
+        
+        assetsPath += "images/";
+        audioPath += "Audio/";
 
         var assets = [
             { id: "RedXXX", src: assetsPath + "X.png" },
-            { id: "Buzzer", src: assetsPath + "WrongBuzzer.mp3" },
-            { id: "NiceWrong", src: assetsPath + "nicewrong.mp3" },
-            { id: "Correct", src: assetsPath + "Correct.mp3" },
-            { id: "btnClick", src: assetsPath + "btnClick.mp3" },
+            { id: "Buzzer", src: audioPath + "WrongBuzzer" + audioExtension },
+            { id: "NiceWrong", src: audioPath + "nicewrong" + audioExtension },
+            { id: "Correct", src: audioPath + "Correct" + audioExtension },
+            { id: "btnClick", src: audioPath + "btnClick" + audioExtension  },
             { id: "backgroundImage", src: assetsPath + "background.jpg" },
             { id: "button", src: assetsPath + "button.png" },
             { id: "selectedButton", src: assetsPath + "SelectedButton.png" },
@@ -346,7 +350,7 @@ var Game = Game || (function (createjs) {
             }
             var end = 0;
             var start = 0;
-            var rulerLength = 4.00;
+            var rulerLength = 4.25;
             start = GetStartlength();//number of 32s returns 
 
 
@@ -357,6 +361,7 @@ var Game = Game || (function (createjs) {
                 start = 2
             } else {
                 start = start / 32
+
             }
 
             var ruler = createRuler(rulerLength, start);
@@ -403,7 +408,7 @@ var Game = Game || (function (createjs) {
             if (questionIndex > 0) {
                 if (highScoreGameType == true) {
 
-                    timerTween.setPosition(0, 0);
+                    //  timerTween.setPosition(0, 0);
                     timerTween = createjs.Tween.get(fill, { override: true })
                         .to({ scaleX: 1 }, timer * 1000, createjs.Ease.quadIn).wait(.01).call(function () {
                             clickedAnswerNowWait = true;
@@ -429,6 +434,7 @@ var Game = Game || (function (createjs) {
             }
             if (questionDisplay == null || questionDisplay == undefined) {
                 page = GameOverScreen();
+                timerTween.setPaused(true);
                 return page;
             } else {
                 return page;
@@ -438,6 +444,8 @@ var Game = Game || (function (createjs) {
         }
 
         function GetStartlength() {
+            var Question32Value = 32 * questionsArray[questionIndex].value;
+
             var start, end = 0;
             var measuremment = questionsArray[questionIndex].value;
             var questionType = questionsArray[questionIndex].unit;
@@ -448,29 +456,29 @@ var Game = Game || (function (createjs) {
                 //Convert this to the nearest 32 measurement's floor value'
                 //make this value the measurement variable
                 measuremment = Math.round((measuremment / 25.4))
-               
-            } 
-                start = 6 * 32 * Math.random();
-                start = Math.round(start);
+            }
+            start = 6 * 32 * Math.random();
+            start = Math.round(start);
 
-                var m32s = measuremment * 32;
+            var m32s = measuremment * 32;
 
-                if (m32s <= 32) {
-                    start = 0;
-                }
+            if (m32s <= 65) {
+                start = 0;
+            }
 
-                if (start > m32s) {
-                    start = m32s - 9;
-                }
-            
+            if (start > m32s) {
+                start = m32s - 9;
+            }
 
+            var numberof32s = start + (4 * 32);
 
-
-
-            // var measuremment = questionsArray[questionIndex].value;
-
-
-
+            if (numberof32s < m32s) {
+                //Our start and 4 inches is less then our measurement so 
+                //we need to set our start to something else
+                start = m32s - (4 * 32);
+            }
+        
+         
 
             return start;
         }
@@ -479,7 +487,7 @@ var Game = Game || (function (createjs) {
             var validSelection;
             for (var i = 0; questionsArray.length > i; i++) {
                 validSelection = false;
-                console.log(questionsArray[i].text)
+                // console.log(questionsArray[i].text)
                 if (((questionsArray[i].value * 4) % 1 === 0) && questionsArray[i].unit != "mm") {
                     if (quartersSelected == true) {
                         validSelection = true;
@@ -609,18 +617,17 @@ var Game = Game || (function (createjs) {
                 givePoints();
                 createjs.Sound.play("Correct");
                 incrementQuestion();
-                //Logic Problem use questionsCount?
-                if (questionIndex <= questionsArray.length) {
+
+                if (questionsCount >= 1) {
                     clickedAnswerNowWait = false;
                     showPage(createGamePage());
                 } else {
                     showPage(GameOverScreen())
                 }
+
             } else {
                 strikes += 1;
-
                 displayXXX_YourWrong();
-
             }
         }
         function displayXXX_YourWrong(answerValue) {
@@ -639,7 +646,7 @@ var Game = Game || (function (createjs) {
                 setTimeout(function () {
                     stage.removeChild(redXXX)
                     if (strikes >= 3) {
-                        highLightTheCorrectAnswer(answerValue);
+                        highLightTheCorrectAnswer(answerValue, strikes);
                         setTimeout(function () {
 
                             showPage(GameOverScreen());
@@ -650,7 +657,7 @@ var Game = Game || (function (createjs) {
                         // incrementQuestion();
                         if (questionIndex <= questionsArray.length) {
                             //got the question wrong display correct answer and message and continue button.
-                            highLightTheCorrectAnswer(answerValue);
+                            highLightTheCorrectAnswer(answerValue, strikes);
 
                         } else {
                             showPage(GameOverScreen())
@@ -658,51 +665,68 @@ var Game = Game || (function (createjs) {
                     }
                 }, 1500);
             } else {
-                highLightTheCorrectAnswer(answerValue);
+                highLightTheCorrectAnswer(answerValue, strikes);
                 createjs.Sound.play("NiceWrong");
             }
         }
-        function highLightTheCorrectAnswer(answerValue) {
+        function highLightTheCorrectAnswer(answerValue, strikes) {
             allTheDivisions.forEach(function (element) {
                 if (element.value == questionsArray[questionIndex].value) {
-                    console.log(element.value);
+                    // console.log(element.value);
                     createjs.Tween.get(element.backgroundOfDivision).to({ alpha: 1.0 }, 500);
                 }
             });
-            ShowContinueButton()
+
+            ShowContinueButton(strikes)
             incrementQuestion();
+
+
         }
-        function ShowContinueButton() {
+        function ShowContinueButton(strikes) {
             var feedbackContainer = new createjs.Container();
             var directionsPanel = DirectionsPanel();
             directionsPanel.x = 190;
             directionsPanel.y = 50;
             feedbackContainer.addChild(directionsPanel);
+            if (strikes >= 3) {
+                var DirectionsPanelText = new createjs.Text("Sorry thats incorrect. The correct answer is highlighted for you. \n\nYou recieved your third strike your out.", "18px Arial bold", "yellow");
 
-            var DirectionsPanelText = new createjs.Text("Sorry thats incorrect. The correct answer is highlighted for you. \n\nSelect close to read the next measurement.", "18px Arial bold", "yellow");
+            } else {
+                var DirectionsPanelText = new createjs.Text("Sorry thats incorrect. The correct answer is highlighted for you. \n\nSelect close to read the next measurement.", "18px Arial bold", "yellow");
+            }
             DirectionsPanelText.x = directionsPanel.x + 35;
             DirectionsPanelText.y = directionsPanel.y + 30;
             // DirectionsPanelText.textAlign = "center";
             DirectionsPanelText.lineWidth = 320;
             feedbackContainer.addChild(DirectionsPanelText);
 
-            var spriteSheet = createSpriteSheet();
-            var closeBtn = new createjs.Sprite(spriteSheet, "original");
-            closeBtn.x = directionsPanel.x + 85;
-            closeBtn.y = directionsPanel.y + 130;
-            feedbackContainer.addChild(closeBtn);
+            if (strikes < 3) {
+                var spriteSheet = createSpriteSheet();
+                var closeBtn = new createjs.Sprite(spriteSheet, "original");
+                closeBtn.x = directionsPanel.x + 85;
+                closeBtn.y = directionsPanel.y + 130;
+                feedbackContainer.addChild(closeBtn);
 
-            var closebtnText = new createjs.Text("Close", "24px Arial bold", "yellow");
-            closebtnText.x = closeBtn.x + 100;
-            closebtnText.y = closeBtn.y + 30;
-            closebtnText.textAlign = "center";
-            feedbackContainer.addChild(closebtnText);
+                var closebtnText = new createjs.Text("Close", "24px Arial bold", "yellow");
+                closebtnText.x = closeBtn.x + 100;
+                closebtnText.y = closeBtn.y + 30;
+                closebtnText.textAlign = "center";
+                feedbackContainer.addChild(closebtnText);
+
+            }
+
 
             stage.addChild(feedbackContainer);
 
             feedbackContainer.addEventListener("click", function () {
                 stage.removeChild(feedbackContainer);
-                showPage(createGamePage());
+
+                if (questionsCount >= 1) {
+                    showPage(createGamePage());
+                } else {
+                    showPage(GameOverScreen())
+                }
+
             });
         }
         function incrementQuestion() {
@@ -736,10 +760,10 @@ var Game = Game || (function (createjs) {
             } else if (score > 2000 && score < 4000) {
                 level = 8;
                 timer = 7;
-            } else if (score > 4000 ) {
+            } else if (score > 4000) {
                 level = 9;
                 timer = 6;
-            } 
+            }
 
 
 
@@ -771,7 +795,7 @@ var Game = Game || (function (createjs) {
                 case 9:
                     score += 100;
                     break;
-           
+
             }
 
         }
@@ -1203,7 +1227,7 @@ var Game = Game || (function (createjs) {
             }
 
 
-            resetSelections();
+
             var page = new createjs.Container();
 
             var backgroundImage = new createjs.Bitmap(queue.getResult("backgroundImage"));
@@ -1225,7 +1249,7 @@ var Game = Game || (function (createjs) {
 
             var directionsPanelText
             if (highScoreGameType == true) {
-                directionsPanelText = new createjs.Text("Way to go! \n\nYour Score was: " + score + "\n\nTry again or Share you score and challange \na friend.", "18px Arial bold", "White");
+                directionsPanelText = new createjs.Text("Way to go! \n\nYour Score was: " + score + "\n\nTry again or Share your score and \nchallange a friend.", "18px Arial bold", "White");
             } else {
                 directionsPanelText = new createjs.Text("Way to go! \n\nYou answered  \n\nCorrect: " + correctCount + " \n\nIncorrect: " + incorrectCount, "18px Arial bold", "White");
             }
@@ -1271,15 +1295,15 @@ var Game = Game || (function (createjs) {
                 window.open("https://twitter.com/intent/tweet?text=Can you beat my high score of " + score + " in Measurement Madness. https://www.wisc-online.com/learn/technical/core-skills/ccs13617/measurement-madness");
 
             });
-
+            // resetSelections();
 
 
             var buttonContainer = createAllButtons();
 
             page.addChild(buttonContainer);
-
+            resetSelections();
             return page;
-
+           
         }
 
 
