@@ -1211,6 +1211,7 @@ var Game = Game || (function (createjs) {
             return buttonContainer;
         }
         function resetSelections() {
+            submitedScore = false;
             quartersSelected = false;
             eightsSelected = false;
             sixteenthsSelected = false;
@@ -1219,6 +1220,34 @@ var Game = Game || (function (createjs) {
             highScoreGameType = false;
             questionsCount = 0;
         }
+        var submitedScore = false;
+        function submitScore(score) {
+            if (submitedScore)
+                return false;
+            submitedScore = true;
+            var url = gameData.leaderboardUrl;
+
+            if (url) {
+
+                var data = {
+                    gameId: gameData.id,
+                    score: score
+                };
+
+                $.ajax(url, {
+                    type: "POST",
+                    data: data,
+                    success: function (x) {
+
+                    },
+                    error: function (x, y, z) {
+
+
+                    }
+                });
+
+            }
+        }
         function GameOverScreen() {
 
             if (isLmsConnected) {
@@ -1226,7 +1255,7 @@ var Game = Game || (function (createjs) {
                 ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.completed);
             }
 
-
+            submitScore(score);
 
             var page = new createjs.Container();
 

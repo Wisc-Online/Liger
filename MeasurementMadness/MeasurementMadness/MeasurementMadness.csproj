@@ -100,7 +100,6 @@
     <Content Include="images\spritesheetGreen.png" />
     <Content Include="images\spritesheetnomargin.png" />
     <Content Include="images\Twitter.png" />
-    <Content Include="Audio\wrong.wav" />
     <Content Include="Audio\WrongBuzzer.mp3" />
     <Content Include="images\X.png" />
     <Content Include="index.html" />
