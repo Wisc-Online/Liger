@@ -1097,9 +1097,10 @@ var Game = Game || (function (createjs) {
 
                     self.stage.addChild(inkContainer);
 
-                    createjs.Tween.get(inkContainer).to({ scaleX: 1, scaleY: 1 }, 250);
-
-                    
+                    createjs.Tween.get(inkContainer, { loop: false })
+                        
+                        .to({ scaleX: 1, scaleY: 1 }, 250 );
+                        
 
                     //when ink hits the player
                     var theTween = createjs.Tween.get(inkContainer, {
