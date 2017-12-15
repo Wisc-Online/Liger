@@ -373,11 +373,11 @@ var Game = Game || (function (createjs) {
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
                 mobileText.shadow = shadow;
                 titleText.shadow = shadow;
-              
+                panelBG.shadow = shadow;
 
-                createjs.Tween.get(shadow, { loop: true })
+                createjs.Tween.get(shadow, { loop: false })
                 .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
-                .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+               // .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
 
                 createjs.Tween.get(mobileText)
@@ -524,9 +524,9 @@ var Game = Game || (function (createjs) {
                 //add a tween
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
 
-                createjs.Tween.get(shadow, { loop: true })
+                createjs.Tween.get(shadow, { loop: false })
                 .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
-                .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+              //  .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
 
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logoContainer);
@@ -570,6 +570,7 @@ var Game = Game || (function (createjs) {
                 titleText.shadow = shadow;
                 playButton.shadow = shadow;
                 logoContainer.shadow = shadow;
+                panelBG.shadow = shadow;
 
                     
             //    if (isGamePaused == true) {
@@ -689,13 +690,14 @@ var Game = Game || (function (createjs) {
                 //add a tween
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
 
-                createjs.Tween.get(shadow, { loop: true })
+                createjs.Tween.get(shadow, { loop: false })
                 .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
-                .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+          //      .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
                 playButton.shadow = shadow;
                 logoContainer.shadow = shadow;
                 titleText.shadow = shadow;
+                panelBG.shadow = shadow;
 
                 playButton.addEventListener("click", handleClickPlay);
 
@@ -875,6 +877,16 @@ var Game = Game || (function (createjs) {
                 playerContainer.y = 420;
                 playerContainer.scaleX = .25;
                 playerContainer.scaleY = .25;
+
+
+                var shadow = new createjs.Shadow("#000", 0, 0, 3);
+
+                createjs.Tween.get(shadow)
+                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                playerContainer.shadow = shadow;
+
+
+
 
                 //load controls
                 this.document.onkeydown = keyPressed;
@@ -1336,6 +1348,13 @@ var Game = Game || (function (createjs) {
                 enemyContainer.regY = 125 / 2;
 
 
+                var shadow = new createjs.Shadow("#000", 0, 0, 3);
+
+                createjs.Tween.get(shadow)
+                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                squidContainer.shadow = shadow;
+              
+
                 //enemy functionality
                 do {
                     enemyContainer.y = 50 + (Math.floor((Math.random() * maxEnemyCount)) * 50) + enemyContainer.regY;
@@ -1456,8 +1475,17 @@ var Game = Game || (function (createjs) {
                 var questionsText = new createjs.Text("Question:" + " " + question.Text, "Bold 18px Alegreya", "#000000");
                 questionsText.x = questionPanel.x + 100;
                 questionsText.y = questionPanel.y + 70;
+               questionsText.lineWidth = 600;
 
-                questionsText.lineWidth = 600;
+               var shadow = new createjs.Shadow("#000", 0, 0, 3);
+
+               createjs.Tween.get(shadow, { loop: true })
+               .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+               .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+
+               questionPanel.shadow = shadow;
+
+
 
                 questionContainer.name = "question";
                 questionContainer.addChild(questionPanel, questionsText)
@@ -1533,6 +1561,7 @@ var Game = Game || (function (createjs) {
                         //check if this is the last question, if yes- exit the game
                         // if not increment current question index
 
+
                     });
                     answerContainersParent.addChild(answerContainer);
                 }
@@ -1544,7 +1573,10 @@ var Game = Game || (function (createjs) {
 
                 var feedbackContainer = new createjs.Container();
                 var feedbackPanel = new createjs.Bitmap(queue.getResult("feedbackPanel"));
-                var feedbackText;
+                var answerFeedbackText;
+                var feedback;
+
+
                 isFeedbackDisplayed = true;
                 feedbackPanel.scaleX = .35;
                 feedbackPanel.scaleY = .20;
@@ -1554,25 +1586,41 @@ var Game = Game || (function (createjs) {
                 //add harpoon count
                 //this will be the correct answer
                 // <0 otherwise <1
+                
+                //feedback area
+          
+                var shadow = new createjs.Shadow("#000", 0, 0, 3);
+
+                createjs.Tween.get(shadow, { loop: true })
+                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+
+                feedbackPanel.shadow = shadow;
+
 
                 if (answerstatus == "correct") {
-                    feedbackText = new createjs.Text("Correct. Click the green arrow to continue", "20px Alegreya", "#000000");
+                    answerFeedbackText = new createjs.Text("Correct. Click the green arrow to continue", "20px Alegreya", "#000000");
                     harpoonCount = 10;
+                    feedback = new createjs.Text(gameData.Questions[currentQuestionNumber].Feedback, "20px Alegreya", "#D2691E");
                 } else {
 
                     for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++) {
                         if (gameData.Questions[currentQuestionNumber].Answers[i].IsCorrect == true) {
-                            feedbackText = new createjs.Text("I'm sorry, the correct answer is: " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
+                            answerFeedbackText = new createjs.Text("I'm sorry, the correct answer is: " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Alegrea", '#000000')
                             harpoonCount = 5;
+                            feedback = new createjs.Text(gameData.Questions[currentQuestionNumber].Feedback, "20px Alegreya", "#D2691E");
+
                         }
                     }
-
-                    //  feedbackText = new createjs.Text("InCorrect:" + " " + gameData.Questions, "20px Alegreya", "#FFFFFF");
                 }
 
 
-                feedbackText.x = feedbackPanel.x + 90
-                feedbackText.y = feedbackPanel.y + 30
+                answerFeedbackText.x = feedbackPanel.x + 90;
+                answerFeedbackText.y = feedbackPanel.y + 30;
+
+                feedback.x = feedbackPanel.x + 90;
+                feedback.y = feedbackPanel.y + 80;
+
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
                 redx.x = feedbackPanel.x + 580;
@@ -1599,7 +1647,7 @@ var Game = Game || (function (createjs) {
 
                 }
 
-                feedbackContainer.addChild(feedbackPanel, feedbackText, redx)
+                feedbackContainer.addChild(feedbackPanel, answerFeedbackText, redx, feedback)
                 self.stage.addChild(feedbackContainer);
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
