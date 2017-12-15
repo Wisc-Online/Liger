@@ -66,6 +66,11 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Audio\btnClick.ogg" />
+    <Content Include="Audio\Correct.ogg" />
+    <Content Include="Audio\nicewrong.ogg" />
+    <Content Include="Audio\wrong.ogg" />
+    <Content Include="Audio\WrongBuzzer.ogg" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -78,15 +83,15 @@
     <Content Include="createjs.min.js" />
     <Content Include="game.js" />
     <Content Include="images\background.jpg" />
-    <Content Include="images\btnClick.mp3" />
+    <Content Include="Audio\btnClick.mp3" />
     <Content Include="images\button.png" />
     <Content Include="images\buttonGreen.png" />
-    <Content Include="images\Correct.mp3" />
+    <Content Include="Audio\Correct.mp3" />
     <Content Include="images\FBShareIcon.png" />
     <Content Include="images\FBShareIconSmall.png" />
     <Content Include="images\levelstext.png" />
     <Content Include="images\measurementMadnessTitle.png" />
-    <Content Include="images\nicewrong.mp3" />
+    <Content Include="Audio\nicewrong.mp3" />
     <Content Include="images\PanelBG.png" />
     <Content Include="images\panelBG_400x300.png" />
     <Content Include="images\SelectedButton.png" />
@@ -95,8 +100,7 @@
     <Content Include="images\spritesheetGreen.png" />
     <Content Include="images\spritesheetnomargin.png" />
     <Content Include="images\Twitter.png" />
-    <Content Include="images\wrong.wav" />
-    <Content Include="images\WrongBuzzer.mp3" />
+    <Content Include="Audio\WrongBuzzer.mp3" />
     <Content Include="images\X.png" />
     <Content Include="index.html" />
     <Content Include="style.css" />
