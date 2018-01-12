@@ -356,14 +356,14 @@ var Game = Game || (function (createjs) {
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
                 titleText.alpha = 0;
-                titleText.outline = 1;
+                titleText.outline = 1.5;
 
 
                 createjs.Tween.get(titleText)
                     .wait(600)
                     .to({ alpha: 1, visible: true }, 1000)
                     .to({ scaleX: 2, scaleY: 2 }, 2000, createjs.Ease.ElasticOut)
-                    .to({color:"red"}, 500)
+                    .to({color:"black"}, 500)
 
                 var mobileText = new createjs.Text("Are you on mobile?", "28px Alegreya", "#000000");
                 mobileText.x = panelBG.x + 150;
