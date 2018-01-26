@@ -1526,18 +1526,35 @@ var Game = Game || (function (createjs) {
                     answerHolder.on("mouseover", handleButtonHover);
                     answerHolder.on("mouseout", handleButtonHover);
 
+                    answerHolder.shadow = new createjs.Shadow("#000", 0, 0, 3);
+                    answerHolder.shadow.blur = 0;
+
+
                     //scales the current target on mouseover and mouse out with a tween 
                     function handleButtonHover(event) {
 
 
                         if (event.type == "mouseover") {
-                            createjs.Tween.get(event.currentTarget).to({ scaleX:  2.0 , scaleY:  1.2 }, 100)
+                      //      createjs.Tween.get(event.currentTarget).to({ scaleX: 2.0, scaleY: 1.2 }, 100)
+
+                            var theShadow = event.currentTarget.shadow;
+
+                            createjs.Tween.get(theShadow).to({ blur: 20 }, 100);
                         }
                         if (event.type == "mouseout") {
-                            createjs.Tween.get(event.currentTarget).to({ scaleX: 2.1, scaleY: 1.2 }, 100);
+                      //      createjs.Tween.get(event.currentTarget).to({ scaleX: 2.1, scaleY: 1.2 }, 100);
+
+                            var theShadow = event.currentTarget.shadow;
+
+                            createjs.Tween.get(theShadow).to({ blur: 0 }, 100);
                         }
                     }
-                    
+
+
+
+
+
+
 
                     answerContainer.name = "child";
                     answerContainer.IsCorrect = question.Answers[j].IsCorrect;
