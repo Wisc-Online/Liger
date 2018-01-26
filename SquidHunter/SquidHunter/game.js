@@ -352,7 +352,7 @@ var Game = Game || (function (createjs) {
                 panelBG.y = 50;
 
 
-                var titleText = new createjs.Text(gameData.Title, " Bold 35px Arial", "#000000");
+                var titleText = new createjs.Text(gameData.Title, " Bold 35px Comic Sans MS", "#000000");
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
                 titleText.alpha = 0;
@@ -365,7 +365,7 @@ var Game = Game || (function (createjs) {
                     .to({ scaleX: 2, scaleY: 2 }, 2000, createjs.Ease.ElasticOut)
                     .to({color:"black"}, 500)
 
-                var mobileText = new createjs.Text("Are you on mobile?", "28px Arial", "#000000");
+                var mobileText = new createjs.Text("Are you on mobile?", "28px Comic Sans MS", "#000000");
                 mobileText.x = panelBG.x + 150;
                 mobileText.y = panelBG.y + 170;
 
@@ -484,7 +484,7 @@ var Game = Game || (function (createjs) {
                 panelBG.x = 0;
                 panelBG.y = 50;
 
-                titleText = new createjs.Text(gameData.Title, " Bold 35px Arial", "#000000");
+                titleText = new createjs.Text(gameData.Title, " Bold 35px Comic Sans MS", "#000000");
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
 
@@ -497,14 +497,14 @@ var Game = Game || (function (createjs) {
 
 
 
-                var descriptionText = new createjs.Text(gameData.Description, "18px Arial", "#000000");
+                var descriptionText = new createjs.Text(gameData.Description, "18px Comic Sans MS", "#000000");
                 descriptionText.x = panelBG.x + 130;
                 descriptionText.y = panelBG.y + 125;
 
                 var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship." +
                    "\nHarpoons will fire every 2 seconds.\nEliminate squids for treasure." +
                     "\nIf the pirate gets hit by the ink, you will need to answer a question." +
-                    "\nIf the pirate runs out of harpoons, you will need to answer a question.", "16px Arial", "#000000");
+                    "\nIf the pirate runs out of harpoons, you will need to answer a question.", "16px Comic Sans MS", "#000000");
                 directionsText.x = panelBG.x + 130;
                 directionsText.y = panelBG.y + 155;
 
@@ -574,7 +574,7 @@ var Game = Game || (function (createjs) {
 
                     
             //    if (isGamePaused == true) {
-                    backText = new createjs.Text("Back", "Bold 23px Arial", "#000000");
+                backText = new createjs.Text("Back", "Bold 23px Comic Sans MS", "#000000");
                     backText.x = instructionsScreen.x + 450;
                     backText.y = instructionsScreen.y + 450;
                     backText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#FFF").drawRoundRect(0, 0, 100, 40, 50));
@@ -1636,7 +1636,7 @@ var Game = Game || (function (createjs) {
                 if (answerstatus == "correct") {
                     answerFeedbackText = new createjs.Text("Correct. Click the green arrow to continue", "20px Comic Sans MS", "#000000");
                     harpoonCount = 10;
-                    feedback = new createjs.Text(gameData.Questions[currentQuestionNumber].Feedback, "20px Comic Sans MS", "#D2691E");
+                    feedback = new createjs.Text(gameData.Questions[currentQuestionNumber].Feedback, "20px Comic Sans MS", "#5C4033");
                 } else {
 
                     for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++) {
