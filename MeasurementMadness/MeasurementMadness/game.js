@@ -617,8 +617,9 @@ var Game = Game || (function (createjs) {
                 givePoints();
                 createjs.Sound.play("Correct");
                 incrementQuestion();
-
-                if (questionsCount >= 1) {
+              
+               // if (questionsCount >= 1) {
+                if (questionIndex >= 1) {
                     clickedAnswerNowWait = false;
                     showPage(createGamePage());
                 } else {
@@ -720,8 +721,8 @@ var Game = Game || (function (createjs) {
 
             feedbackContainer.addEventListener("click", function () {
                 stage.removeChild(feedbackContainer);
-
-                if (questionsCount >= 1) {
+               // if (questionsCount >= 1) {
+                    if (questionIndex >= 1) {
                     showPage(createGamePage());
                 } else {
                     showPage(GameOverScreen())
@@ -880,14 +881,13 @@ var Game = Game || (function (createjs) {
                 backgroundOfDivision.graphics.drawRect(-pixelsPerDivision / 2, 200, pixelsPerDivision, divisionHeight).endStroke();
                 backgroundOfDivision.x = i * pixelsPerDivision;
 
-                division.graphics.drawRect(0, 200, 0, divisionHeight).endStroke();
+                division.graphics.drawRect(-0.5, 200, 1, divisionHeight).endStroke();
                 divisionContainer.divisionHeight = divisionHeight;
                 divisionContainer.division = division;
                 divisionContainer.backgroundOfDivision = backgroundOfDivision;
 
                 divisionContainer.addChild(backgroundOfDivision);
                 divisionContainer.addEventListener("rollover", function (e) {
-
                     createjs.Tween.get(e.currentTarget.backgroundOfDivision).to({ alpha: 1.0 }, 500);
                 });
                 divisionContainer.addEventListener("rollout", function (e) {
@@ -965,7 +965,7 @@ var Game = Game || (function (createjs) {
 
                 divisionContainer.addChild(backgroundOfDivision);
 
-                mmDivision.graphics.drawRect(0, 200, 0, -divisionHeight).endStroke();
+                mmDivision.graphics.drawRect(-0.5, 200, 1, -divisionHeight).endStroke();
 
                 divisionContainer.y = 200;
 
