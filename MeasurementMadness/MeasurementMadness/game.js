@@ -5,7 +5,7 @@ var Game = Game || (function (createjs) {
     function Game(canvas, gameData) {
         // this is our constructor to the game
         var self = this;
-      //  self.Webview.mediaPlaybackRequiresUserAction = NO;
+        //  self.Webview.mediaPlaybackRequiresUserAction = NO;
 
         var stage = new createjs.Stage(canvas);
         stage.enableMouseOver(10);
@@ -37,7 +37,7 @@ var Game = Game || (function (createjs) {
         var assetsPath = gameData.assetsPath || "";
         var audioPath = gameData.assetsPath || "";
         var audioExtension = ".mp3";
-        
+
         assetsPath += "images/";
         audioPath += "Audio/";
 
@@ -46,7 +46,7 @@ var Game = Game || (function (createjs) {
             { id: "Buzzer", src: audioPath + "WrongBuzzer" + audioExtension },
             { id: "NiceWrong", src: audioPath + "nicewrong" + audioExtension },
             { id: "Correct", src: audioPath + "Correct" + audioExtension },
-            { id: "btnClick", src: audioPath + "btnClick" + audioExtension  },
+            { id: "btnClick", src: audioPath + "btnClick" + audioExtension },
             { id: "backgroundImage", src: assetsPath + "background.jpg" },
             { id: "button", src: assetsPath + "button.png" },
             { id: "selectedButton", src: assetsPath + "SelectedButton.png" },
@@ -103,9 +103,67 @@ var Game = Game || (function (createjs) {
         var millemetersSelected = false;
         var highScoreGameType = false;
 
+        var questions32 = [];
+        var questions16 = [];
+        var questions8 = [];
+        var questions4 = [];
+        var questionsMM = [];
+        var selectedQuestionsArray = [];
 
         questionsArray = gameData.questions;
-        shuffle(questionsArray);
+
+        sortQuestionTypes(questionsArray);
+        function sortQuestionTypes(array) {
+            var currentIndex = array.length, temporaryValue, randomIndex;
+            while (0 !== currentIndex) {
+                currentIndex -= 1;
+                temporaryValue = array[currentIndex]
+
+                if (array[currentIndex].type == "32") {
+                    questions32.push(temporaryValue)
+                } else if (array[currentIndex].type == "16") {
+                    questions16.push(temporaryValue)
+                } else if (array[currentIndex].type == "8") {
+                    questions8.push(temporaryValue)
+                } else if (array[currentIndex].type == "4") {
+                    questions4.push(temporaryValue)
+                } else if (array[currentIndex].type == "mm") {
+                    questionsMM.push(temporaryValue)
+                }
+
+            }
+        }
+
+
+        selectRandomQuestions(questions4, questions8, questions16, questions32, questionsMM);
+
+        function selectRandomQuestions(quarters, eights, sixteenths, thirtyseconds, millemeters) {
+            quarters = shuffle(quarters);
+            eights = shuffle(eights);
+            sixteenths = shuffle(sixteenths);
+            thirtyseconds = shuffle(thirtyseconds);
+            millemeters = shuffle(millemeters);
+
+            for (var i = 0; i < 4; ++i) {
+                selectedQuestionsArray.push(quarters[i]);
+            }
+            for (var i = 0; i < 8; ++i) {
+                selectedQuestionsArray.push(eights[i]);
+            }
+            for (var i = 0; i < 16; ++i) {
+                selectedQuestionsArray.push(sixteenths[i]);
+            }
+            for (var i = 0; i < 32; ++i) {
+                selectedQuestionsArray.push(thirtyseconds[i]);
+            }
+            for (var i = 0; i < 32; ++i) {
+                selectedQuestionsArray.push(millemeters[i]);
+            }
+            selectedQuestionsArray = shuffle(selectedQuestionsArray);
+            questionsArray = selectedQuestionsArray;
+        }
+
+        //shuffle(questionsArray);
         function shuffle(array) {
             var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -231,9 +289,9 @@ var Game = Game || (function (createjs) {
 
             page.addChild(directionsPanel);
             var topText = new createjs.Text("Welcome to Measurement Madness.", "18px Arial bold", "white")
-            var directionsPanelText = new createjs.Text("\n\nThis game tests how quickly you can find measurements on a ruler. \n\nBegin by selecting your unit(s).Then, get ready to race through the questions. \n\nSelecting the High Score button keeps your score and your time.The amount of time per round decreases every round.So keep your wits about you and don’t let time run out! \n\nChallenge your friends, family, and classmates on Twitter and Facebook to beat your score. \n\nSelect your units to begin.", "15px Arial bold", "White");
+            // var directionsPanelText = new createjs.Text("\n\nThis game tests how quickly you can find measurements on a ruler. \n\nBegin by selecting your unit(s).Then, get ready to race through the questions. \n\nSelecting the High Score button keeps your score and your time.The amount of time per round decreases every round.So keep your wits about you and don’t let time run out! \n\nChallenge your friends, family, and classmates on Twitter and Facebook to beat your score. \n\nSelect your units to begin.", "15px Arial bold", "White");
 
-            // var directionsPanelText = new createjs.Text("Welcome to Measurement Madness. \n\nThis game will test your speed on finding measurements on a ruler. \n\nSelect the unit(s) that you want to test your knowledge with. \n\nHigh Score: \nSelecting this will keep your score and be timed. Each level the amount of time given will decrease. Challange friends on Twitter and Facebook to beat your score.", "15px Arial bold", "White");
+            var directionsPanelText = new createjs.Text("This is a graded assessment. To pass this assessment you will need to have fewer then 4 incorrect. There are 92 questions ahead. 4 quarters, 8 eights, 16 sixteenths, 32 thirtyseconds, and 32 mm and cm questions. If you don't succeed you can try again. ", "24px Arial bold", "White");
             topText.x = directionsPanel.x + 80;
             topText.y = directionsPanel.y + 80;
             topText.lineWidth = 300;
@@ -245,24 +303,24 @@ var Game = Game || (function (createjs) {
 
             page.addChild(directionsPanelText);
 
-            var btnContainer = new createjs.Container();
-            var spriteSheet = createSpriteSheet();
-            var levelsbtn = new createjs.Sprite(spriteSheet, "original");
-            levelsbtn.x = 150;
-            levelsbtn.y = 460
-            btnContainer.addChild(levelsbtn);
-            var levelsText = new createjs.Text("Level \nInformation", "18px Arial bold", "yellow");
-            levelsText.x = levelsbtn.x + 105;
-            levelsText.y = levelsbtn.y + 25;
-            levelsText.textAlign = "center";
-            btnContainer.addChild(levelsText);
-            page.addChild(btnContainer);
+            //var btnContainer = new createjs.Container();
+            //var spriteSheet = createSpriteSheet();
+            //var levelsbtn = new createjs.Sprite(spriteSheet, "original");
+            //levelsbtn.x = 150;
+            //levelsbtn.y = 460
+            //btnContainer.addChild(levelsbtn);
+            //var levelsText = new createjs.Text("Level \nInformation", "18px Arial bold", "yellow");
+            //levelsText.x = levelsbtn.x + 105;
+            //levelsText.y = levelsbtn.y + 25;
+            //levelsText.textAlign = "center";
+            //btnContainer.addChild(levelsText);
+            //page.addChild(btnContainer);
 
-            levelsbtn.addEventListener("click", function () {
-                //Display Level
-                btnClick();
-                createLevelsDisplay()
-            });
+            //levelsbtn.addEventListener("click", function () {
+            //    //Display Level
+            //    btnClick();
+            //    createLevelsDisplay()
+            //});
 
             var buttonContainer = createAllButtons();
             page.addChild(buttonContainer);
@@ -477,118 +535,66 @@ var Game = Game || (function (createjs) {
                 //we need to set our start to something else
                 start = m32s - (4 * 32);
             }
-        
-         
+
+
 
             return start;
         }
 
         function GetTotalQuestionCount() {
-            var validSelection;
-            for (var i = 0; questionsArray.length > i; i++) {
-                validSelection = false;
-                // console.log(questionsArray[i].text)
-                if (((questionsArray[i].value * 4) % 1 === 0) && questionsArray[i].unit != "mm") {
-                    if (quartersSelected == true) {
-                        validSelection = true;
-                        //console.log("..................Quarters True")
-                    }
-                }
-                if ((questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0) {
-                    if (eightsSelected == true && questionsArray[i].unit != "mm") {
-                        validSelection = true;
-                        // console.log(".................Eighths True")
-                    }
-                }
-                if (((questionsArray[i].value * 16) % 1 === 0 || (questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0)) {
 
-                    if (sixteenthsSelected == true && questionsArray[i].unit != "mm") {
-                        validSelection = true;
-                        // console.log(".................Sixteenths True")
-                    }
-                }
-                if ((questionsArray[i].value * 16) % 1 === 0 || (questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0 || (questionsArray[i].value * 32) % 1 === 0) {
-                    if (thirtySecondsSelected == true && questionsArray[i].unit != "mm") {
-                        validSelection = true;
-                        /// console.log(".................ThirtySeconds True")
-                    }
-                }
-                if (questionsArray[i].unit == "mm") {
-                    // console.log("..................unity == mm")
-                    if (millemetersSelected == true) {
-                        validSelection = true;
-                        // console.log("..................MM True")
-                    }
-                }
-                if (validSelection == true) {
-                    questionsCount++
-                }
-            }
+            //var validSelection;
+            //for (var i = 0; questionsArray.length > i; i++) {
+            //    validSelection = false;
+            //    // console.log(questionsArray[i].text)
+            //    if (((questionsArray[i].value * 4) % 1 === 0) && questionsArray[i].unit != "mm") {
+            //        if (quartersSelected == true) {
+            //            validSelection = true;
+            //            //console.log("..................Quarters True")
+            //        }
+            //    }
+            //    if ((questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0) {
+            //        if (eightsSelected == true && questionsArray[i].unit != "mm") {
+            //            validSelection = true;
+            //            // console.log(".................Eighths True")
+            //        }
+            //    }
+            //    if (((questionsArray[i].value * 16) % 1 === 0 || (questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0)) {
+
+            //        if (sixteenthsSelected == true && questionsArray[i].unit != "mm") {
+            //            validSelection = true;
+            //            // console.log(".................Sixteenths True")
+            //        }
+            //    }
+            //    if ((questionsArray[i].value * 16) % 1 === 0 || (questionsArray[i].value * 4) % 1 === 0 || (questionsArray[i].value * 8) % 1 === 0 || (questionsArray[i].value * 32) % 1 === 0) {
+            //        if (thirtySecondsSelected == true && questionsArray[i].unit != "mm") {
+            //            validSelection = true;
+            //            /// console.log(".................ThirtySeconds True")
+            //        }
+            //    }
+            //    if (questionsArray[i].unit == "mm") {
+            //        // console.log("..................unity == mm")
+            //        if (millemetersSelected == true) {
+            //            validSelection = true;
+            //            // console.log("..................MM True")
+            //        }
+            //    }
+            //    if (validSelection == true) {
+            //        questionsCount++
+            //    }
+            //}
             return questionsCount;
         }
         var whatKindOfQuestionIsThis = new Array();
         var iGotAValidQuestion = false;
         function displayQuestionText() {
-            iGotAValidQuestion = false;
 
-            while (iGotAValidQuestion == false) {
-                whatKindOfQuestionIsThis = [];
-                if (questionIndex >= questionsArray.length) {
-                    iGotAValidQuestion = false;
 
-                    break;
-                }
-                if (((questionsArray[questionIndex].value * 4) % 1 === 0) && questionsArray[questionIndex].unit != "mm") {
-                    //was quarters
+            var questionDisplay = new createjs.Text(questionsArray[questionIndex].text, "26px Arial bold", "Yellow");
+            questionDisplay.x = 10;
+            questionDisplay.y = 250
+            questionDisplay.value = questionsArray[questionIndex].value;
 
-                    if (quartersSelected == true) {
-                        iGotAValidQuestion = true;
-                        whatKindOfQuestionIsThis.push("Quarters");
-                    }
-                }
-                if (((questionsArray[questionIndex].value * 8) % 1 === 0) && questionsArray[questionIndex].unit != "mm") {
-
-                    if (eightsSelected == true) {
-                        iGotAValidQuestion = true;
-                        whatKindOfQuestionIsThis.push("Eights");
-                    }
-                }
-                if (((questionsArray[questionIndex].value * 16) % 1 === 0) && questionsArray[questionIndex].unit != "mm") {
-
-                    if (sixteenthsSelected == true) {
-                        iGotAValidQuestion = true;
-                        whatKindOfQuestionIsThis.push("Sixteenths")
-                    }
-                }
-                if (((questionsArray[questionIndex].value * 32) % 1 === 0) && questionsArray[questionIndex].unit != "mm") {
-
-                    if (thirtySecondsSelected == true) {
-                        iGotAValidQuestion = true;
-                        whatKindOfQuestionIsThis.push("ThirtySeconds");
-                    }
-                }
-                if (questionsArray[questionIndex].unit == "mm") {
-
-                    if (millemetersSelected == true) {
-                        iGotAValidQuestion = true;
-                        whatKindOfQuestionIsThis.push("MM");
-                    }
-                }
-                if (iGotAValidQuestion != true) {
-                    questionIndex++;
-                }
-            }
-            if (iGotAValidQuestion == true) {
-                if (questionIndex <= questionsArray.length) {
-
-                    var questionDisplay = new createjs.Text(questionsArray[questionIndex].text, "26px Arial bold", "Yellow");
-                    questionDisplay.x = 10;
-                    questionDisplay.y = 250
-                    questionDisplay.value = questionsArray[questionIndex].value;
-                }
-            }
-
-            //  page.addChild(questionDisplay);
             return questionDisplay;
         }
         var scoreTextDisplay;
@@ -617,8 +623,8 @@ var Game = Game || (function (createjs) {
                 givePoints();
                 createjs.Sound.play("Correct");
                 incrementQuestion();
-              
-               // if (questionsCount >= 1) {
+
+                // if (questionsCount >= 1) {
                 if (questionIndex >= 1) {
                     clickedAnswerNowWait = false;
                     showPage(createGamePage());
@@ -721,8 +727,8 @@ var Game = Game || (function (createjs) {
 
             feedbackContainer.addEventListener("click", function () {
                 stage.removeChild(feedbackContainer);
-               // if (questionsCount >= 1) {
-                    if (questionIndex >= 1) {
+                // if (questionsCount >= 1) {
+                if (questionIndex >= 1) {
                     showPage(createGamePage());
                 } else {
                     showPage(GameOverScreen())
@@ -1049,61 +1055,61 @@ var Game = Game || (function (createjs) {
             };
             var spriteSheet = new createjs.SpriteSheet(data);
 
-            var selectQuarters = new createjs.Sprite(spriteSheet, "original");
-            selectQuarters.x = ButtonX;
-            selectQuarters.y = ButtonY;
-            buttonContainer.addChild(selectQuarters);
-            var selectQuartersText = new createjs.Text("Quarters", "22px Arial bold", "yellow");
-            selectQuartersText.x = ButtonX + 60;
-            selectQuartersText.y = selectQuarters.y + 30;
+            //var selectQuarters = new createjs.Sprite(spriteSheet, "original");
+            //selectQuarters.x = ButtonX;
+            //selectQuarters.y = ButtonY;
+            //buttonContainer.addChild(selectQuarters);
+            //var selectQuartersText = new createjs.Text("Quarters", "22px Arial bold", "yellow");
+            //selectQuartersText.x = ButtonX + 60;
+            //selectQuartersText.y = selectQuarters.y + 30;
 
-            buttonContainer.addChild(selectQuartersText);
+            //buttonContainer.addChild(selectQuartersText);
 
-            var selectEights = new createjs.Sprite(spriteSheet, "original");
-            selectEights.x = ButtonX;
-            selectEights.y = ButtonY + 70;
-            buttonContainer.addChild(selectEights);
-            var selectEightsText = new createjs.Text("Eighths", "22px Arial bold", "yellow");
-            selectEightsText.x = ButtonX + 65;
-            selectEightsText.y = selectEights.y + 30;
-            buttonContainer.addChild(selectEightsText);
+            //var selectEights = new createjs.Sprite(spriteSheet, "original");
+            //selectEights.x = ButtonX;
+            //selectEights.y = ButtonY + 70;
+            //buttonContainer.addChild(selectEights);
+            //var selectEightsText = new createjs.Text("Eighths", "22px Arial bold", "yellow");
+            //selectEightsText.x = ButtonX + 65;
+            //selectEightsText.y = selectEights.y + 30;
+            //buttonContainer.addChild(selectEightsText);
 
 
-            var selectSixteenths = new createjs.Sprite(spriteSheet, "original");
-            selectSixteenths.x = ButtonX;
-            selectSixteenths.y = ButtonY + 140;
-            buttonContainer.addChild(selectSixteenths);
-            var selectSixteenthsText = new createjs.Text("Sixteenths", "22px Arial bold", "yellow");
-            selectSixteenthsText.x = ButtonX + 53;
-            selectSixteenthsText.y = selectSixteenths.y + 30;
-            buttonContainer.addChild(selectSixteenthsText);
+            //var selectSixteenths = new createjs.Sprite(spriteSheet, "original");
+            //selectSixteenths.x = ButtonX;
+            //selectSixteenths.y = ButtonY + 140;
+            //buttonContainer.addChild(selectSixteenths);
+            //var selectSixteenthsText = new createjs.Text("Sixteenths", "22px Arial bold", "yellow");
+            //selectSixteenthsText.x = ButtonX + 53;
+            //selectSixteenthsText.y = selectSixteenths.y + 30;
+            //buttonContainer.addChild(selectSixteenthsText);
 
-            var selectThirtySeconds = new createjs.Sprite(spriteSheet, "original");
-            selectThirtySeconds.x = ButtonX;
-            selectThirtySeconds.y = ButtonY + 210;
-            buttonContainer.addChild(selectThirtySeconds);
-            var selectThirtySecondsText = new createjs.Text("Thirty Seconds", "22px Arial bold", "yellow");
-            selectThirtySecondsText.x = ButtonX + 32;
-            selectThirtySecondsText.y = selectThirtySeconds.y + 30;
-            buttonContainer.addChild(selectThirtySecondsText);
+            //var selectThirtySeconds = new createjs.Sprite(spriteSheet, "original");
+            //selectThirtySeconds.x = ButtonX;
+            //selectThirtySeconds.y = ButtonY + 210;
+            //buttonContainer.addChild(selectThirtySeconds);
+            //var selectThirtySecondsText = new createjs.Text("Thirty Seconds", "22px Arial bold", "yellow");
+            //selectThirtySecondsText.x = ButtonX + 32;
+            //selectThirtySecondsText.y = selectThirtySeconds.y + 30;
+            //buttonContainer.addChild(selectThirtySecondsText);
 
-            var selectMillemeters = new createjs.Sprite(spriteSheet, "original");
-            selectMillemeters.x = ButtonX;
-            selectMillemeters.y = ButtonY + 280;
-            buttonContainer.addChild(selectMillemeters);
-            var milleMetersText = new createjs.Text("mm/cm", "22px Arial bold", "yellow");
-            milleMetersText.x = ButtonX + 65;
-            milleMetersText.y = selectMillemeters.y + 30;
-            buttonContainer.addChild(milleMetersText);
+            //var selectMillemeters = new createjs.Sprite(spriteSheet, "original");
+            //selectMillemeters.x = ButtonX;
+            //selectMillemeters.y = ButtonY + 280;
+            //buttonContainer.addChild(selectMillemeters);
+            //var milleMetersText = new createjs.Text("mm/cm", "22px Arial bold", "yellow");
+            //milleMetersText.x = ButtonX + 65;
+            //milleMetersText.y = selectMillemeters.y + 30;
+            //buttonContainer.addChild(milleMetersText);
 
-            var highScore = new createjs.Sprite(spriteSheet, "original");
-            highScore.x = ButtonX;
-            highScore.y = ButtonY + 350;
-            buttonContainer.addChild(highScore);
-            var highScoreText = new createjs.Text("High Score", "22px Arial bold", "yellow");
-            highScoreText.x = ButtonX + 50;
-            highScoreText.y = highScore.y + 30;
-            buttonContainer.addChild(highScoreText);
+            //var highScore = new createjs.Sprite(spriteSheet, "original");
+            //highScore.x = ButtonX;
+            //highScore.y = ButtonY + 350;
+            //buttonContainer.addChild(highScore);
+            //var highScoreText = new createjs.Text("High Score", "22px Arial bold", "yellow");
+            //highScoreText.x = ButtonX + 50;
+            //highScoreText.y = highScore.y + 30;
+            //buttonContainer.addChild(highScoreText);
 
             var playbtn = new createjs.Sprite(spriteSheetGreen, "original");
             playbtn.x = ButtonX + 100;
@@ -1117,70 +1123,70 @@ var Game = Game || (function (createjs) {
 
 
 
-            selectQuarters.addEventListener("click", function () {
-                if (selectQuarters.currentFrame == 0) {
+            //selectQuarters.addEventListener("click", function () {
+            //    if (selectQuarters.currentFrame == 0) {
 
-                    quartersSelected = true;
-                    selectQuarters.gotoAndStop("selected")
-                } else {
+            //        quartersSelected = true;
+            //        selectQuarters.gotoAndStop("selected")
+            //    } else {
 
-                    selectQuarters.gotoAndStop("original")
-                    quartersSelected = false;
-                }
-                btnClick();
-            });
+            //        selectQuarters.gotoAndStop("original")
+            //        quartersSelected = false;
+            //    }
+            //    btnClick();
+            //});
 
-            selectEights.addEventListener("click", function () {
-                if (selectEights.currentFrame == 0) {
-                    eightsSelected = true;
-                    selectEights.gotoAndStop("selected")
-                } else {
-                    selectEights.gotoAndStop("original")
-                    eightsSelected = false;
-                }
-                btnClick();
-            });
-            selectSixteenths.addEventListener("click", function () {
-                if (selectSixteenths.currentFrame == 0) {
-                    sixteenthsSelected = true;
-                    selectSixteenths.gotoAndStop("selected")
-                } else {
-                    selectSixteenths.gotoAndStop("original")
-                    sixteenthsSelected = false;
-                }
-                btnClick();
-            });
-            selectThirtySeconds.addEventListener("click", function () {
-                if (selectThirtySeconds.currentFrame == 0) {
-                    thirtySecondsSelected = true;
-                    selectThirtySeconds.gotoAndStop("selected")
-                } else {
-                    selectThirtySeconds.gotoAndStop("original")
-                    thirtySecondsSelected = false;
-                }
-                btnClick();
-            });
-            selectMillemeters.addEventListener("click", function () {
-                if (selectMillemeters.currentFrame == 0) {
-                    millemetersSelected = true;
-                    selectMillemeters.gotoAndStop("selected")
-                } else {
-                    selectMillemeters.gotoAndStop("original")
-                    millemetersSelected = false;
-                }
-                btnClick();
-            });
-            highScore.addEventListener("click", function () {
+            //selectEights.addEventListener("click", function () {
+            //    if (selectEights.currentFrame == 0) {
+            //        eightsSelected = true;
+            //        selectEights.gotoAndStop("selected")
+            //    } else {
+            //        selectEights.gotoAndStop("original")
+            //        eightsSelected = false;
+            //    }
+            //    btnClick();
+            //});
+            //selectSixteenths.addEventListener("click", function () {
+            //    if (selectSixteenths.currentFrame == 0) {
+            //        sixteenthsSelected = true;
+            //        selectSixteenths.gotoAndStop("selected")
+            //    } else {
+            //        selectSixteenths.gotoAndStop("original")
+            //        sixteenthsSelected = false;
+            //    }
+            //    btnClick();
+            //});
+            //selectThirtySeconds.addEventListener("click", function () {
+            //    if (selectThirtySeconds.currentFrame == 0) {
+            //        thirtySecondsSelected = true;
+            //        selectThirtySeconds.gotoAndStop("selected")
+            //    } else {
+            //        selectThirtySeconds.gotoAndStop("original")
+            //        thirtySecondsSelected = false;
+            //    }
+            //    btnClick();
+            //});
+            //selectMillemeters.addEventListener("click", function () {
+            //    if (selectMillemeters.currentFrame == 0) {
+            //        millemetersSelected = true;
+            //        selectMillemeters.gotoAndStop("selected")
+            //    } else {
+            //        selectMillemeters.gotoAndStop("original")
+            //        millemetersSelected = false;
+            //    }
+            //    btnClick();
+            //});
+            //highScore.addEventListener("click", function () {
 
-                if (highScore.currentFrame == 0) {
-                    highScoreGameType = true;
-                    highScore.gotoAndStop("selected")
-                } else {
-                    highScore.gotoAndStop("original")
-                    highScoreGameType = false;
-                }
-                btnClick();
-            });
+            //    if (highScore.currentFrame == 0) {
+            //        highScoreGameType = true;
+            //        highScore.gotoAndStop("selected")
+            //    } else {
+            //        highScore.gotoAndStop("original")
+            //        highScoreGameType = false;
+            //    }
+            //    btnClick();
+            //});
             playbtn.addEventListener("click", function () {
                 GetTotalQuestionCount();
 
@@ -1194,18 +1200,18 @@ var Game = Game || (function (createjs) {
                 correctCount = 0;
 
 
-                if (quartersSelected == true || eightsSelected == true || sixteenthsSelected == true || thirtySecondsSelected == true || millemetersSelected == true) {
-                    showPage(createGamePage());
-                } else {
-                    quartersSelected = true;
-                    eightsSelected = true;
-                    sixteenthsSelected = true;
-                    thirtySecondsSelected = true;
-                    millemetersSelected = true;
-                    highScoreGameType = true;
-                    showPage(createGamePage());
-                }
-
+                //if (quartersSelected == true || eightsSelected == true || sixteenthsSelected == true || thirtySecondsSelected == true || millemetersSelected == true) {
+                //    showPage(createGamePage());
+                //} else {
+                //    quartersSelected = true;
+                //    eightsSelected = true;
+                //    sixteenthsSelected = true;
+                //    thirtySecondsSelected = true;
+                //    millemetersSelected = true;
+                //    highScoreGameType = true;
+                //    showPage(createGamePage());
+                //}
+                showPage(createGamePage());
             });
             return buttonContainer;
         }
@@ -1331,7 +1337,7 @@ var Game = Game || (function (createjs) {
             page.addChild(buttonContainer);
             resetSelections();
             return page;
-           
+
         }
 
 
