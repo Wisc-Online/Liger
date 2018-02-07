@@ -50,6 +50,7 @@ var Game = Game || (function (createjs) {
             { id: "backgroundImage", src: assetsPath + "background.jpg" },
             { id: "button", src: assetsPath + "button.png" },
             { id: "selectedButton", src: assetsPath + "SelectedButton.png" },
+            { id: "Fired", src: assetsPath + "Fired.png" },
 
             { id: "buttonGreen", src: assetsPath + "buttonGreen.png" },
             { id: "selectedButtonGreen", src: assetsPath + "SelectedButton_green.png" },
@@ -91,11 +92,15 @@ var Game = Game || (function (createjs) {
         var score = 0;
         var questionIndex = 0;
         var strikes = 0;
+        var gameover = false;
+
         var incorrectCount = 0;
         var correctCount = 0;
         var questionsCount = 0;
+
         var level = 1;
         var timer = 10;
+
         var quartersSelected = false;
         var eightsSelected = false;
         var sixteenthsSelected = false;
@@ -344,63 +349,30 @@ var Game = Game || (function (createjs) {
             titleImage.y = 5;
 
             page.addChild(titleImage);
-            if (highScoreGameType == true) {
-                var scoreTextDisplay = displayScoreText();
-                page.addChild(scoreTextDisplay);
 
-                var strikesDisplay = new createjs.Text("Strikes: " + strikes, "18px Arial", "White");
-                strikesDisplay.x = 10;
-                strikesDisplay.y = 100
-                page.addChild(strikesDisplay);
+            var nubmerOfQuestions = new createjs.Text("Question Count: " + questionsCount, "18px Arial", "White");
+            nubmerOfQuestions.x = 10;
+            nubmerOfQuestions.y = 75
+            page.addChild(nubmerOfQuestions);
 
-                var levelDisplay = new createjs.Text("Level: " + level, "18px Arial", "White");
-                levelDisplay.x = 10;
-                levelDisplay.y = 130
-                page.addChild(levelDisplay);
-            } else if (highScoreGameType == false) {
-                var nubmerOfQuestions = new createjs.Text("Question Count: " + questionsCount, "18px Arial", "White");
-                nubmerOfQuestions.x = 10;
-                nubmerOfQuestions.y = 75
-                page.addChild(nubmerOfQuestions);
+            var wrongDisplay = new createjs.Text("Incorrect: " + incorrectCount, "18px Arial", "White");
+            wrongDisplay.x = 10;
+            wrongDisplay.y = 105
+            page.addChild(wrongDisplay);
 
-                var wrongDisplay = new createjs.Text("Incorrect: " + incorrectCount, "18px Arial", "White");
-                wrongDisplay.x = 10;
-                wrongDisplay.y = 105
-                page.addChild(wrongDisplay);
+            var correctDisplay = new createjs.Text("Correct: " + correctCount, "18px Arial", "White");
+            correctDisplay.x = 10;
+            correctDisplay.y = 135;
+            page.addChild(correctDisplay);
 
-                var correctDisplay = new createjs.Text("Correct: " + correctCount, "18px Arial", "White");
-                correctDisplay.x = 10;
-                correctDisplay.y = 135;
-                page.addChild(correctDisplay);
 
-            }
 
 
             if (highScoreGameType == true) {
                 var timerDisplay = displayTimerText()
                 page.addChild(timerDisplay);
             }
-            if (highScoreGameType == false) {
-                //Create quit button
 
-                var spriteSheet = createSpriteSheet();
-                var exitBtn = new createjs.Sprite(spriteSheet, "original");
-                exitBtn.x = 600;
-                exitBtn.y = 520
-                page.addChild(exitBtn);
-                var exitText = new createjs.Text("Quit", "24px Arial bold", "yellow");
-                exitText.x = exitBtn.x + 100;
-                exitText.y = exitBtn.y + 30;
-                exitText.textAlign = "center";
-                page.addChild(exitText);
-
-                exitBtn.addEventListener("click", function () {
-
-                    showPage(GameOverScreen());
-
-                });
-                //keep correct and incorrect count
-            }
 
             var questionDisplay = displayQuestionText();
             if (questionDisplay != null) {
@@ -583,7 +555,7 @@ var Game = Game || (function (createjs) {
             //        questionsCount++
             //    }
             //}
-            return questionsCount;
+            return questionsCount = 92;
         }
         var whatKindOfQuestionIsThis = new Array();
         var iGotAValidQuestion = false;
@@ -612,7 +584,6 @@ var Game = Game || (function (createjs) {
             timerDisplay.x = 10;
             timerDisplay.y = 160
             return timerDisplay
-
         }
         function CheckAnswer(answerValue) {
             if (highScoreGameType == true) {
@@ -640,42 +611,48 @@ var Game = Game || (function (createjs) {
         function displayXXX_YourWrong(answerValue) {
             //deliver X image.
             incorrectCount += 1;
-            if (highScoreGameType == true) {
+            if (strikes < 4) {
                 var redXXX = new createjs.Bitmap(queue.getResult("RedXXX"));
                 redXXX.x = 150
                 redXXX.y = 10
                 redXXX.scaleX = 0.3;
                 redXXX.scaleY = 0.3;
-
                 stage.addChild(redXXX);
-                createjs.Sound.play("Buzzer");
-
-                setTimeout(function () {
-                    stage.removeChild(redXXX)
-                    if (strikes >= 3) {
-                        highLightTheCorrectAnswer(answerValue, strikes);
-                        setTimeout(function () {
-
-                            showPage(GameOverScreen());
-
-                        }, 3000);
-
-                    } else {
-                        // incrementQuestion();
-                        if (questionIndex <= questionsArray.length) {
-                            //got the question wrong display correct answer and message and continue button.
-                            highLightTheCorrectAnswer(answerValue, strikes);
-
-                        } else {
-                            showPage(GameOverScreen())
-                        }
-                    }
-                }, 1500);
             } else {
-                highLightTheCorrectAnswer(answerValue, strikes);
-                createjs.Sound.play("NiceWrong");
+                var FiredImage = new createjs.Bitmap(queue.getResult("Fired"));
+                FiredImage.x = 150
+                FiredImage.y = 10
+
+                //  FiredImage.scaleX = 0.3;
+                // FiredImage.scaleY = 0.3;
+                stage.addChild(FiredImage);
             }
+
+            createjs.Sound.play("Buzzer");
+
+            setTimeout(function () {
+                stage.removeChild(redXXX)
+                if (strikes >= 4) {
+                    highLightTheCorrectAnswer(answerValue, strikes);
+                    setTimeout(function () {
+                        stage.removeChild(FiredImage);
+                        gameover = true;
+                        showPage(GameOverScreen());
+                    }, 3000);
+                } else {
+                    if (questionIndex <= questionsArray.length) {
+                        //got the question wrong display correct answer and message and continue button.
+                        highLightTheCorrectAnswer(answerValue, strikes);
+                    } else {
+                       
+                        showPage(GameOverScreen())
+                    }
+                }
+            }, 1500);
+            //highLightTheCorrectAnswer(answerValue, strikes);
+            //createjs.Sound.play("NiceWrong");
         }
+
         function highLightTheCorrectAnswer(answerValue, strikes) {
             allTheDivisions.forEach(function (element) {
                 if (element.value == questionsArray[questionIndex].value) {
@@ -683,31 +660,37 @@ var Game = Game || (function (createjs) {
                     createjs.Tween.get(element.backgroundOfDivision).to({ alpha: 1.0 }, 500);
                 }
             });
-
             ShowContinueButton(strikes)
             incrementQuestion();
-
-
         }
+
         function ShowContinueButton(strikes) {
             var feedbackContainer = new createjs.Container();
             var directionsPanel = DirectionsPanel();
             directionsPanel.x = 190;
             directionsPanel.y = 50;
             feedbackContainer.addChild(directionsPanel);
-            if (strikes >= 3) {
-                var DirectionsPanelText = new createjs.Text("Sorry thats incorrect. The correct answer is highlighted for you. \n\nYou recieved your third strike your out.", "18px Arial bold", "yellow");
+            if (strikes > 3) {
+               // var DirectionsPanelText = new createjs.Text("Sorry thats incorrect. The correct answer is highlighted for you. \n\nYou recieved your fourth strike your fired.", "18px Arial bold", "yellow");
+                //var DirectionsPanelText = new createjs.Text("", "18px Arial bold", "yellow");
+                //DirectionsPanelText.x = directionsPanel.x + 35;
+                //DirectionsPanelText.y = directionsPanel.y + 30;
+                //// DirectionsPanelText.textAlign = "center";
+                //DirectionsPanelText.lineWidth = 320;
+                //feedbackContainer.addChild(DirectionsPanelText);
 
             } else {
                 var DirectionsPanelText = new createjs.Text("Sorry thats incorrect. The correct answer is highlighted for you. \n\nSelect close to read the next measurement.", "18px Arial bold", "yellow");
+                DirectionsPanelText.x = directionsPanel.x + 35;
+                DirectionsPanelText.y = directionsPanel.y + 30;
+                // DirectionsPanelText.textAlign = "center";
+                DirectionsPanelText.lineWidth = 320;
+                feedbackContainer.addChild(DirectionsPanelText);
+                stage.addChild(feedbackContainer);
             }
-            DirectionsPanelText.x = directionsPanel.x + 35;
-            DirectionsPanelText.y = directionsPanel.y + 30;
-            // DirectionsPanelText.textAlign = "center";
-            DirectionsPanelText.lineWidth = 320;
-            feedbackContainer.addChild(DirectionsPanelText);
+           
 
-            if (strikes < 3) {
+            if (strikes < 4) {
                 var spriteSheet = createSpriteSheet();
                 var closeBtn = new createjs.Sprite(spriteSheet, "original");
                 closeBtn.x = directionsPanel.x + 85;
@@ -723,7 +706,7 @@ var Game = Game || (function (createjs) {
             }
 
 
-            stage.addChild(feedbackContainer);
+           
 
             feedbackContainer.addEventListener("click", function () {
                 stage.removeChild(feedbackContainer);
@@ -1027,7 +1010,7 @@ var Game = Game || (function (createjs) {
             return spriteSheet;
         }
 
-        function createAllButtons() {
+        function createAllButtons(isEnding) {
 
             var buttonContainer = new createjs.Container();
 
@@ -1055,138 +1038,25 @@ var Game = Game || (function (createjs) {
             };
             var spriteSheet = new createjs.SpriteSheet(data);
 
-            //var selectQuarters = new createjs.Sprite(spriteSheet, "original");
-            //selectQuarters.x = ButtonX;
-            //selectQuarters.y = ButtonY;
-            //buttonContainer.addChild(selectQuarters);
-            //var selectQuartersText = new createjs.Text("Quarters", "22px Arial bold", "yellow");
-            //selectQuartersText.x = ButtonX + 60;
-            //selectQuartersText.y = selectQuarters.y + 30;
-
-            //buttonContainer.addChild(selectQuartersText);
-
-            //var selectEights = new createjs.Sprite(spriteSheet, "original");
-            //selectEights.x = ButtonX;
-            //selectEights.y = ButtonY + 70;
-            //buttonContainer.addChild(selectEights);
-            //var selectEightsText = new createjs.Text("Eighths", "22px Arial bold", "yellow");
-            //selectEightsText.x = ButtonX + 65;
-            //selectEightsText.y = selectEights.y + 30;
-            //buttonContainer.addChild(selectEightsText);
-
-
-            //var selectSixteenths = new createjs.Sprite(spriteSheet, "original");
-            //selectSixteenths.x = ButtonX;
-            //selectSixteenths.y = ButtonY + 140;
-            //buttonContainer.addChild(selectSixteenths);
-            //var selectSixteenthsText = new createjs.Text("Sixteenths", "22px Arial bold", "yellow");
-            //selectSixteenthsText.x = ButtonX + 53;
-            //selectSixteenthsText.y = selectSixteenths.y + 30;
-            //buttonContainer.addChild(selectSixteenthsText);
-
-            //var selectThirtySeconds = new createjs.Sprite(spriteSheet, "original");
-            //selectThirtySeconds.x = ButtonX;
-            //selectThirtySeconds.y = ButtonY + 210;
-            //buttonContainer.addChild(selectThirtySeconds);
-            //var selectThirtySecondsText = new createjs.Text("Thirty Seconds", "22px Arial bold", "yellow");
-            //selectThirtySecondsText.x = ButtonX + 32;
-            //selectThirtySecondsText.y = selectThirtySeconds.y + 30;
-            //buttonContainer.addChild(selectThirtySecondsText);
-
-            //var selectMillemeters = new createjs.Sprite(spriteSheet, "original");
-            //selectMillemeters.x = ButtonX;
-            //selectMillemeters.y = ButtonY + 280;
-            //buttonContainer.addChild(selectMillemeters);
-            //var milleMetersText = new createjs.Text("mm/cm", "22px Arial bold", "yellow");
-            //milleMetersText.x = ButtonX + 65;
-            //milleMetersText.y = selectMillemeters.y + 30;
-            //buttonContainer.addChild(milleMetersText);
-
-            //var highScore = new createjs.Sprite(spriteSheet, "original");
-            //highScore.x = ButtonX;
-            //highScore.y = ButtonY + 350;
-            //buttonContainer.addChild(highScore);
-            //var highScoreText = new createjs.Text("High Score", "22px Arial bold", "yellow");
-            //highScoreText.x = ButtonX + 50;
-            //highScoreText.y = highScore.y + 30;
-            //buttonContainer.addChild(highScoreText);
 
             var playbtn = new createjs.Sprite(spriteSheetGreen, "original");
             playbtn.x = ButtonX + 100;
             playbtn.y = ButtonY + 420;
             buttonContainer.addChild(playbtn);
-            var playbtnText = new createjs.Text("Start", "22px Arial bold", "yellow");
-            playbtnText.x = playbtn.x + 80;
-            playbtnText.y = playbtn.y + 30;
-            buttonContainer.addChild(playbtnText);
+            if (gameover == true) {
+                var playbtnText = new createjs.Text("Restart", "22px Arial bold", "yellow");
+                playbtnText.x = playbtn.x + 70;
+                playbtnText.y = playbtn.y + 30;
+                buttonContainer.addChild(playbtnText);
+            } else {
+                var playbtnText = new createjs.Text("Start", "22px Arial bold", "yellow");
+                playbtnText.x = playbtn.x + 80;
+                playbtnText.y = playbtn.y + 30;
+                buttonContainer.addChild(playbtnText);
+            }
 
 
 
-
-            //selectQuarters.addEventListener("click", function () {
-            //    if (selectQuarters.currentFrame == 0) {
-
-            //        quartersSelected = true;
-            //        selectQuarters.gotoAndStop("selected")
-            //    } else {
-
-            //        selectQuarters.gotoAndStop("original")
-            //        quartersSelected = false;
-            //    }
-            //    btnClick();
-            //});
-
-            //selectEights.addEventListener("click", function () {
-            //    if (selectEights.currentFrame == 0) {
-            //        eightsSelected = true;
-            //        selectEights.gotoAndStop("selected")
-            //    } else {
-            //        selectEights.gotoAndStop("original")
-            //        eightsSelected = false;
-            //    }
-            //    btnClick();
-            //});
-            //selectSixteenths.addEventListener("click", function () {
-            //    if (selectSixteenths.currentFrame == 0) {
-            //        sixteenthsSelected = true;
-            //        selectSixteenths.gotoAndStop("selected")
-            //    } else {
-            //        selectSixteenths.gotoAndStop("original")
-            //        sixteenthsSelected = false;
-            //    }
-            //    btnClick();
-            //});
-            //selectThirtySeconds.addEventListener("click", function () {
-            //    if (selectThirtySeconds.currentFrame == 0) {
-            //        thirtySecondsSelected = true;
-            //        selectThirtySeconds.gotoAndStop("selected")
-            //    } else {
-            //        selectThirtySeconds.gotoAndStop("original")
-            //        thirtySecondsSelected = false;
-            //    }
-            //    btnClick();
-            //});
-            //selectMillemeters.addEventListener("click", function () {
-            //    if (selectMillemeters.currentFrame == 0) {
-            //        millemetersSelected = true;
-            //        selectMillemeters.gotoAndStop("selected")
-            //    } else {
-            //        selectMillemeters.gotoAndStop("original")
-            //        millemetersSelected = false;
-            //    }
-            //    btnClick();
-            //});
-            //highScore.addEventListener("click", function () {
-
-            //    if (highScore.currentFrame == 0) {
-            //        highScoreGameType = true;
-            //        highScore.gotoAndStop("selected")
-            //    } else {
-            //        highScore.gotoAndStop("original")
-            //        highScoreGameType = false;
-            //    }
-            //    btnClick();
-            //});
             playbtn.addEventListener("click", function () {
                 GetTotalQuestionCount();
 
@@ -1199,24 +1069,12 @@ var Game = Game || (function (createjs) {
                 incorrectCount = 0;
                 correctCount = 0;
 
-
-                //if (quartersSelected == true || eightsSelected == true || sixteenthsSelected == true || thirtySecondsSelected == true || millemetersSelected == true) {
-                //    showPage(createGamePage());
-                //} else {
-                //    quartersSelected = true;
-                //    eightsSelected = true;
-                //    sixteenthsSelected = true;
-                //    thirtySecondsSelected = true;
-                //    millemetersSelected = true;
-                //    highScoreGameType = true;
-                //    showPage(createGamePage());
-                //}
                 showPage(createGamePage());
             });
             return buttonContainer;
         }
         function resetSelections() {
-            submitedScore = false;
+
             quartersSelected = false;
             eightsSelected = false;
             sixteenthsSelected = false;
@@ -1225,42 +1083,23 @@ var Game = Game || (function (createjs) {
             highScoreGameType = false;
             questionsCount = 0;
         }
-        var submitedScore = false;
-        function submitScore(score) {
-            if (submitedScore)
-                return false;
-            submitedScore = true;
-            var url = gameData.leaderboardUrl;
-
-            if (url) {
-
-                var data = {
-                    gameId: gameData.id,
-                    score: score
-                };
-
-                $.ajax(url, {
-                    type: "POST",
-                    data: data,
-                    success: function (x) {
-
-                    },
-                    error: function (x, y, z) {
 
 
-                    }
-                });
-
-            }
-        }
         function GameOverScreen() {
 
             if (isLmsConnected) {
-                ScormHelper.cmi.successStatus(ScormHelper.successStatus.passed);
-                ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.completed);
+                if (incorrectCount < 4) {
+                    ScormHelper.cmi.successStatus(ScormHelper.successStatus.passed);
+                    ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.completed);
+
+                } else {
+                    ScormHelper.cmi.successStatus(ScormHelper.successStatus.failed);
+                    ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.incomplete);
+                }
+
             }
 
-            submitScore(score);
+            //submitScore(score);
 
             var page = new createjs.Container();
 
@@ -1282,53 +1121,18 @@ var Game = Game || (function (createjs) {
             page.addChild(directionsPanel);
 
             var directionsPanelText
-            if (highScoreGameType == true) {
-                directionsPanelText = new createjs.Text("Way to go! \n\nYour Score was: " + score + "\n\nTry again or Share your score and \nchallange a friend.", "18px Arial bold", "White");
+            if (incorrectCount < 4) {
+
+                directionsPanelText = new createjs.Text("Way to go! \n\nYou ansered " + correctCount + " of 92 measurements. \n\nYou passed this assessement. Your score was added to your gradebook. ", "18px Arial bold", "White");
             } else {
-                directionsPanelText = new createjs.Text("Way to go! \n\nYou answered  \n\nCorrect: " + correctCount + " \n\nIncorrect: " + incorrectCount, "18px Arial bold", "White");
+                directionsPanelText = new createjs.Text("Sorry to hear you were fired. Missing measurements can cost businesses billions of dollars each year. Maybe you should try flipping burgers as a career. \n\nYou answered  \n\nCorrect: " + correctCount + " \n\nIncorrect: " + incorrectCount, "18px Arial bold", "White");
             }
             directionsPanelText.x = directionsPanel.x + 80;
             directionsPanelText.y = directionsPanel.y + 80;
-
+            directionsPanelText.lineWidth = 300;
             page.addChild(directionsPanelText);
 
-            var FbShareButton = new createjs.Bitmap(queue.getResult("facebookShare"));
-            //FbShareButton.scaleX = .51;
-            //FbShareButton.scaleY = .51;
-            //FbShareButton.width = 209;
-            //FbShareButton.height = 209;
-            FbShareButton.x = 200;
-            FbShareButton.y = 400;
-            page.addChild(FbShareButton);
 
-
-            FbShareButton.addEventListener("click", function () {
-                btnClick();
-                FB.ui(
-                    {
-                        method: 'share',
-                        href: 'https://www.wisc-online.com/learn/technical/core-skills/ccs13617/measurement-madness',
-                        quote: 'I got a score of ' + score + ' on Measurement Madness. Can you beat my high score?'
-                    }, function (response) { }
-                );
-            });
-
-            var tweetscore = new createjs.Bitmap(queue.getResult("tweetscore"));
-            //tweetscore.scaleX = .51;
-            //tweetscore.scaleY = .51;
-            //tweetscore.width = 209;
-            //tweetscore.height = 209;
-            tweetscore.x = 50;
-            tweetscore.y = 400;
-            page.addChild(tweetscore);
-
-            tweetscore.addEventListener("click", function () {
-                btnClick();
-                //href: 'https://twitter.com/intent/tweet'
-                // window.open("https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fdev.twitter.com%2Fweb%2Foverview&amp;ref_src=twsrc%5Etfw&amp;related=twitterapi%2Ctwitter&amp;text=Twitter%20for%20Websites%20%E2%80%94%20Twitter%20Developers&amp;tw_p=tweetbutton&amp;url=https%3A%2F%2Fdev.twitter.com%2Fweb%2Foverview&amp;via=twitterdev");
-                window.open("https://twitter.com/intent/tweet?text=Can you beat my high score of " + score + " in Measurement Madness. https://www.wisc-online.com/learn/technical/core-skills/ccs13617/measurement-madness");
-
-            });
             // resetSelections();
 
 
