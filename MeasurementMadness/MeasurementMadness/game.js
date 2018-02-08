@@ -148,17 +148,18 @@ var Game = Game || (function (createjs) {
             sixteenths = shuffle(sixteenths);
             thirtyseconds = shuffle(thirtyseconds);
             millemeters = shuffle(millemeters);
-
-            for (var i = 0; i < 4; ++i) {
+            var count = 1;
+            for (var i = 0; i <4; ++i) {
                 selectedQuestionsArray.push(quarters[i]);
             }
+           
             for (var i = 0; i < 8; ++i) {
                 selectedQuestionsArray.push(eights[i]);
-            }
+            } 
             for (var i = 0; i < 16; ++i) {
                 selectedQuestionsArray.push(sixteenths[i]);
             }
-            for (var i = 0; i < 32; ++i) {
+            for (var i = 0; i < 40; ++i) {
                 selectedQuestionsArray.push(thirtyseconds[i]);
             }
             for (var i = 0; i < 32; ++i) {
@@ -296,7 +297,7 @@ var Game = Game || (function (createjs) {
             var topText = new createjs.Text("Welcome to Measurement Madness.", "18px Arial bold", "white")
             // var directionsPanelText = new createjs.Text("\n\nThis game tests how quickly you can find measurements on a ruler. \n\nBegin by selecting your unit(s).Then, get ready to race through the questions. \n\nSelecting the High Score button keeps your score and your time.The amount of time per round decreases every round.So keep your wits about you and don’t let time run out! \n\nChallenge your friends, family, and classmates on Twitter and Facebook to beat your score. \n\nSelect your units to begin.", "15px Arial bold", "White");
 
-            var directionsPanelText = new createjs.Text("This is a graded assessment. To pass this assessment you will need to have fewer then 4 incorrect. There are 92 questions ahead. 4 quarters, 8 eights, 16 sixteenths, 32 thirtyseconds, and 32 mm and cm questions. If you don't succeed you can try again. ", "24px Arial bold", "White");
+            var directionsPanelText = new createjs.Text("\n\nThis is a graded assessment. To pass this assessment you will need to have fewer then 4 incorrect. There are 100 questions ahead. 4 quarters, 8 eights, 16 sixteenths, 40 thirtyseconds, and 32 mm and cm questions. If you don't succeed you can try again. ", "24px Arial bold", "White");
             topText.x = directionsPanel.x + 80;
             topText.y = directionsPanel.y + 80;
             topText.lineWidth = 300;
@@ -334,6 +335,11 @@ var Game = Game || (function (createjs) {
         }
         var timerTween;
         function createGamePage() {
+            if ( questionsCount == 0) {
+                //do something
+                showPage(GameOverScreen());
+               
+            }
             clickedAnswerNowWait = false;
 
             var page = new createjs.Container();
@@ -611,18 +617,19 @@ var Game = Game || (function (createjs) {
         function displayXXX_YourWrong(answerValue) {
             //deliver X image.
             incorrectCount += 1;
+          
             if (strikes < 4) {
                 var redXXX = new createjs.Bitmap(queue.getResult("RedXXX"));
-                redXXX.x = 150
-                redXXX.y = 10
-                redXXX.scaleX = 0.3;
-                redXXX.scaleY = 0.3;
+                redXXX.x = 200
+                redXXX.y = 30
+                redXXX.scaleX = 0.15;
+                redXXX.scaleY = 0.15;
                 stage.addChild(redXXX);
             } else {
                 var FiredImage = new createjs.Bitmap(queue.getResult("Fired"));
-                FiredImage.x = 150
-                FiredImage.y = 10
-
+                FiredImage.x = 120
+                FiredImage.y = 300
+                FiredImage.rotation = -35;
                 //  FiredImage.scaleX = 0.3;
                 // FiredImage.scaleY = 0.3;
                 stage.addChild(FiredImage);
@@ -1036,7 +1043,7 @@ var Game = Game || (function (createjs) {
                     selected: 1
                 }
             };
-            var spriteSheet = new createjs.SpriteSheet(data);
+            var spriteSheet = new createjs.SpriteSheet(data); 
 
 
             var playbtn = new createjs.Sprite(spriteSheetGreen, "original");
