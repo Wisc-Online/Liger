@@ -9,6 +9,8 @@ var Game = Game || (function (createjs) {
 
         var stage = new createjs.Stage(canvas);
         stage.enableMouseOver(10);
+
+        createjs.Ticker.on("tick", stage);
         var currentPage = null;
 
 
@@ -420,7 +422,6 @@ var Game = Game || (function (createjs) {
 
             page.addChild(ruler);
 
-            createjs.Ticker.on("tick", stage);
 
             if (highScoreGameType == true) {
 
@@ -561,7 +562,7 @@ var Game = Game || (function (createjs) {
             //        questionsCount++
             //    }
             //}
-            return questionsCount = 92;
+            return questionsCount = 100;
         }
         var whatKindOfQuestionIsThis = new Array();
         var iGotAValidQuestion = false;
@@ -1065,6 +1066,8 @@ var Game = Game || (function (createjs) {
 
 
             playbtn.addEventListener("click", function () {
+
+            
                 GetTotalQuestionCount();
 
                 btnClick();
@@ -1077,6 +1080,8 @@ var Game = Game || (function (createjs) {
                 correctCount = 0;
 
                 showPage(createGamePage());
+
+
             });
             return buttonContainer;
         }
