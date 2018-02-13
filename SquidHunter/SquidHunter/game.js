@@ -957,7 +957,7 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(helpContainer);
 
                 //load score label
-                scoreLabel = new createjs.Text(Score, "Bold 24px Comic Sans MS", "#FFFFFF");
+                scoreLabel = new createjs.Text(Score, "Bold 22px Comic Sans MS", "#FFFFFF");
                 scoreLabel.textAlign = "center";
                 scoreLabel.lineWidth = 270;
                 scoreLabel.color = "white";
@@ -976,7 +976,7 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(treasureContainer);
 
                 //load harpoon count label
-                harpoonCountLabel = new createjs.Text(" " + harpoonCount, "Bold 20px Comic Sans MS", "#FFFFFF");
+                harpoonCountLabel = new createjs.Text(" " + harpoonCount, "Bold 22px Comic Sans MS", "#FFFFFF");
                 harpoonCountLabel.textAlign = "center";
                 harpoonCountLabel.lineWidth = 270;
                 harpoonCountLabel.color = "white";
@@ -1634,33 +1634,42 @@ var Game = Game || (function (createjs) {
 
 
                 if (answerstatus == "correct") {
-                    answerFeedbackText = new createjs.Text("Correct. Click the green arrow to continue", "20px Comic Sans MS", "#000000");
+                    answerFeedbackText = new createjs.Text("Correct. Click the green arrow to continue", "16px Comic Sans MS", "#307125");
                     harpoonCount = 10;
-                    feedback = new createjs.Text(gameData.Questions[currentQuestionNumber].Feedback, "20px Comic Sans MS", "#5C4033");
+                    feedback = new createjs.Text(gameData.Questions[currentQuestionNumber].Feedback, "15px Comic Sans MS", "#5C4033");
+                    answerFeedbackText.lineWidth = 580;
+                    feedback.lineWidth = 550;
+                    feedback.maxWidth = 550;
+                  
                 } else {
 
                     for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++) {
                         if (gameData.Questions[currentQuestionNumber].Answers[i].IsCorrect == true) {
-                            answerFeedbackText = new createjs.Text("I'm sorry, the correct answer is: " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "20px Comic Sans MS", '#000000')
+                            answerFeedbackText = new createjs.Text("I'm sorry, the correct answer is: " + gameData.Questions[currentQuestionNumber].Answers[i].Text, "16px Comic Sans MS", '#712525')
                             harpoonCount = 5;
-                            feedback = new createjs.Text(gameData.Questions[currentQuestionNumber].Feedback, "20px Comic Sans MS", "#5C4033");
-
+                            feedback = new createjs.Text(gameData.Questions[currentQuestionNumber].Feedback, "15px Comic Sans MS", "#5C4033");
+                            answerFeedbackText.lineWidth = 580;
+                            feedback.lineWidth = 50;
+                            feedback.maxWidth = 550;
                         }
                     }
                 }
 
 
-                answerFeedbackText.x = feedbackPanel.x + 90;
+                answerFeedbackText.x = feedbackPanel.x + 40;
                 answerFeedbackText.y = feedbackPanel.y + 30;
+                //add answer feedback text max length
 
-                feedback.x = feedbackPanel.x + 90;
-                feedback.y = feedbackPanel.y + 80;
+
+                feedback.x = feedbackPanel.x + 40;
+                feedback.y = feedbackPanel.y + 75;
 
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
-                redx.x = feedbackPanel.x + 580;
-                redx.y = feedbackPanel.y + 90;
-
+                redx.x = feedbackPanel.x + 600;
+                redx.y = feedbackPanel.y + 85;
+                redx.scaleX = 1.5;
+                redx.scaleY = 1.5;
                 redx.addEventListener("click", handleClick);
 
 
