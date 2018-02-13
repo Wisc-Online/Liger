@@ -71,6 +71,10 @@
     <Content Include="Audio\nicewrong.ogg" />
     <Content Include="Audio\wrong.ogg" />
     <Content Include="Audio\WrongBuzzer.ogg" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -81,6 +85,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="createjs.min.js" />
+    <Content Include="game.es5.js">
+      <DependentUpon>game.js</DependentUpon>
+    </Content>
+    <Content Include="game.es5.min.js">
+      <DependentUpon>game.es5.js</DependentUpon>
+    </Content>
     <Content Include="game.js" />
     <Content Include="images\background.jpg" />
     <Content Include="Audio\btnClick.mp3" />
