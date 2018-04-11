@@ -932,16 +932,14 @@ var Game = Game || (function (createjs) {
 		function GameOverScreen(iPassed) {
 			if (iPassed) {
 				if (isLmsConnected) {
-			
 						ScormHelper.cmi.successStatus(ScormHelper.successStatus.passed);
 						ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.completed);
-
-			
-
 				}
 			} else {
-				ScormHelper.cmi.successStatus(ScormHelper.successStatus.failed);
-				ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.incomplete);
+				if (isLmsConnected) {
+					ScormHelper.cmi.successStatus(ScormHelper.successStatus.failed);
+					ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.incomplete);
+				}
 			}
 
 
