@@ -42,13 +42,7 @@
                 var targetDiv = scripts[scripts.length - 1].previousElementSibling || scripts[scripts.length - 1].previousSibling;
                 return targetDiv;
             })();
-            // var gameData = "";
-            //var gameData = { "Terms": [{ "Name": "Whats your name", "Definition": "Wake up and lipsome in my dicksome by the lakesome while fishinsome for pikmemore wtih the dikemore", "Id": "9e263302-02e1-4ba0-b64b-cd0728063180" }, { "Name": "one", "Definition": "get out of bed", "Id": "c1615021-654c-4ea5-be06-cd8841be8cb6" }, { "Name": "two", "Definition": "Take a shower", "Id": "44afc439-793f-4087-b2c6-0ebd6cb37ea3" }, { "Name": "three", "Definition": "dry off", "Id": "be2dc1be-5640-4786-b14e-0e700403f021" }, { "Name": "four", "Definition": "put on underroos", "Id": "208dc465-a7ad-453d-93e3-c564b140d269" }, { "Name": "five", "Definition": "Slip socks over feets", "Id": "bb2cf4d0-cd07-4323-b807-b69db0f03d10" }, { "Name": "six", "Definition": "Slip your pants on", "Id": "fcf0f83a-ee45-45cc-9a27-e5c41f1189d9" }, { "Name": "seven", "Definition": "put on your shirt(s)", "Id": "7150c735-fcd5-49cb-82a7-8e5b8562b869" }, { "Name": "eight", "Definition": "Put shoes on", "Id": "13f36569-9328-4908-90e0-46a5793625e0" }] };
-
-            // var gameData = { "Terms": [{ "Seed": "brocSeed.png", "Plant": "broc.png", "Id": "1" }, { "Seed": "carrotSeed.png", "Plant": "carrot.png", "Id": "2" }, { "Seed": "cornSeed.png", "Plant": "corn.png", "Id": "3" }, { "Seed": "letSeed.png", "Plant": "let.png", "Id": "4" }, { "Seed": "onionSeed.png", "Plant": "onion.png", "Id": "5" }, { "Seed": "potaSeed.png", "Plant": "pota.png", "Id": "6" }, { "Seed": "pumpSeed.png", "Plant": "pump.png", "Id": "7" }, { "Seed": "radSeed.png", "Plant": "rad.png", "Id": "8" }, { "Seed": "riceSeed.png", "Plant": "rice.png", "Id": "9" }, { "Seed": "straSeed.png", "Plant": "stra.png", "Id": "10" }, { "Seed": "tomSeed.png", "Plant": "tom.png", "Id": "11" }, { "Seed": "turnSeed.png", "Plant": "turn.png", "Id": "12" }, { "Seed": "ZuccSeed.png", "Plant": "Zucc.png", "Id": "13" }] };
-
-
-
+   
             var questions = [
                 { "text": "Select 1/32", "value": 0.03125, "unit": "in", "type":"32" },
                 { "text": "Select 1/16", "value": 0.0625, "unit": "in" },
@@ -401,13 +395,14 @@
                 { "text": "Select 6cm", "value": 60, "unit": "mm" }
 
             ];
-
+            
             var gameData = {
                 questions: questions,
                 randomize: true
             };
+            var learningObject = "Brets Mom";
 
-            var game = new Game(canvas, gameData);
+            var game = new Game(canvas, gameData, learningObject);
 
             game.start();
         })();

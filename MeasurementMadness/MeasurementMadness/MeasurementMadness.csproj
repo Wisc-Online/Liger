@@ -72,6 +72,7 @@
     <Content Include="Audio\wrong.ogg" />
     <Content Include="Audio\WrongBuzzer.ogg" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -82,6 +83,7 @@
   <ItemGroup>
     <Content Include="createjs.min.js" />
     <Content Include="game.js" />
+    <None Include="GameInFrame.html" />
     <Content Include="images\background.jpg" />
     <Content Include="Audio\btnClick.mp3" />
     <Content Include="images\button.png" />

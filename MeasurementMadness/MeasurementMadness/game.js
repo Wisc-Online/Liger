@@ -2,7 +2,7 @@
 var Game = Game || (function (createjs) {
 
 
-    function Game(canvas, gameData) {
+    function Game(canvas, gameData, learningObject) {
         // this is our constructor to the game
         var self = this;
       //  self.Webview.mediaPlaybackRequiresUserAction = NO;
@@ -27,6 +27,8 @@ var Game = Game || (function (createjs) {
                 ScormHelper.adl.nav.request("exitAll");
                 ScormHelper.terminate();
             }
+            ScormHelper.cmi.successStatus(ScormHelper.successStatus.failed);
+            ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.incomplete);
         }
         else {
             quit = function () {
@@ -444,7 +446,13 @@ var Game = Game || (function (createjs) {
         }
 
         function GetStartlength() {
-            var Question32Value = 32 * questionsArray[questionIndex].value;
+            if (questionIndex <= questionsArray.length) {
+                var Question32Value = 32 * questionsArray[questionIndex].value;
+            } else {
+               //game over
+                showPage(GameOverScreen())
+            }
+            
 
             var start, end = 0;
             var measuremment = questionsArray[questionIndex].value;
@@ -609,6 +617,21 @@ var Game = Game || (function (createjs) {
 
         }
         function CheckAnswer(answerValue) {
+
+            if (isLmsConnected) {
+                var interaction = ScormHelper.cmi.interactions().new();
+
+                interaction.id = questionIndex;
+                interaction.type = "other";
+                interaction.description = questionsArray[questionIndex].value;
+
+                //ScormHelper.cmi.interactions.n.id(questionIndex);
+                //ScormHelper.cmi.interactions.n.description(questionsArray[questionIndex].value)
+                //ScormHelper.cmi.interactions.n.type("other");
+                //ScormHelper.cmi.interactions.learner_responselearner_response(answerValue.value)
+
+            }
+
             if (highScoreGameType == true) {
                 timerTween.paused = true;
                 timerTween.setPaused(true);
@@ -618,8 +641,8 @@ var Game = Game || (function (createjs) {
                 createjs.Sound.play("Correct");
                 incrementQuestion();
               
-               // if (questionsCount >= 1) {
-                if (questionIndex >= 1) {
+                // if (questionsCount >= 1) {
+                if (questionIndex >= 1 && questionIndex <= questionsArray.length) {
                     clickedAnswerNowWait = false;
                     showPage(createGamePage());
                 } else {
@@ -629,6 +652,11 @@ var Game = Game || (function (createjs) {
             } else {
                 strikes += 1;
                 displayXXX_YourWrong();
+            }
+            if (isLmsConnected) {
+                //ScormHelper.cmi.interactions.n.result(isCorrect);
+                interaction.learnerResponse = answerValue.value;
+                interaction.result = isCorrect;
             }
         }
         function displayXXX_YourWrong(answerValue) {
@@ -1223,29 +1251,25 @@ var Game = Game || (function (createjs) {
         function submitScore(score) {
             if (submitedScore)
                 return false;
-            submitedScore = true;
-            var url = gameData.leaderboardUrl;
 
-            if (url) {
+            var theParent = window.opener || window.parent;
 
-                var data = {
-                    gameId: gameData.id,
-                    score: score
+            if (theParent) {
+
+                var message = {
+                    topic: "score",
+                    payload: score
                 };
 
-                $.ajax(url, {
-                    type: "POST",
-                    data: data,
-                    success: function (x) {
-
-                    },
-                    error: function (x, y, z) {
-
-
-                    }
-                });
-
+                var messageString = JSON.stringify(message);
+                
+                theParent.postMessage(messageString, "*");
             }
+
+
+            
+            
+            submitedScore = true;
         }
         function GameOverScreen() {
 
