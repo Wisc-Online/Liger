@@ -17,6 +17,8 @@ var Game = Game || (function (createjs) {
 
         if (typeof ScormHelper !== 'undefined') {
             isLmsConnected = ScormHelper.initialize();
+            ScormHelper.cmi.successStatus(ScormHelper.successStatus.failed);
+            ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.incomplete);
         }
 
         var quit;
@@ -27,8 +29,7 @@ var Game = Game || (function (createjs) {
                 ScormHelper.adl.nav.request("exitAll");
                 ScormHelper.terminate();
             }
-            ScormHelper.cmi.successStatus(ScormHelper.successStatus.failed);
-            ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.incomplete);
+          
         }
         else {
             quit = function () {
@@ -617,20 +618,11 @@ var Game = Game || (function (createjs) {
 
         }
         function CheckAnswer(answerValue) {
+            var isCorrect = "incorrect";
 
-            if (isLmsConnected) {
-                var interaction = ScormHelper.cmi.interactions().new();
-
-                interaction.id = questionIndex;
-                interaction.type = "other";
-                interaction.description = questionsArray[questionIndex].value;
-
-                //ScormHelper.cmi.interactions.n.id(questionIndex);
-                //ScormHelper.cmi.interactions.n.description(questionsArray[questionIndex].value)
-                //ScormHelper.cmi.interactions.n.type("other");
-                //ScormHelper.cmi.interactions.learner_responselearner_response(answerValue.value)
-
-            }
+            // questionIndex gets incremented before we end up using it for scorm interactions
+            // so create a new variable to hold onto the current value
+            var scormInteractionIndex = questionIndex;
 
             if (highScoreGameType == true) {
                 timerTween.paused = true;
@@ -640,7 +632,7 @@ var Game = Game || (function (createjs) {
                 givePoints();
                 createjs.Sound.play("Correct");
                 incrementQuestion();
-              
+                isCorrect = "correct";
                 // if (questionsCount >= 1) {
                 if (questionIndex >= 1 && questionIndex <= questionsArray.length) {
                     clickedAnswerNowWait = false;
@@ -653,10 +645,18 @@ var Game = Game || (function (createjs) {
                 strikes += 1;
                 displayXXX_YourWrong();
             }
+
             if (isLmsConnected) {
-                //ScormHelper.cmi.interactions.n.result(isCorrect);
+                var interaction = ScormHelper.cmi.interactions().new();
+
+                interaction.id = scormInteractionIndex;
+                interaction.type = "other";
+                interaction.description = questionsArray[scormInteractionIndex].value;
+
                 interaction.learnerResponse = answerValue.value;
                 interaction.result = isCorrect;
+
+                interaction.save();
             }
         }
         function displayXXX_YourWrong(answerValue) {
@@ -1276,6 +1276,7 @@ var Game = Game || (function (createjs) {
             if (isLmsConnected) {
                 ScormHelper.cmi.successStatus(ScormHelper.successStatus.passed);
                 ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.completed);
+
             }
 
             submitScore(score);

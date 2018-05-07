@@ -71,6 +71,115 @@
     <Content Include="Audio\nicewrong.ogg" />
     <Content Include="Audio\wrong.ogg" />
     <Content Include="Audio\WrongBuzzer.ogg" />
+    <Content Include="adlcp_v1p3.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="adlnav_v1p3.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="adlseq_v1p3.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="bin\MeasurementMadness.dll" />
+    <Content Include="bin\MeasurementMadness.pdb" />
+    <Content Include="bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll" />
+    <Content Include="bin\roslyn\csc.exe" />
+    <Content Include="bin\roslyn\csi.exe" />
+    <Content Include="bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll" />
+    <Content Include="bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll" />
+    <Content Include="bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll" />
+    <Content Include="bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll" />
+    <Content Include="bin\roslyn\Microsoft.Win32.Primitives.dll" />
+    <Content Include="bin\roslyn\System.AppContext.dll" />
+    <Content Include="bin\roslyn\System.Collections.Immutable.dll" />
+    <Content Include="bin\roslyn\System.Console.dll" />
+    <Content Include="bin\roslyn\System.Diagnostics.FileVersionInfo.dll" />
+    <Content Include="bin\roslyn\System.Diagnostics.Process.dll" />
+    <Content Include="bin\roslyn\System.Diagnostics.StackTrace.dll" />
+    <Content Include="bin\roslyn\System.IO.Compression.dll" />
+    <Content Include="bin\roslyn\System.IO.FileSystem.dll" />
+    <Content Include="bin\roslyn\System.IO.FileSystem.DriveInfo.dll" />
+    <Content Include="bin\roslyn\System.IO.FileSystem.Primitives.dll" />
+    <Content Include="bin\roslyn\System.IO.Pipes.dll" />
+    <Content Include="bin\roslyn\System.Reflection.Metadata.dll" />
+    <Content Include="bin\roslyn\System.Security.AccessControl.dll" />
+    <Content Include="bin\roslyn\System.Security.Claims.dll" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.Algorithms.dll" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.Encoding.dll" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.Primitives.dll" />
+    <Content Include="bin\roslyn\System.Security.Cryptography.X509Certificates.dll" />
+    <Content Include="bin\roslyn\System.Security.Principal.Windows.dll" />
+    <Content Include="bin\roslyn\System.Text.Encoding.CodePages.dll" />
+    <Content Include="bin\roslyn\System.Threading.Thread.dll" />
+    <Content Include="bin\roslyn\System.ValueTuple.dll" />
+    <Content Include="bin\roslyn\System.Xml.ReaderWriter.dll" />
+    <Content Include="bin\roslyn\System.Xml.XmlDocument.dll" />
+    <Content Include="bin\roslyn\System.Xml.XPath.dll" />
+    <Content Include="bin\roslyn\System.Xml.XPath.XDocument.dll" />
+    <Content Include="bin\roslyn\vbc.exe" />
+    <Content Include="bin\roslyn\VBCSCompiler.exe" />
+    <Content Include="datatypes.dtd" />
+    <Content Include="imscp_v1p1.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="imsss_v1p0.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="imsss_v1p0auxresource.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="imsss_v1p0control.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="imsss_v1p0delivery.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="imsss_v1p0limit.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="imsss_v1p0objective.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="imsss_v1p0random.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="imsss_v1p0rollup.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="imsss_v1p0seqrule.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="imsss_v1p0util.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ims_xml.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="lom.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="lomCustom.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="lomLoose.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="lomStrict.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="bin\roslyn\csc.exe.config" />
+    <Content Include="bin\roslyn\csc.rsp" />
+    <Content Include="bin\roslyn\csi.exe.config" />
+    <Content Include="bin\roslyn\csi.rsp" />
+    <Content Include="bin\roslyn\Microsoft.CSharp.Core.targets" />
+    <Content Include="bin\roslyn\Microsoft.VisualBasic.Core.targets" />
+    <Content Include="bin\roslyn\vbc.exe.config" />
+    <Content Include="bin\roslyn\vbc.rsp" />
+    <Content Include="bin\roslyn\VBCSCompiler.exe.config" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
@@ -79,6 +188,10 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <Content Include="xml.xsd">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="XMLSchema.dtd" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="createjs.min.js" />
@@ -104,9 +217,12 @@
     <Content Include="images\Twitter.png" />
     <Content Include="Audio\WrongBuzzer.mp3" />
     <Content Include="images\X.png" />
+    <Content Include="imsmanifest.xml" />
     <Content Include="index.html" />
+    <Content Include="ScormHelper.js" />
+    <Content Include="SCORM_API_wrapper.js" />
     <Content Include="style.css" />
-    <Content Include="Web.config" />
+    <None Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
