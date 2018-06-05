@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<manifest identifier="com.wisc-online.learningobject.ccs13617" version="1" xmlns="http://www.imsglobal.org/xsd/imscp_v1p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_v1p3" xmlns:adlseq="http://www.adlnet.org/xsd/adlseq_v1p3" xmlns:adlnav="http://www.adlnet.org/xsd/adlnav_v1p3" xmlns:imsss="http://www.imsglobal.org/xsd/imsss" xmlns:lom="http://ltsc.ieee.org/xsd/LOM" xsi:schemaLocation="http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd http://www.adlnet.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd http://ltsc.ieee.org/xsd/LOM lom.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>2004 4th Edition</schemaversion>
+  </metadata>
+  <lom:lom>
+    <lom:general>
+      <lom:description>
+        <lom:string language="en-US">Test your skills at reading a ruler.</lom:string>
+      </lom:description>
+    </lom:general>
+  </lom:lom>
+  <organizations default="com.wisc-online.learningobject.ccs13617_org">
+    <organization identifier="com.wisc-online.learningobject.ccs13617_org" adlseq:objectivesGlobalToSystem="false">
+      <title>Measurement Madness</title>
+      <item identifier="e4f357e4-d763-489a-99b4-3c1e8d362914" identifierref="16cd423c-ae7f-4c57-96c4-5dfffc17892e">
+        <title>Measurement Madness</title>
+        <isvisible>true</isvisible>
+        <imsss:sequencing>
+          <imsss:deliveryControls completionSetByContent="true" objectiveSetByContent="true" />
+        </imsss:sequencing>
+      </item>
+      <imsss:sequencing>
+        <imsss:controlMode imsss:choice="false" imsss:flow="false" />
+      </imsss:sequencing>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="16cd423c-ae7f-4c57-96c4-5dfffc17892e" type="webcontent" adlcp:scormType="sco" href="index.html">
+      <file href="createjs.min.js" />
+      <file href="SCORM_API_wrapper.js" />
+      <file href="ScormHelper.js" />
+      <file href="game.js" />
+      <file href="index.html" />
+      <file href="style.css" />
+      <file href="Audio/btnClick.mp3" />
+      <file href="Audio/btnClick.ogg" />
+      <file href="Audio/Correct.mp3" />
+      <file href="Audio/Correct.ogg" />
+      <file href="Audio/nicewrong.mp3" />
+      <file href="Audio/nicewrong.ogg" />
+      <file href="Audio/wrong.ogg" />
+      <file href="Audio/WrongBuzzer.mp3" />
+      <file href="Audio/WrongBuzzer.ogg" />
+      <file href="images/background.jpg" />
+      <file href="images/button.png" />
+      <file href="images/buttonblue.png" />
+      <file href="images/buttonGreen.png" />
+      <file href="images/FBShareIcon.png" />
+      <file href="images/FBShareIconSmall.png" />
+      <file href="images/Fired.png" />
+      <file href="images/levelstext.png" />
+      <file href="images/measurementMadnessTitle.png" />
+      <file href="images/PanelBG.png" />
+      <file href="images/panelBG_400x300.png" />
+      <file href="images/SelectedButton.png" />
+      <file href="images/SelectedButton_green.png" />
+      <file href="images/spritesheetGreen.png" />
+      <file href="images/spritesheetnomargin.png" />
+      <file href="images/Twitter.png" />
+      <file href="images/X.png" />
+    </resource>
+  </resources>
+</manifest>
