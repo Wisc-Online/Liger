@@ -2,7 +2,7 @@
 var Game = Game || (function (createjs) {
 
 
-    function Game(canvas, gameData) {
+    function Game(canvas, gameData, learningObject) {
         // this is our constructor to the game
         var self = this;
       //  self.Webview.mediaPlaybackRequiresUserAction = NO;
@@ -17,6 +17,8 @@ var Game = Game || (function (createjs) {
 
         if (typeof ScormHelper !== 'undefined') {
             isLmsConnected = ScormHelper.initialize();
+            ScormHelper.cmi.successStatus(ScormHelper.successStatus.failed);
+            ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.incomplete);
         }
 
         var quit;
@@ -27,6 +29,7 @@ var Game = Game || (function (createjs) {
                 ScormHelper.adl.nav.request("exitAll");
                 ScormHelper.terminate();
             }
+          
         }
         else {
             quit = function () {
@@ -444,7 +447,13 @@ var Game = Game || (function (createjs) {
         }
 
         function GetStartlength() {
-            var Question32Value = 32 * questionsArray[questionIndex].value;
+            if (questionIndex <= questionsArray.length) {
+                var Question32Value = 32 * questionsArray[questionIndex].value;
+            } else {
+               //game over
+                showPage(GameOverScreen())
+            }
+            
 
             var start, end = 0;
             var measuremment = questionsArray[questionIndex].value;
@@ -609,6 +618,12 @@ var Game = Game || (function (createjs) {
 
         }
         function CheckAnswer(answerValue) {
+            var isCorrect = "incorrect";
+
+            // questionIndex gets incremented before we end up using it for scorm interactions
+            // so create a new variable to hold onto the current value
+            var scormInteractionIndex = questionIndex;
+
             if (highScoreGameType == true) {
                 timerTween.paused = true;
                 timerTween.setPaused(true);
@@ -617,8 +632,9 @@ var Game = Game || (function (createjs) {
                 givePoints();
                 createjs.Sound.play("Correct");
                 incrementQuestion();
-
-                if (questionsCount >= 1) {
+                isCorrect = "correct";
+                // if (questionsCount >= 1) {
+                if (questionIndex >= 1 && questionIndex <= questionsArray.length) {
                     clickedAnswerNowWait = false;
                     showPage(createGamePage());
                 } else {
@@ -628,6 +644,19 @@ var Game = Game || (function (createjs) {
             } else {
                 strikes += 1;
                 displayXXX_YourWrong();
+            }
+
+            if (isLmsConnected) {
+                var interaction = ScormHelper.cmi.interactions().new();
+
+                interaction.id = scormInteractionIndex;
+                interaction.type = "other";
+                interaction.description = questionsArray[scormInteractionIndex].value;
+
+                interaction.learnerResponse = answerValue.value;
+                interaction.result = isCorrect;
+
+                interaction.save();
             }
         }
         function displayXXX_YourWrong(answerValue) {
@@ -720,8 +749,8 @@ var Game = Game || (function (createjs) {
 
             feedbackContainer.addEventListener("click", function () {
                 stage.removeChild(feedbackContainer);
-
-                if (questionsCount >= 1) {
+               // if (questionsCount >= 1) {
+                    if (questionIndex >= 1) {
                     showPage(createGamePage());
                 } else {
                     showPage(GameOverScreen())
@@ -880,14 +909,13 @@ var Game = Game || (function (createjs) {
                 backgroundOfDivision.graphics.drawRect(-pixelsPerDivision / 2, 200, pixelsPerDivision, divisionHeight).endStroke();
                 backgroundOfDivision.x = i * pixelsPerDivision;
 
-                division.graphics.drawRect(0, 200, 0, divisionHeight).endStroke();
+                division.graphics.drawRect(-0.5, 200, 1, divisionHeight).endStroke();
                 divisionContainer.divisionHeight = divisionHeight;
                 divisionContainer.division = division;
                 divisionContainer.backgroundOfDivision = backgroundOfDivision;
 
                 divisionContainer.addChild(backgroundOfDivision);
                 divisionContainer.addEventListener("rollover", function (e) {
-
                     createjs.Tween.get(e.currentTarget.backgroundOfDivision).to({ alpha: 1.0 }, 500);
                 });
                 divisionContainer.addEventListener("rollout", function (e) {
@@ -965,7 +993,7 @@ var Game = Game || (function (createjs) {
 
                 divisionContainer.addChild(backgroundOfDivision);
 
-                mmDivision.graphics.drawRect(0, 200, 0, -divisionHeight).endStroke();
+                mmDivision.graphics.drawRect(-0.5, 200, 1, -divisionHeight).endStroke();
 
                 divisionContainer.y = 200;
 
@@ -1223,35 +1251,32 @@ var Game = Game || (function (createjs) {
         function submitScore(score) {
             if (submitedScore)
                 return false;
-            submitedScore = true;
-            var url = gameData.leaderboardUrl;
 
-            if (url) {
+            var theParent = window.opener || window.parent;
 
-                var data = {
-                    gameId: gameData.id,
-                    score: score
+            if (theParent) {
+
+                var message = {
+                    topic: "score",
+                    payload: score
                 };
 
-                $.ajax(url, {
-                    type: "POST",
-                    data: data,
-                    success: function (x) {
-
-                    },
-                    error: function (x, y, z) {
-
-
-                    }
-                });
-
+                var messageString = JSON.stringify(message);
+                
+                theParent.postMessage(messageString, "*");
             }
+
+
+            
+            
+            submitedScore = true;
         }
         function GameOverScreen() {
 
             if (isLmsConnected) {
                 ScormHelper.cmi.successStatus(ScormHelper.successStatus.passed);
                 ScormHelper.cmi.completionStatus(ScormHelper.completionStatus.completed);
+
             }
 
             submitScore(score);
