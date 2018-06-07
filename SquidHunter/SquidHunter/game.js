@@ -325,10 +325,6 @@ var Game = Game || (function (createjs) {
                 return soundContainer;
             }
 
-
-
-           
-
             //define bass sound in beginning on load
             var bassSound = createjs.Sound.createInstance("bass");
 
@@ -527,7 +523,7 @@ var Game = Game || (function (createjs) {
 
                 createjs.Tween.get(shadow, { loop: false })
                 .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
-              //  .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+            //  .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
 
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logoContainer);
@@ -1096,6 +1092,14 @@ var Game = Game || (function (createjs) {
                     inkContainer.scaleX = 0;
                     inkContainer.scaleY = 0;
 
+                    var shadow = new createjs.Shadow("#000", 0, 0, 3);
+
+                    //added 6.7.18
+                    createjs.Tween.get(shadow)
+                        .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                    inkContainer.shadow = shadow;
+                    //
+
                     self.stage.addChild(inkContainer);
 
                     createjs.Tween.get(inkContainer, { loop: false })
@@ -1553,10 +1557,6 @@ var Game = Game || (function (createjs) {
 
 
 
-
-
-
-
                     answerContainer.name = "child";
                     answerContainer.IsCorrect = question.Answers[j].IsCorrect;
                     answerContainer.Idx = j;
@@ -1650,7 +1650,7 @@ var Game = Game || (function (createjs) {
                             harpoonCount = 5;
                             feedback = new createjs.Text(gameData.Questions[currentQuestionNumber].Feedback, "15px Comic Sans MS", "#5C4033");
                             answerFeedbackText.lineWidth = 580;
-                            feedback.lineWidth = 50;
+                            feedback.lineWidth = 550;
                             feedback.maxWidth = 550;
                         }
                     }
