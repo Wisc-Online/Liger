@@ -2955,6 +2955,7 @@ var Game = Game || (function (createjs) {
                     inkContainer.scaleX = 0;
                     inkContainer.scaleY = 0;
 
+
                     var shadow = new createjs.Shadow("#000", 0, 0, 3);
 
                     //added 6.7.18
