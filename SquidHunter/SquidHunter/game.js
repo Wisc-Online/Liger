@@ -83,7 +83,8 @@ var Game = Game || (function (createjs) {
                 { id: "ink", src: assetsPath + "ink.png" },
                 { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
                 { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
-                { id: "redx", src: assetsPath + "continuechk.png" },
+                { id: "redx", src: assetsPath + "redx.png" },
+                { id: "greenchk", src: assetsPath + "greenchk.png"},
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
                 { id: "logosprite", src: assetsPath + "logosprite.png" },
                 { id: "logo", src: assetsPath + "Logo.png" },
@@ -485,7 +486,7 @@ var Game = Game || (function (createjs) {
                 panelBG.x = 0;
                 panelBG.y = 50;
 
-                titleText = new createjs.Text(gameData.Title, " Bold 35px Comic Sans MS", "#000000");
+                titleText = new createjs.Text(gameData.Title, " Bold 23px Comic Sans MS", "#000000");
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
 
@@ -575,7 +576,7 @@ var Game = Game || (function (createjs) {
 
                     
             //    if (isGamePaused == true) {
-                backText = new createjs.Text("Back", "Bold 23px Comic Sans MS", "#000000");
+                backText = new createjs.Text("Back", "Bold 20px Comic Sans MS", "#000000");
                     backText.x = instructionsScreen.x + 450;
                     backText.y = instructionsScreen.y + 450;
                     backText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#FFF").drawRoundRect(0, 0, 100, 40, 50));
@@ -614,7 +615,7 @@ var Game = Game || (function (createjs) {
                 panelBG.x = 0;
                 panelBG.y = 50;
 
-                var titleText = new createjs.Text(gameData.Title, " Bold 35px Comic Sans MS", "#000000");
+                var titleText = new createjs.Text(gameData.Title, " Bold 20px Comic Sans MS", "#000000");
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
 
@@ -876,8 +877,8 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(playerContainer);
                 playerContainer.x = 300;
                 playerContainer.y = 420;
-                playerContainer.scaleX = .25;
-                playerContainer.scaleY = .25;
+                playerContainer.scaleX = .35;
+                playerContainer.scaleY = .35;
 
 
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
@@ -1640,12 +1641,27 @@ var Game = Game || (function (createjs) {
 
 
                 if (answerstatus == "correct") {
-                    answerFeedbackText = new createjs.Text("Correct. Click the green arrow to continue", "16px Comic Sans MS", "#307125");
+                    answerFeedbackText = new createjs.Text("Correct. Click the green check to continue", "16px Comic Sans MS", "#307125");
                     harpoonCount = 10;
                     feedback = new createjs.Text(gameData.Questions[currentQuestionNumber].Feedback, "15px Comic Sans MS", "#5C4033");
                     answerFeedbackText.lineWidth = 580;
                     feedback.lineWidth = 550;
                     feedback.maxWidth = 550;
+
+                    var greencheck = new createjs.Bitmap(queue.getResult("greenchk"))
+                    greencheck.x = feedbackPanel.x + 600;
+                    greencheck.y = feedbackPanel.y + 85;
+                    //redx.scaleX = 1.5;
+                    //redx.scaleY = 1.5;
+                    greencheck.addEventListener("click", handleClick);
+
+                    greencheck.on("mouseover", handleButtonHover);
+                    greencheck.on("mouseout", handleButtonHover);
+
+                    greencheck.shadow = new createjs.Shadow("#000", 0, 0, 3);
+                    greencheck.shadow.blur = 0;
+
+
                   
                 } else {
 
@@ -1657,6 +1673,20 @@ var Game = Game || (function (createjs) {
                             answerFeedbackText.lineWidth = 580;
                             feedback.lineWidth = 550;
                             feedback.maxWidth = 550;
+
+                            var redx = new createjs.Bitmap(queue.getResult("redx"))
+                            redx.x = feedbackPanel.x + 600;
+                            redx.y = feedbackPanel.y + 85;
+                            //redx.scaleX = 1.5;
+                            //redx.scaleY = 1.5;
+                            redx.addEventListener("click", handleClick);
+
+                            redx.on("mouseover", handleButtonHover);
+                            redx.on("mouseout", handleButtonHover);
+
+                            redx.shadow = new createjs.Shadow("#000", 0, 0, 3);
+                            redx.shadow.blur = 0;
+
                         }
                     }
                 }
@@ -1671,12 +1701,9 @@ var Game = Game || (function (createjs) {
                 feedback.y = feedbackPanel.y + 75;
 
 
-                var redx = new createjs.Bitmap(queue.getResult("redx"))
-                redx.x = feedbackPanel.x + 600;
-                redx.y = feedbackPanel.y + 85;
-                redx.scaleX = 1.5;
-                redx.scaleY = 1.5;
-                redx.addEventListener("click", handleClick);
+               
+
+
 
 
                 function handleClick(event) {
@@ -1697,7 +1724,7 @@ var Game = Game || (function (createjs) {
 
                 }
 
-                feedbackContainer.addChild(feedbackPanel, answerFeedbackText, redx, feedback)
+                feedbackContainer.addChild(feedbackPanel, answerFeedbackText, redx, greencheck, feedback)
                 self.stage.addChild(feedbackContainer);
 
                 var redx = new createjs.Bitmap(queue.getResult("redx"))
@@ -1851,13 +1878,13 @@ var Game = Game || (function (createjs) {
 
                     if (playerContainer.x < 40)
                         playerContainer.x = 40;
-                    else if (playerContainer.x > 730)
-                        playerContainer.x = 730;
+                    else if (playerContainer.x > 700)
+                        playerContainer.x = 700;
 
                     if (playerContainer.y < 320)
                         playerContainer.y = 320;
-                    else if (playerContainer.y > 500)
-                        playerContainer.y = 500;
+                    else if (playerContainer.y > 480)
+                        playerContainer.y = 480;
                 }
             }
 
