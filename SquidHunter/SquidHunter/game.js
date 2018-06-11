@@ -489,6 +489,8 @@ var Game = Game || (function (createjs) {
                 titleText = new createjs.Text(gameData.Title, " Bold 23px Comic Sans MS", "#000000");
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
+                titleText.lineWidth = 400;
+
 
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
                 titleText.shadow = shadow;
@@ -618,6 +620,8 @@ var Game = Game || (function (createjs) {
                 var titleText = new createjs.Text(gameData.Title, " Bold 20px Comic Sans MS", "#000000");
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
+                titleText.lineWidth = 400;
+
 
                 var descriptionText = new createjs.Text(gameData.Description, "18px Comic Sans MS", "#000000");
                 descriptionText.x = panelBG.x + 130;
@@ -862,8 +866,8 @@ var Game = Game || (function (createjs) {
                 var data = {
                     images: [queue.getResult("piratesprite")],
                     frames: {
-                        width: 250,
-                        height: 350,
+                        width: 312.5,
+                        height: 438,
                         frames: 2,
                     },
                     animations: {
@@ -877,8 +881,8 @@ var Game = Game || (function (createjs) {
                 self.stage.addChild(playerContainer);
                 playerContainer.x = 300;
                 playerContainer.y = 420;
-                playerContainer.scaleX = .35;
-                playerContainer.scaleY = .35;
+                playerContainer.scaleX = .30;
+                playerContainer.scaleY = .30;
 
 
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
@@ -1883,8 +1887,8 @@ var Game = Game || (function (createjs) {
 
                     if (playerContainer.y < 320)
                         playerContainer.y = 320;
-                    else if (playerContainer.y > 480)
-                        playerContainer.y = 480;
+                    else if (playerContainer.y > 455)
+                        playerContainer.y = 455;
                 }
             }
 
