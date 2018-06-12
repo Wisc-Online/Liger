@@ -84,7 +84,7 @@ var Game = Game || (function (createjs) {
                 { id: "questionPanel", src: assetsPath + "SmallPanel.png" },
                 { id: "feedbackPanel", src: assetsPath + "SmallPanel2.png" },
                 { id: "redx", src: assetsPath + "redx.png" },
-                { id: "greenchk", src: assetsPath + "greenchk.png"},
+                { id: "greenchk", src: assetsPath + "greenchk.png" },
                 { id: "answerHolder", src: assetsPath + "answerHolder.png" },
                 { id: "logosprite", src: assetsPath + "logosprite.png" },
                 { id: "logo", src: assetsPath + "Logo.png" },
@@ -227,7 +227,7 @@ var Game = Game || (function (createjs) {
                 isGameRunning = false;
 
                 //add the back button
-            //    backText.alpha = 1;
+                //    backText.alpha = 1;
 
             }
 
@@ -256,8 +256,8 @@ var Game = Game || (function (createjs) {
                 var initScareY = 1;
                 if (event.type == "mouseover") {
                     createjs.Tween.get(event.currentTarget).to({ scaleX: initScareX * 1.0625, scaleY: initScareY * 1.0625 }, 100)
-                                                            .to({ scaleX: initScareX, scaleY: initScareY }, 100)
-                                                            .to({ scaleX: initScareX * 1.0625, scaleY: initScareY * 1.0625 }, 100);
+                        .to({ scaleX: initScareX, scaleY: initScareY }, 100)
+                        .to({ scaleX: initScareX * 1.0625, scaleY: initScareY * 1.0625 }, 100);
                 }
                 if (event.type == "mouseout") {
                     createjs.Tween.get(event.currentTarget).to({ scaleX: initScareX, scaleY: initScareY }, 100);
@@ -358,14 +358,14 @@ var Game = Game || (function (createjs) {
                 titleText.lineWidth = 380;
 
 
-               // titleText.outline = 1.5;
+                // titleText.outline = 1.5;
 
 
                 createjs.Tween.get(titleText)
                     .wait(600)
                     .to({ alpha: 1, visible: true }, 1000)
                     .to({ scaleX: 1.5, scaleY: 1.5 }, 2000, createjs.Ease.ElasticOut)
-                    .to({color:"black"}, 500)
+                    .to({ color: "black" }, 500)
 
                 var mobileText = new createjs.Text("Are you on mobile?", "28px Comic Sans MS", "#000000");
                 mobileText.x = panelBG.x + 150;
@@ -378,13 +378,13 @@ var Game = Game || (function (createjs) {
                 panelBG.shadow = shadow;
 
                 createjs.Tween.get(shadow, { loop: false })
-                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
-               // .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+                    .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                // .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
 
                 createjs.Tween.get(mobileText)
-                    .to({ x: 150, y: 300}, 2000 , createjs.Ease.ElasticOut)
-                    
+                    .to({ x: 150, y: 300 }, 2000, createjs.Ease.ElasticOut)
+
 
                 var yesButton = new createjs.Bitmap(queue.getResult("yesbutton"))
 
@@ -427,7 +427,7 @@ var Game = Game || (function (createjs) {
                 logoContainer.alpha = 0;
                 createjs.Tween.get(logoContainer).wait(500).to({ alpha: 1, visible: true }, 2000).call(handleComplete);
                 function handleComplete() {
-                
+
                 }
 
                 logoContainer.regX = 200;
@@ -508,7 +508,7 @@ var Game = Game || (function (createjs) {
 
 
                 var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship." +
-                   "\nHarpoons will fire every 2 seconds.\nEliminate squids for treasure." +
+                    "\nHarpoons will fire every 2 seconds.\nEliminate squids for treasure." +
                     "\nIf the pirate gets hit by the ink, you will need to answer a question." +
                     "\nIf the pirate runs out of harpoons, you will need to answer a question.", "16px Comic Sans MS", "#000000");
                 directionsText.x = panelBG.x + 130;
@@ -518,7 +518,7 @@ var Game = Game || (function (createjs) {
                 logoContainer.alpha = 0;
                 createjs.Tween.get(logoContainer).wait(500).to({ alpha: 1, visible: true }, 1000).call(handleComplete);
                 function handleComplete() {
-                  //  self.stage.addChild(logoContainer)
+                    //  self.stage.addChild(logoContainer)
                 }
 
                 logoContainer.regX = 180;
@@ -531,8 +531,8 @@ var Game = Game || (function (createjs) {
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
 
                 createjs.Tween.get(shadow, { loop: false })
-                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
-            //  .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+                    .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                //  .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
 
                 instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logoContainer);
@@ -570,42 +570,42 @@ var Game = Game || (function (createjs) {
                     playBass();
                     StartInteraction();
 
-                    
+
                 };
 
-               // titleText.shadow = shadow;
+                // titleText.shadow = shadow;
                 playButton.shadow = shadow;
                 logoContainer.shadow = shadow;
                 panelBG.shadow = shadow;
 
-                    
-            //    if (isGamePaused == true) {
+
+                //    if (isGamePaused == true) {
                 backText = new createjs.Text("Back", "Bold 20px Comic Sans MS", "#000000");
-                    backText.x = instructionsScreen.x + 450;
-                    backText.y = instructionsScreen.y + 450;
-                    backText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#FFF").drawRoundRect(0, 0, 100, 40, 50));
-               //     self.stage.addChild(backText);
-                 //   backText.alpha = 0;
+                backText.x = instructionsScreen.x + 450;
+                backText.y = instructionsScreen.y + 450;
+                backText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#FFF").drawRoundRect(0, 0, 100, 40, 50));
+                //     self.stage.addChild(backText);
+                //   backText.alpha = 0;
 
-                    backText.addEventListener("click", handleClick);
+                backText.addEventListener("click", handleClick);
 
-                    backText.on("mouseover", handleButtonHover);
-                    backText.on("mouseover", function (evt) {
-                        evt.currentTarget.color = "white";
-                    });
+                backText.on("mouseover", handleButtonHover);
+                backText.on("mouseover", function (evt) {
+                    evt.currentTarget.color = "white";
+                });
 
-                    backText.on("mouseout", handleButtonHover);
-                    backText.on("mouseout", function (evt) {
-                        evt.currentTarget.color = "black";
-                    })
+                backText.on("mouseout", handleButtonHover);
+                backText.on("mouseout", function (evt) {
+                    evt.currentTarget.color = "black";
+                })
 
 
-                    function handleClick(event) {
-                        //self.stage.removeChild(backText);
-                        self.stage.removeChild(instructionsScreen);
-                        resumeTheGame();
-                    }
-         //       }
+                function handleClick(event) {
+                    //self.stage.removeChild(backText);
+                    self.stage.removeChild(instructionsScreen);
+                    resumeTheGame();
+                }
+                //       }
 
 
             }
@@ -631,7 +631,7 @@ var Game = Game || (function (createjs) {
                 descriptionText.lineWidth = 560;
 
                 var directionsText = new createjs.Text("Directions: Use 'Spacebar' or 'Left Mouse Click' to fire harpoons.\nUse 'Directional Arrow' keys to move along the ship." +
-                   "\nEliminate squids for treasure." +
+                    "\nEliminate squids for treasure." +
                     "\nIf the pirate gets hit by the ink, you will need to answer a question." +
                     "\nIf the pirate runs out of harpoons, you will need to answer a question.", "16px Comic Sans MS", "#000000");
                 directionsText.x = panelBG.x + 130;
@@ -700,12 +700,12 @@ var Game = Game || (function (createjs) {
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
 
                 createjs.Tween.get(shadow, { loop: false })
-                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
-          //      .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+                    .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                //      .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
                 playButton.shadow = shadow;
                 logoContainer.shadow = shadow;
-          //      titleText.shadow = shadow;
+                //      titleText.shadow = shadow;
                 panelBG.shadow = shadow;
 
                 playButton.addEventListener("click", handleClickPlay);
@@ -715,7 +715,7 @@ var Game = Game || (function (createjs) {
                     self.stage.removeChild(instructionsScreen);
                     StartInteraction();
 
-                   
+
                 };
 
                 //    if (isGamePaused == true) {
@@ -891,7 +891,7 @@ var Game = Game || (function (createjs) {
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
 
                 createjs.Tween.get(shadow)
-                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                    .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
                 playerContainer.shadow = shadow;
 
 
@@ -906,7 +906,7 @@ var Game = Game || (function (createjs) {
                     KEYCODE_UP = keyCodes.UP_ARROW,
                     KEYCODE_DOWN = keyCodes.DOWN_ARROW;
 
-           
+
 
                 //load squid/s
                 for (var i = 0; i < maxEnemyCount; ++i) {
@@ -930,11 +930,10 @@ var Game = Game || (function (createjs) {
                 helpContainer.addEventListener("click", handleClick);
 
                 function handleClick(event) {
-                    
-                   // isGamePaused = true;
 
-                    if (isQuestionDisplayed == false)
-                    {
+                    // isGamePaused = true;
+
+                    if (isQuestionDisplayed == false) {
 
                         pauseTheGame();
 
@@ -1079,10 +1078,10 @@ var Game = Game || (function (createjs) {
                                     Score = Score + 10;
                                     printScore();
                                 })
-                            .call(function () {
-                                spawnEnemy();
-                            })
-                            ;
+                                .call(function () {
+                                    spawnEnemy();
+                                })
+                                ;
 
                             // remove it from the array
                             enemies.splice(i, 1);
@@ -1101,7 +1100,7 @@ var Game = Game || (function (createjs) {
                     console.log("making ink")
                     inkContainer = new createjs.Container();
 
-                    
+
 
                     inkContainer.x = theenemy.x;
                     inkContainer.y = theenemy.y;
@@ -1122,9 +1121,9 @@ var Game = Game || (function (createjs) {
                     self.stage.addChild(inkContainer);
 
                     createjs.Tween.get(inkContainer, { loop: false })
-                        
-                        .to({ scaleX: 1, scaleY: 1 }, 250 );
-                        
+
+                        .to({ scaleX: 1, scaleY: 1 }, 250);
+
 
                     //when ink hits the player
                     var theTween = createjs.Tween.get(inkContainer, {
@@ -1288,7 +1287,7 @@ var Game = Game || (function (createjs) {
                             moveDown();
                             event.preventDefault();
                             break;
-                            //map harpoon to spacebar
+                        //map harpoon to spacebar
                         case KEYCODE_FIRE:
                             makeHarpoonOrAskQuestion();
                             event.preventDefault();
@@ -1308,19 +1307,19 @@ var Game = Game || (function (createjs) {
                     harpoonProgressBar.y = canvas.height - height;
 
                     createjs.Tween.get(harpoonProgressBar, { loop: true })
-                                  .to({ scaleX: 1, alpha: 1 }, 2000)
-                                  .call(function () {
-                                      makeHarpoonOrAskQuestion();
-                                  });
+                        .to({ scaleX: 1, alpha: 1 }, 2000)
+                        .call(function () {
+                            makeHarpoonOrAskQuestion();
+                        });
 
                     stage.addChild(harpoonProgressBar);
                 }
 
 
-                
 
-      
-       
+
+
+
 
 
 
@@ -1344,8 +1343,8 @@ var Game = Game || (function (createjs) {
                 console.log("made enemy")
                 enemyContainer =
 
-                 //  var container = new createjs.Container();
-                squidContainer = new createjs.Container();
+                    //  var container = new createjs.Container();
+                    squidContainer = new createjs.Container();
                 var speed = .02;
                 // var enemy = new createjs.Bitmap(queue.getResult("enemy"));
                 var data = {
@@ -1384,9 +1383,9 @@ var Game = Game || (function (createjs) {
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
 
                 createjs.Tween.get(shadow)
-                .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                    .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
                 squidContainer.shadow = shadow;
-              
+
 
                 //enemy functionality
                 do {
@@ -1508,15 +1507,15 @@ var Game = Game || (function (createjs) {
                 var questionsText = new createjs.Text("Question:" + " " + question.Text, "Bold 18px Comic Sans MS", "#000000");
                 questionsText.x = questionPanel.x + 100;
                 questionsText.y = questionPanel.y + 70;
-               questionsText.lineWidth = 600;
+                questionsText.lineWidth = 600;
 
-               var shadow = new createjs.Shadow("#000", 0, 0, 3);
+                var shadow = new createjs.Shadow("#000", 0, 0, 3);
 
-               createjs.Tween.get(shadow, { loop: true })
-               .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
-               .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+                createjs.Tween.get(shadow, { loop: true })
+                    .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                    .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
-               questionPanel.shadow = shadow;
+                questionPanel.shadow = shadow;
 
 
 
@@ -1536,7 +1535,7 @@ var Game = Game || (function (createjs) {
                 answerContainersParent = new createjs.Container();
                 answerContainersParent.name = "parent";
 
-                for (var j = 0; j < gameData.Questions[0].Answers.length; j++) {
+                for (var j = 0; j < question.Answers.length; j++) {
                     console.log("answers")
                     var answersText = new createjs.Text("Answer:" + " " + question.Answers[j].Text, "14px Comic Sans MS", "#000000");
                     answersText.lineWidth = 590;
@@ -1567,14 +1566,14 @@ var Game = Game || (function (createjs) {
 
 
                         if (event.type == "mouseover") {
-                      //      createjs.Tween.get(event.currentTarget).to({ scaleX: 2.0, scaleY: 1.2 }, 100)
+                            //      createjs.Tween.get(event.currentTarget).to({ scaleX: 2.0, scaleY: 1.2 }, 100)
 
                             var theShadow = event.currentTarget.shadow;
 
                             createjs.Tween.get(theShadow).to({ blur: 20 }, 100);
                         }
                         if (event.type == "mouseout") {
-                      //      createjs.Tween.get(event.currentTarget).to({ scaleX: 2.1, scaleY: 1.2 }, 100);
+                            //      createjs.Tween.get(event.currentTarget).to({ scaleX: 2.1, scaleY: 1.2 }, 100);
 
                             var theShadow = event.currentTarget.shadow;
 
@@ -1640,14 +1639,14 @@ var Game = Game || (function (createjs) {
                 //add harpoon count
                 //this will be the correct answer
                 // <0 otherwise <1
-                
+
                 //feedback area
-          
+
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
 
                 createjs.Tween.get(shadow, { loop: false })
-                .to({ offsetX: 5, offsetY: 5, blur: 20 }, 1500, createjs.Ease.quadInOut)
-              //  .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
+                    .to({ offsetX: 5, offsetY: 5, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                //  .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
                 feedbackPanel.shadow = shadow;
 
@@ -1669,7 +1668,7 @@ var Game = Game || (function (createjs) {
                     greencheck.on("mouseover", handleButtonHover);
                     greencheck.on("mouseout", handleButtonHover);
 
-                  
+
                 } else {
 
                     for (var i = 0; i < gameData.Questions[currentQuestionNumber].Answers.length; i++) {
