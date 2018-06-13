@@ -771,9 +771,16 @@ var Game = Game || (function (createjs) {
             }
 
             function printScore() {
+                if (Score <= 0) {
+                    Score = 0;
+                } if (Score > 0) {
+                    scoreLabel.text = " " + Score;
+                    var coin = createjs.Sound.createInstance("coin");
+                    coin.play();
+                }
                 scoreLabel.text = " " + Score;
-                var coin = createjs.Sound.createInstance("coin");
-                coin.play();
+             //   var coin = createjs.Sound.createInstance("coin");
+            //    coin.play();
             }
 
             function StartInteraction() {
@@ -894,9 +901,6 @@ var Game = Game || (function (createjs) {
                     .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
                 playerContainer.shadow = shadow;
 
-
-
-
                 //load controls
                 this.document.onkeydown = keyPressed;
                 var KEYCODE_LEFT = keyCodes.LEFT_ARROW,
@@ -960,7 +964,12 @@ var Game = Game || (function (createjs) {
                     }
                 };
 
+              //  load big shadow
 
+                //var bigshadow = new createjs.Shadow("#008000", 0, 0, 15);
+
+                //createjs.Tween.get(bigshadow)
+                //    .to({ offsetX: 10, offsetY: 10, blur: 300 }, 1500, createjs.Ease.quadInOut)
 
                 self.stage.addChild(helpContainer);
 
@@ -970,28 +979,48 @@ var Game = Game || (function (createjs) {
                 scoreLabel.lineWidth = 270;
                 scoreLabel.color = "white";
                 scoreLabel.shadow = shadow;
-                scoreLabel.y = 30;
+                scoreLabel.y = 35;
                 scoreLabel.x = 720;
                 self.stage.addChild(scoreLabel);
+
+                //load score text
+                scoreText = new createjs.Text("Score", "Bold 18px Comic Sans MS", "#FFFFFF");
+                scoreText.textAlign = "center";
+                scoreText.lineWidth = 270;
+                scoreText.color = "white";
+                scoreText.shadow = shadow;
+                scoreText.y = 7;
+                scoreText.x = 715;
+                self.stage.addChild(scoreText);
 
                 //load treasure icon
                 treasureContainer = new createjs.Container();
                 var treasure = new createjs.Bitmap(queue.getResult("treasure"))
-                treasureContainer.y = 15;
+                treasureContainer.y = 25;
                 treasureContainer.x = 635;
                 treasureContainer.scaleX = 0.3;
                 treasureContainer.scaleY = 0.3;
                 treasureContainer.shadow = shadow;
-
                 treasureContainer.addChild(treasure)
                 self.stage.addChild(treasureContainer);
+
+   
+                //load harpoon count text
+                harpoonCountText = new createjs.Text("Harpoons", "Bold 18px Comic Sans MS", "#FFFFFF");
+                harpoonCountText.textAlign = "center";
+                harpoonCountText.lineWidth = 270;
+                harpoonCountText.color = "white";
+                harpoonCountText.shadow = shadow;
+                harpoonCountText.y = 7;
+                harpoonCountText.x = 595;
+                self.stage.addChild(harpoonCountText);
 
                 //load harpoon count label
                 harpoonCountLabel = new createjs.Text(" " + harpoonCount, "Bold 22px Comic Sans MS", "#FFFFFF");
                 harpoonCountLabel.textAlign = "center";
                 harpoonCountLabel.lineWidth = 270;
                 harpoonCountLabel.color = "white";
-                harpoonCountLabel.y = 30;
+                harpoonCountLabel.y = 35;
                 harpoonCountLabel.x = 600;
                 harpoonCountLabel.shadow = shadow;
 
@@ -1000,7 +1029,7 @@ var Game = Game || (function (createjs) {
                 //load harpoon icon
                 harpoonContainer = new createjs.Container();
                 harpoon = new createjs.Bitmap(queue.getResult("harpoon"));
-                harpoonContainer.y = 15;
+                harpoonContainer.y = 25;
                 harpoonContainer.x = 575;
                 harpoonContainer.scaleX = 1.2;
                 harpoonContainer.scaleY = 1.2;
@@ -1036,7 +1065,7 @@ var Game = Game || (function (createjs) {
                             else
                                 deliverQuestion(gameData.Questions[currentQuestionNumber]);
 
-                            Score = Score - 20;
+                          //  Score = Score - 10;
                             printScore();
                         }
 
@@ -1599,7 +1628,7 @@ var Game = Game || (function (createjs) {
                                 // alert("correct")
                                 var chime = createjs.Sound.createInstance("chime", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
                                 createjs.Sound.play("chime");
-                                Score = Score + 35;
+                                Score = Score + 25;
                                 printScore();
                                 deliverFeedback("correct");
                             } else {
@@ -1607,7 +1636,7 @@ var Game = Game || (function (createjs) {
                                 var wrong = createjs.Sound.createInstance("wrong", { interrupt: createjs.Sound.INTERRUPT_ANY, loop: 0 });
                                 wrong.volume = wrong.volume * .5;
                                 createjs.Sound.play("wrong");
-                                Score = Score - 25;
+                                Score = Score - 15;
                                 printScore();
                                 deliverFeedback("incorrect");
                             }
