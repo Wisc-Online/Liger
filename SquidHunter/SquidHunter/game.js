@@ -895,12 +895,25 @@ var Game = Game || (function (createjs) {
                 playerContainer.scaleY = .30;
 
 
-                var shadow = new createjs.Shadow("#000", 0, 0, 3);
+                //blue rectangle
+                var graphics = new createjs.Graphics().beginFill("#141887").drawRoundRect(525, 5, 235, 90, 5, 5, 5, 5);
+                var shape = new createjs.Shape(graphics);
+                shape.alpha = .4;
+                shape.blur = 5;
+                shape.shadow = shadow;
 
+                self.stage.addChild(shape);
+
+
+
+                //shadow
+                var shadow = new createjs.Shadow("#000", 0, 0, 3);
                 createjs.Tween.get(shadow)
                     .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
                 playerContainer.shadow = shadow;
 
+
+            
                 //load controls
                 this.document.onkeydown = keyPressed;
                 var KEYCODE_LEFT = keyCodes.LEFT_ARROW,
@@ -964,13 +977,6 @@ var Game = Game || (function (createjs) {
                     }
                 };
 
-              //  load big shadow
-
-                //var bigshadow = new createjs.Shadow("#008000", 0, 0, 15);
-
-                //createjs.Tween.get(bigshadow)
-                //    .to({ offsetX: 10, offsetY: 10, blur: 300 }, 1500, createjs.Ease.quadInOut)
-
                 self.stage.addChild(helpContainer);
 
                 //load score label
@@ -980,7 +986,7 @@ var Game = Game || (function (createjs) {
                 scoreLabel.color = "white";
                 scoreLabel.shadow = shadow;
                 scoreLabel.y = 35;
-                scoreLabel.x = 720;
+                scoreLabel.x = 730;
                 self.stage.addChild(scoreLabel);
 
                 //load score text
@@ -990,14 +996,14 @@ var Game = Game || (function (createjs) {
                 scoreText.color = "white";
                 scoreText.shadow = shadow;
                 scoreText.y = 7;
-                scoreText.x = 715;
+                scoreText.x = 725;
                 self.stage.addChild(scoreText);
 
                 //load treasure icon
                 treasureContainer = new createjs.Container();
                 var treasure = new createjs.Bitmap(queue.getResult("treasure"))
                 treasureContainer.y = 25;
-                treasureContainer.x = 635;
+                treasureContainer.x = 645;
                 treasureContainer.scaleX = 0.3;
                 treasureContainer.scaleY = 0.3;
                 treasureContainer.shadow = shadow;
@@ -1012,7 +1018,7 @@ var Game = Game || (function (createjs) {
                 harpoonCountText.color = "white";
                 harpoonCountText.shadow = shadow;
                 harpoonCountText.y = 7;
-                harpoonCountText.x = 595;
+                harpoonCountText.x = 605;
                 self.stage.addChild(harpoonCountText);
 
                 //load harpoon count label
@@ -1021,7 +1027,7 @@ var Game = Game || (function (createjs) {
                 harpoonCountLabel.lineWidth = 270;
                 harpoonCountLabel.color = "white";
                 harpoonCountLabel.y = 35;
-                harpoonCountLabel.x = 600;
+                harpoonCountLabel.x = 610;
                 harpoonCountLabel.shadow = shadow;
 
                 self.stage.addChild(harpoonCountLabel);
@@ -1030,7 +1036,7 @@ var Game = Game || (function (createjs) {
                 harpoonContainer = new createjs.Container();
                 harpoon = new createjs.Bitmap(queue.getResult("harpoon"));
                 harpoonContainer.y = 25;
-                harpoonContainer.x = 575;
+                harpoonContainer.x = 585;
                 harpoonContainer.scaleX = 1.2;
                 harpoonContainer.scaleY = 1.2;
                 harpoonContainer.rotation = 45;
@@ -1143,7 +1149,7 @@ var Game = Game || (function (createjs) {
 
                     //added 6.7.18
                     createjs.Tween.get(shadow)
-                        .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                        .to({ offsetX: 10, offsetY: 10, blur: 3 }, 1500, createjs.Ease.quadInOut)
                     inkContainer.shadow = shadow;
                     //
 
