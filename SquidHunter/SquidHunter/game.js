@@ -896,13 +896,25 @@ var Game = Game || (function (createjs) {
 
 
                 //blue rectangle
-                var graphics = new createjs.Graphics().beginFill("#141887").drawRoundRect(525, 5, 235, 90, 5, 5, 5, 5);
-                var shape = new createjs.Shape(graphics);
-                shape.alpha = .4;
-                shape.blur = 5;
-                shape.shadow = shadow;
+                //might be cleaner than blur shape
+                //var graphics = new createjs.Graphics().beginFill("#141887").drawRoundRect(525, 5, 235, 90, 5, 5, 5, 5);
+                //var shape = new createjs.Shape(graphics);
+                //shape.alpha = .4;
+                //shape.shadow = shadow;
+                //self.stage.addChild(shape);
 
-                self.stage.addChild(shape);
+                //blur shape
+                var blurshape = new createjs.Shape().set({ x: 525, y: 5 });
+                blurshape.graphics.beginFill("#141887").drawRect(0, 0, 250 , 110);
+
+                var blurFilter = new createjs.BlurFilter(120, 120, 1);
+                blurshape.alpha = .7;
+                blurshape.filters = [blurFilter];
+                var bounds = blurFilter.getBounds();
+
+                blurshape.cache(-50 + bounds.x, -50 + bounds.y, 100 + bounds.width, 100 + bounds.height);
+
+                self.stage.addChild(blurshape);
 
 
 
