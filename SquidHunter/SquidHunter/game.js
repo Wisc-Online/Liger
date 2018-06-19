@@ -486,7 +486,7 @@ var Game = Game || (function (createjs) {
                 panelBG.x = 0;
                 panelBG.y = 50;
 
-                titleText = new createjs.Text(gameData.Title, " Bold 20px Comic Sans MS", "#000000");
+                titleText = new createjs.Text(gameData.Title, " Bold 18px Comic Sans MS", "#000000");
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 75;
                 titleText.lineWidth = 560;
@@ -503,8 +503,8 @@ var Game = Game || (function (createjs) {
 
                 var descriptionText = new createjs.Text(gameData.Description, "17px Comic Sans MS", "#000000");
                 descriptionText.x = panelBG.x + 130;
-                descriptionText.y = panelBG.y + 130;
-                descriptionText.lineWidth = 560;
+                descriptionText.y = panelBG.y + 140;
+                descriptionText.lineWidth = 550;
 
 
                 var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship." +
@@ -512,20 +512,21 @@ var Game = Game || (function (createjs) {
                     "\nIf the pirate gets hit by the ink, you will need to answer a question." +
                     "\nIf the pirate runs out of harpoons, you will need to answer a question.", "16px Comic Sans MS", "#000000");
                 directionsText.x = panelBG.x + 130;
-                directionsText.y = panelBG.y + 180;
+                directionsText.y = panelBG.y + 280;
+                directionsText.lineWidth = 400;
 
                 //var logo = new createjs.Bitmap(queue.getResult("logo"))
-                logoContainer.alpha = 0;
-                createjs.Tween.get(logoContainer).wait(500).to({ alpha: 1, visible: true }, 1000).call(handleComplete);
-                function handleComplete() {
-                    //  self.stage.addChild(logoContainer)
-                }
+             //   logoContainer.alpha = 0;
+                //createjs.Tween.get(logoContainer).wait(500).to({ alpha: 1, visible: true }, 1000).call(handleComplete);
+                //function handleComplete() {
+                //    //  self.stage.addChild(logoContainer)
+                //}
 
-                logoContainer.regX = 180;
-                logoContainer.regY = 60;
-                logoContainer.x = panelBG.x + 220;
-                logoContainer.y = panelBG.y + 305;
-                logoContainer.scaleX = logoContainer.scaleY = 0.30;
+                //logoContainer.regX = 180;
+                //logoContainer.regY = 60;
+                //logoContainer.x = panelBG.x + 220;
+                //logoContainer.y = panelBG.y + 305;
+                //logoContainer.scaleX = logoContainer.scaleY = 0.30;
 
                 //add a tween
                 var shadow = new createjs.Shadow("#000", 0, 0, 3);
@@ -534,8 +535,8 @@ var Game = Game || (function (createjs) {
                     .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
                 //  .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
-
-                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logoContainer);
+               
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText);
 
 
                 var soundContain = createSoundContainer();
@@ -575,7 +576,7 @@ var Game = Game || (function (createjs) {
 
                 // titleText.shadow = shadow;
                 playButton.shadow = shadow;
-                logoContainer.shadow = shadow;
+              //  logoContainer.shadow = shadow;
                 panelBG.shadow = shadow;
 
 
@@ -619,59 +620,60 @@ var Game = Game || (function (createjs) {
                 panelBG.x = 0;
                 panelBG.y = 50;
 
-                var titleText = new createjs.Text(gameData.Title, " Bold 20px Comic Sans MS", "#000000");
+                var titleText = new createjs.Text(gameData.Title, " Bold 18px Comic Sans MS", "#000000");
                 titleText.x = panelBG.x + 130;
                 titleText.y = panelBG.y + 70;
                 titleText.lineWidth = 560;
 
-
-                var descriptionText = new createjs.Text(gameData.Description, "18px Comic Sans MS", "#000000");
+                var descriptionText = new createjs.Text(gameData.Description, "17px Comic Sans MS", "#000000");
                 descriptionText.x = panelBG.x + 130;
-                descriptionText.y = panelBG.y + 130;
-                descriptionText.lineWidth = 560;
+                descriptionText.y = panelBG.y + 140;
+                descriptionText.lineWidth = 550;
 
-                var directionsText = new createjs.Text("Directions: Use 'Spacebar' or 'Left Mouse Click' to fire harpoons.\nUse 'Directional Arrow' keys to move along the ship." +
-                    "\nEliminate squids for treasure." +
+
+                var directionsText = new createjs.Text("Directions: Touch Directional Arrow Buttons to move along the ship." +
+                    "\nHarpoons will fire every 2 seconds.\nEliminate squids for treasure." +
                     "\nIf the pirate gets hit by the ink, you will need to answer a question." +
                     "\nIf the pirate runs out of harpoons, you will need to answer a question.", "16px Comic Sans MS", "#000000");
                 directionsText.x = panelBG.x + 130;
-                directionsText.y = panelBG.y + 180;
+                directionsText.y = panelBG.y + 280;
+                directionsText.lineWidth = 400;
 
 
                 //load logo as a sprite
-                logoContainer = new createjs.Container();
-                var speed = .02;
-                var data = {
-                    images: [queue.getResult("logosprite")],
-                    frames: {
-                        width: 700,
-                        height: 500,
-                        frames: 2,
-                    },
-                    animations: {
-                        tentacles: [0, 1, "tentacles", speed],
-                    },
-                };
+                //logoContainer = new createjs.Container();
+                //var speed = .02;
+                //var data = {
+                //    images: [queue.getResult("logosprite")],
+                //    frames: {
+                //        width: 700,
+                //        height: 500,
+                //        frames: 2,
+                //    },
+                //    animations: {
+                //        tentacles: [0, 1, "tentacles", speed],
+                //    },
+                //};
 
-                var spriteSheet = new createjs.SpriteSheet(data);
-                var sprite = new createjs.Sprite(spriteSheet, "tentacles");
-                logoContainer.addChild(sprite);
+                //var spriteSheet = new createjs.SpriteSheet(data);
+                //var sprite = new createjs.Sprite(spriteSheet, "tentacles");
+                //logoContainer.addChild(sprite);
 
                 //create a tween for the logo
-                logoContainer.alpha = 0;
-                createjs.Tween.get(logoContainer).wait(500).to({ alpha: 1, visible: true }, 2000).call(handleComplete);
-                function handleComplete() {
+                //logoContainer.alpha = 0;
+                //createjs.Tween.get(logoContainer).wait(500).to({ alpha: 1, visible: true }, 2000).call(handleComplete);
+                //function handleComplete() {
 
-                }
+                //}
 
-                logoContainer.regX = 180;
-                logoContainer.regY = 60;
-                logoContainer.x = panelBG.x + 220;
-                logoContainer.y = panelBG.y + 300;
-                logoContainer.scaleX = logoContainer.scaleY = 0.30;
+                //logoContainer.regX = 180;
+                //logoContainer.regY = 60;
+                //logoContainer.x = panelBG.x + 220;
+                //logoContainer.y = panelBG.y + 300;
+                //logoContainer.scaleX = logoContainer.scaleY = 0.30;
 
 
-                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText, logoContainer);
+                instructionsScreen.addChild(panelBG, titleText, descriptionText, directionsText);
 
                 var soundContain = createSoundContainer();
                 self.stage.addChild(instructionsScreen);
@@ -704,7 +706,7 @@ var Game = Game || (function (createjs) {
                 //      .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
                 playButton.shadow = shadow;
-                logoContainer.shadow = shadow;
+            //    logoContainer.shadow = shadow;
                 //      titleText.shadow = shadow;
                 panelBG.shadow = shadow;
 
@@ -723,7 +725,7 @@ var Game = Game || (function (createjs) {
                 backText.x = instructionsScreen.x + 450;
                 backText.y = instructionsScreen.y + 450;
                 backText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#FFF").drawRoundRect(0, 0, 100, 40, 50));
-                //     self.stage.addChild(backText);
+                 //    self.stage.addChild(backText);
                 //   backText.alpha = 0;
 
                 backText.addEventListener("click", handleClick);
@@ -744,9 +746,12 @@ var Game = Game || (function (createjs) {
                     self.stage.removeChild(instructionsScreen);
                     resumeTheGame();
                 }
-                //       }
 
 
+            }
+
+
+            function directionScreen() {
 
             }
 
@@ -1849,7 +1854,8 @@ var Game = Game || (function (createjs) {
                     replay();
                 }
 
-                gameoverContainer.addChild(logoContainer, gameoverText, replayText, exitText);
+                //took exit text off screen
+                gameoverContainer.addChild(logoContainer, gameoverText, replayText);
 
                 self.stage.addChild(gameoverContainer);
                 self.stage.removeChild(squidAquarium, playerContainer, inkContainer);
