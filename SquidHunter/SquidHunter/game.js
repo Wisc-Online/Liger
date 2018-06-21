@@ -378,7 +378,7 @@ var Game = Game || (function (createjs) {
                 panelBG.shadow = shadow;
 
                 createjs.Tween.get(shadow, { loop: false })
-                    .to({ offsetX: 10, offsetY: 10, blur: 20 }, 1500, createjs.Ease.quadInOut)
+                    .to({ offsetX: 5, offsetY: 5, blur: 25 }, 1500, createjs.Ease.quadInOut)
                 // .to({ offsetX: 0, offsetY: 0, blur: 0 }, 1500, createjs.Ease.quadInOut);
 
 
@@ -801,35 +801,62 @@ var Game = Game || (function (createjs) {
                     left = new createjs.Bitmap(queue.getResult("arrowleft"));
                     leftContainer.y = 475;
                     leftContainer.x = 600;
-                    leftContainer.scaleX = 1.2
-                    leftContainer.scaleY = 1.2
+                    leftContainer.scaleX = 1.2;
+                    leftContainer.scaleY = 1.2;
+                    leftContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 40, 40));
+
+                    leftContainer.on("mouseover", handleButtonHover);
+                    leftContainer.on("mouseout", handleButtonHover);
+
                     leftContainer.addChild(left);
 
                     rightContainer = new createjs.Container();
                     right = new createjs.Bitmap(queue.getResult("arrowright"));
                     rightContainer.y = 475;
                     rightContainer.x = 700;
-                    rightContainer.scaleX = 1.2
-                    rightContainer.scaleY = 1.2
+                    rightContainer.scaleX = 1.2;
+                    rightContainer.scaleY = 1.2;
+                    rightContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 40, 40));
+
+
+                    rightContainer.on("mouseover", handleButtonHover);
+                    rightContainer.on("mouseout", handleButtonHover);
+
                     rightContainer.addChild(right);
+
 
                     upContainer = new createjs.Container();
                     up = new createjs.Bitmap(queue.getResult("arrowup"));
                     upContainer.y = 425;
                     upContainer.x = 650;
-                    upContainer.scaleX = 1.2
-                    upContainer.scaleY = 1.2
+                    upContainer.scaleX = 1.2;
+                    upContainer.scaleY = 1.2;
+                    upContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 40, 40));
+
+                    upContainer.on("mouseover", handleButtonHover);
+                    upContainer.on("mouseout", handleButtonHover);
+
                     upContainer.addChild(up);
+
 
                     downContainer = new createjs.Container();
                     down = new createjs.Bitmap(queue.getResult("arrowdown"));
                     downContainer.y = 525;
                     downContainer.x = 650;
-                    downContainer.scaleX = 1.2
-                    downContainer.scaleY = 1.2
+                    downContainer.scaleX = 1.2;
+                    downContainer.scaleY = 1.2;
+                    downContainer.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 40, 40));
+
+                    downContainer.on("mouseover", handleButtonHover);
+                    downContainer.on("mouseout", handleButtonHover);
+                    
                     downContainer.addChild(down);
 
+
                     //add functionality to the containers of the arrows
+
+
+
                     leftContainer.on("mousedown", function (evt) {
                         var event = evt;
                         moveLeft();
@@ -899,15 +926,6 @@ var Game = Game || (function (createjs) {
                 playerContainer.scaleX = .30;
                 playerContainer.scaleY = .30;
 
-
-                //blue rectangle
-                //might be cleaner than blur shape
-                //var graphics = new createjs.Graphics().beginFill("#141887").drawRoundRect(525, 5, 235, 90, 5, 5, 5, 5);
-                //var shape = new createjs.Shape(graphics);
-                //shape.alpha = .4;
-                //shape.shadow = shadow;
-                //self.stage.addChild(shape);
-
                 //blur shape
                 var blurshape = new createjs.Shape().set({ x: 525, y: 5 });
                 blurshape.graphics.beginFill("#141887").drawRect(0, 0, 250 , 110);
@@ -920,7 +938,6 @@ var Game = Game || (function (createjs) {
                 blurshape.cache(-50 + bounds.x, -50 + bounds.y, 100 + bounds.width, 100 + bounds.height);
 
                 self.stage.addChild(blurshape);
-
 
 
                 //shadow
@@ -1086,8 +1103,12 @@ var Game = Game || (function (createjs) {
                                 gameOverScreen();
                             }
                             else
-                                deliverQuestion(gameData.Questions[currentQuestionNumber]);
+                                //6.21 - the panels are staying and not closing down
+                                //canEnemyFire = false;
+                                //isEnemySpawnEnabled = false;
 
+                                deliverQuestion(gameData.Questions[currentQuestionNumber]);
+                                
                           //  Score = Score - 10;
                             printScore();
                         }
@@ -1716,6 +1737,10 @@ var Game = Game || (function (createjs) {
                     greencheck.y = feedbackPanel.y + 85;
                     greencheck.shadow = shadow;
                     greencheck.addEventListener("click", handleClick);
+                    //added 6.21
+                    greencheck.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 50, 50));
+
+
 
                     greencheck.on("mouseover", handleButtonHover);
                     greencheck.on("mouseout", handleButtonHover);
@@ -1737,6 +1762,7 @@ var Game = Game || (function (createjs) {
                             redx.y = feedbackPanel.y + 85;
                             redx.shadow = shadow;
                             redx.addEventListener("click", handleClick);
+                            redx.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawCircle(0, 50, 50));
 
                             redx.on("mouseover", handleButtonHover);
                             redx.on("mouseout", handleButtonHover);
@@ -1851,6 +1877,9 @@ var Game = Game || (function (createjs) {
 
                 function handleClick(event) {
                     //    self.stage.removeChild(gameoverContainer);
+
+                    stage.removeAllChildren();
+                    stage.removeAllEventListeners();
                     replay();
                 }
 
