@@ -1307,6 +1307,7 @@ var Game = Game || (function (createjs) {
 
                 //only called when enough harpoon available
                 function makeHarpoon() {
+
                     console.log("making harpoon")
                     harpoonContainer = new createjs.Container();
                     harpoon = new createjs.Bitmap(queue.getResult("harpoon"));
@@ -1562,12 +1563,16 @@ var Game = Game || (function (createjs) {
 
             //deliver questions when player is by ink
             function deliverQuestion(question) {
+                inkContainer.cache();
+                harpoonContainer.cache();
 
                 var page = createjs.Sound.createInstance("page");
                 page.play();
 
                 isEnemySpawnEnabled = false;
                 canEnemyFire = false;
+
+                self.stage.removeChild(inkContainer);
 
                 questionContainer = new createjs.Container();
                 questionPanel = new createjs.Bitmap(queue.getResult("questionPanel"));
@@ -1800,6 +1805,8 @@ var Game = Game || (function (createjs) {
             }
 
             function gameOverScreen() {
+                instructionsScreen.cache();
+
                 pauseTheGame();
                 var gameover = createjs.Sound.createInstance("gameover");
                 gameover.volume = gameover.volume * 1.5;
@@ -1841,7 +1848,7 @@ var Game = Game || (function (createjs) {
                 gameoverText.y = logoContainer.y + 390;
 
                 var replayText = new createjs.Text("Replay", "Bold 23px Comic Sans MS", "#FFFFFF");
-                replayText.x = logoContainer.x + 265;
+                replayText.x = logoContainer.x + 263;
                 replayText.y = logoContainer.y + 145;
                 replayText.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#F00").drawRoundRect(0, 0, 100, 40, 50));
 
@@ -1875,9 +1882,9 @@ var Game = Game || (function (createjs) {
 
                 }
 
+
                 function handleClick(event) {
                     //    self.stage.removeChild(gameoverContainer);
-
                     stage.removeAllChildren();
                     stage.removeAllEventListeners();
                     replay();
@@ -1908,7 +1915,7 @@ var Game = Game || (function (createjs) {
 
                 inkContainer.removeAllChildren();
                 enemyContainer.removeAllChildren();
-
+                logoContainer.cache();
                 StartitALL();
 
             }
